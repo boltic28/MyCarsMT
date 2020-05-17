@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--car item-->
+    <dimen name="car_item_row_high">68dp</dimen>
+    <dimen name="car_item_img_high">60dp</dimen>
+    <dimen name="car_item_img_width">80dp</dimen>
+    <dimen name="car_item_icons_size">24dp</dimen>
+    <dimen name="car_item_icons_margin">4dp</dimen>
+    <!--part item-->
+    <dimen name="part_item_row_high">68dp</dimen>
+    <dimen name="part_item_img_high">60dp</dimen>
+    <dimen name="part_item_img_width">80dp</dimen>
+    <dimen name="part_item_icon_margin">4dp</dimen>
+    <dimen name="part_item_icon_size">60dp</dimen>
+    <dimen name="part_item_icon_padding">10dp</dimen>
+    <!--note item-->
+    <dimen name="note_item_row_high">48dp</dimen>
+    <dimen name="note_item_icon_margin">4dp</dimen>
+    <dimen name="note_item_text_margin">16dp</dimen>
+    <dimen name="note_item_image_size">40dp</dimen>
+    <!--repair item-->
+    <dimen name="repair_item_row_high">68dp</dimen>
+    <dimen name="repair_item_icon_margin">4dp</dimen>
+    <dimen name="repair_item_text_margin">16dp</dimen>
+</resources>

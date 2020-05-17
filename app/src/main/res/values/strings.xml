@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MyCarsMT</string>
+    <string name="car_item_car_image">car item car image</string>
+    <string name="car_item_icon_attention">car item icon attention</string>
+    <string name="part_item_icon">part item icon</string>
+    <string name="note_item_image">note item level</string>
+    <string name="part_item_image">part photo</string>
 </resources>

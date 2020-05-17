@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/car_item_row_high"
+    android:gravity="center_vertical"
+    android:padding="4dp"
+    android:textAppearance="?android:attr/textAppearanceListItem">
+
+    <ImageView
+        android:id="@+id/carItemImage"
+        android:layout_width="@dimen/car_item_img_width"
+        android:layout_height="@dimen/car_item_img_high"
+        android:contentDescription="@string/car_item_car_image"
+        android:src="@drawable/icon_car"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/carItemCarName"
+        style="@style/CarItemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/carItemImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Brand Model" />
+
+    <TextView
+        android:id="@+id/carItemMileage"
+        style="@style/CarItemText.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="115000 km" />
+
+    <TextView
+        android:id="@+id/carItemNumber"
+        style="@style/CarItemText.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/carItemCarName"
+        app:layout_constraintTop_toBottomOf="@+id/carItemCarName"
+        tools:text="1234 AB-5" />
+
+    @RunWith(AndroidJUnit4::class)    <ImageView
+        android:id="@+id/carItemIconAttention"
+        android:layout_width="@dimen/car_item_icons_size"
+        android:layout_height="@dimen/car_item_icons_size"
+        android:contentDescription="@string/car_item_icon_attention"
+        android:src="@drawable/icon_shop"
+        android:tint="@color/colorLightGray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/carItemIconService"
+        android:layout_width="@dimen/car_item_icons_size"
+        android:layout_height="@dimen/car_item_icons_size"
+        android:layout_marginEnd="@dimen/car_item_icons_margin"
+        android:contentDescription="@string/car_item_icon_attention"
+        android:src="@drawable/icon_shop"
+        android:tint="@color/colorLightGray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/carItemIconAttention" />
+
+    <ImageView
+        android:id="@+id/carItemIconBuy"
+        android:layout_width="@dimen/car_item_icons_size"
+        android:layout_height="@dimen/car_item_icons_size"
+        android:layout_marginEnd="@dimen/car_item_icons_margin"
+        android:contentDescription="@string/car_item_icon_attention"
+        android:src="@drawable/icon_shop"
+        android:tint="@color/colorLightGray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/carItemIconService" />
+
+    <ImageView
+        android:id="@+id/carItemIconInfo"
+        android:layout_width="@dimen/car_item_icons_size"
+        android:layout_height="@dimen/car_item_icons_size"
+        android:layout_marginEnd="@dimen/car_item_icons_margin"
+        android:contentDescription="@string/car_item_icon_attention"
+        android:src="@drawable/icon_shop"
+        android:tint="@color/colorLightGray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/carItemIconBuy" />
+
+    <TextView
+        android:id="@+id/carItemIconInfoMsgCount"
+        style="@style/CarItemText.Secondary"
+        android:layout_width="@dimen/car_item_icons_size"
+        android:layout_height="@dimen/car_item_icons_size"
+        android:layout_marginEnd="@dimen/car_item_icons_margin"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/carItemIconInfo"
+        tools:text="4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
