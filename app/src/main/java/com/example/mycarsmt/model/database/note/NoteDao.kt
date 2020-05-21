@@ -10,10 +10,10 @@ interface NoteDao {
     fun insert(noteEntity: NoteEntity): Long
 
     @Update
-    fun update(noteEntity: NoteEntity): Long
+    fun update(noteEntity: NoteEntity): Int
 
     @Delete
-    fun delete(noteEntity: NoteEntity): Long
+    fun delete(noteEntity: NoteEntity): Int
 
     @Query("SELECT * FROM note WHERE id = :id")
     fun getByIdLive(id: Long): LiveData<NoteEntity>

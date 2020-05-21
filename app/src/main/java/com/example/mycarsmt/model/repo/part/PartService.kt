@@ -10,10 +10,11 @@ import com.example.mycarsmt.model.database.repair.RepairEntity
 interface PartService{
 
     fun create(part: Part): Long
-    fun update(part: Part): Long
-    fun delete(part: Part): Long
+    fun update(part: Part): Int
+    fun delete(part: Part): Int
     fun readAll(): LiveData<List<Part>>
-    fun readById(id: Long): LiveData<Part>
+    fun readById(partId: Long): LiveData<Part>
+    fun readAllForCar(carId: Long): LiveData<List<Part>>
 
     fun getNotes(part: Part): LiveData<List<Note>>
     fun getRepairs(part: Part): LiveData<List<Repair>>

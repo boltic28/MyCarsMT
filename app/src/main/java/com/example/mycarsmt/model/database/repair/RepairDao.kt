@@ -10,10 +10,10 @@ interface RepairDao {
     fun insert(repairEntity: RepairEntity): Long
 
     @Update
-    fun update(repairEntity: RepairEntity): Long
+    fun update(repairEntity: RepairEntity): Int
 
     @Delete
-    fun delete(repairEntity: RepairEntity): Long
+    fun delete(repairEntity: RepairEntity): Int
 
     @Query("SELECT * FROM repair WHERE id = :id")
     fun getByIdLive(id: Long): LiveData<RepairEntity>

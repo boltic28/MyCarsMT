@@ -17,7 +17,7 @@ import java.util.stream.Collectors
 @SuppressLint("NewApi")
 class PartServiceImpl(val context: Context) : PartService {
 
-    private var db: AppDatabase = AppDatabase.getInstance(context)
+    private var db: AppDatabase = AppDatabase.getInstance(context)!!
     private val executorService: ExecutorService = db.getDatabaseExecutorService()!!
     private var partEntityWithMilleageLive: LiveData<List<PartWithMileage>>? = null
 
@@ -30,14 +30,16 @@ class PartServiceImpl(val context: Context) : PartService {
         return part.id
     }
 
-    override fun update(part: Part): Long {
-        executorService.execute { part.id = partDao.update(partEntityFrom(part)) }
-        return part.id
+    override fun update(part: Part): Int {
+        var updated = 0
+        executorService.execute { updated = partDao.update(partEntityFrom(part)) }
+        return updated
     }
 
-    override fun delete(part: Part): Long {
-        executorService.execute { part.id = partDao.delete(partEntityFrom(part)) }
-        return part.id
+    override fun delete(part: Part): Int {
+        var deleted = 0
+        executorService.execute { deleted = partDao.delete(partEntityFrom(part)) }
+        return deleted
     }
 
     override fun readAll(): LiveData<List<Part>> {
@@ -46,6 +48,14 @@ class PartServiceImpl(val context: Context) : PartService {
         }
 
         return Transformations.map(partDao.getAllWithMileageLive()) { list ->
+            list.stream()
+                .map { partEntity -> EntityConverter.partFrom(partEntity) }
+                .collect(Collectors.toList())
+        }
+    }
+
+    override fun readAllForCar(carId: Long): LiveData<List<Part>> {
+        return Transformations.map(partDao.getAllForCarWithMileageLive(carId)) { list ->
             list.stream()
                 .map { partEntity -> EntityConverter.partFrom(partEntity) }
                 .collect(Collectors.toList())

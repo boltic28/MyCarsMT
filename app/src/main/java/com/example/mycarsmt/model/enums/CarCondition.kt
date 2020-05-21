@@ -1,15 +1,15 @@
 package com.example.mycarsmt.model.enums
 
-enum class CarCondition(val value: Int) {
-    OK(1),
-    MAKE_INSPECTION(2),
-    BUY_PARTS(3),
-    MAKE_SERVICE(4),
-    ATTENTION(5),
-    CONTINUE_SMT(0);
+enum class CarCondition(val value: String) {
+    OK("ok"),
+    MAKE_INSPECTION("insp"),
+    BUY_PARTS("buy"),
+    MAKE_SERVICE("serv"),
+    ATTENTION("atten"),
+    CONTINUE_SMT("cont");
 
     companion object {
         private val map = values().associateBy(CarCondition::value)
-        fun fromInt(type: Int) = map[type]
+        fun fromString(type: String) = map[type]
     }
 }

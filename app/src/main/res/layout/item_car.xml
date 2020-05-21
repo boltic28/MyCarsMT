@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/carItemCarName"
         tools:text="1234 AB-5" />
 
-    @RunWith(AndroidJUnit4::class)    <ImageView
+    <ImageView
         android:id="@+id/carItemIconAttention"
         android:layout_width="@dimen/car_item_icons_size"
         android:layout_height="@dimen/car_item_icons_size"

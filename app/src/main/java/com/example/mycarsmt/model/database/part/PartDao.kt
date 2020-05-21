@@ -10,26 +10,22 @@ interface PartDao {
     fun insert(partEntity: PartEntity): Long
 
     @Update
-    fun update(partEntity: PartEntity): Long
+    fun update(partEntity: PartEntity): Int
 
     @Delete
-    fun delete(partEntity: PartEntity): Long
+    fun delete(partEntity: PartEntity): Int
 
-    @Query("SELECT * FROM part WHERE id = :id")
+    @Query("SELECT part.*, car.mileage FROM part, car WHERE car.id == part.car_id AND part.id = :id")
     fun getByIdWithMileageLive(id: Long): LiveData<PartWithMileage>
 
     @Query("SELECT * FROM part")
     fun getAllLive(): LiveData<List<PartEntity>>
 
-    @Query("SELECT * FROM part")
+    @Query("SELECT part.*, car.mileage FROM part, car WHERE car.id == part.car_id")
     fun getAllWithMileageLive(): LiveData<List<PartWithMileage>>
 
     @Query("SELECT part.*, car.mileage FROM part, car WHERE car.id == part.car_id AND car_id = :carId")
-    fun getPartsForCarWithMileage(carId: Long): List<PartWithMileageAndElements>
-
-    @Query("SELECT * FROM part WHERE car_id = :carId")
-    fun getAllForCarLive(carId: Long): LiveData<List<PartEntity>>
-
+    fun getAllForCarWithMileageLive(carId: Long): LiveData<List<PartWithMileage>>
 
 // for delete
     @Query("SELECT * FROM part")

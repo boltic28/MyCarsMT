@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 @SuppressLint("NewApi")
 class NoteServiceImpl(val context: Context) : NoteService {
 
-    private var db: AppDatabase = AppDatabase.getInstance(context)
+    private var db: AppDatabase = AppDatabase.getInstance(context)!!
     private val executorService: ExecutorService = db.getDatabaseExecutorService()!!
     private var noteEntityWithMileageLive: LiveData<List<NoteWithMileage>>? = null
 
@@ -28,18 +28,20 @@ class NoteServiceImpl(val context: Context) : NoteService {
         return note.id
     }
 
-    override fun update(note: Note): Long {
+    override fun update(note: Note): Int {
+        var updated = 0
         executorService.execute {
-            note.id = this.noteDao.update(EntityConverter.noteEntityFrom(note))
+            updated = this.noteDao.update(EntityConverter.noteEntityFrom(note))
         }
-        return note.id
+        return updated
     }
 
-    override fun delete(note: Note): Long {
+    override fun delete(note: Note): Int {
+        var deleted = 0
         executorService.execute {
-            note.id = this.noteDao.delete(EntityConverter.noteEntityFrom(note))
+            deleted = this.noteDao.delete(EntityConverter.noteEntityFrom(note))
         }
-        return note.id
+        return deleted
     }
 
     override fun readById(id: Long): LiveData<Note> {

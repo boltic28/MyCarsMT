@@ -15,7 +15,7 @@ class Car() {
         year: Int,
         mileage: Int,
         whenMileageRefreshed: LocalDate,
-        condition: CarCondition
+        condition: List<CarCondition>
     ) : this() {
         this.id = id
         this.brand = brand
@@ -38,14 +38,12 @@ class Car() {
     var year: Int = 1980
     var mileage: Int = 0
     var whenMileageRefreshed: LocalDate = LocalDate.now()
-    var condition: CarCondition = CarCondition.OK
+    var condition: List<CarCondition> = listOf(CarCondition.OK)
 
     var photo: String = ""
 
     lateinit var parts: MutableList<Part>
     lateinit var notes: MutableList<Note>
     lateinit var repairs: MutableList<Repair>
-
-
 
 }

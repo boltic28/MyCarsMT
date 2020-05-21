@@ -16,7 +16,7 @@ import java.util.stream.Collectors
 @SuppressLint("NewApi")
 class RepairServiceImpl(var context: Context): RepairService {
 
-    private var db: AppDatabase = AppDatabase.getInstance(context)
+    private var db: AppDatabase = AppDatabase.getInstance(context)!!
     private val executorService: ExecutorService = db.getDatabaseExecutorService()!!
     private var noteEntityWithMileageLive: LiveData<List<RepairEntity>>? = null
 
@@ -29,18 +29,20 @@ class RepairServiceImpl(var context: Context): RepairService {
         return repair.id
     }
 
-    override fun update(repair: Repair): Long {
+    override fun update(repair: Repair): Int {
+        var updated = 0
         executorService.execute {
-            repair.id = this.repairDao.update(EntityConverter.repairEntityFrom(repair))
+            updated = this.repairDao.update(EntityConverter.repairEntityFrom(repair))
         }
-        return repair.id
+        return updated
     }
 
-    override fun delete(repair: Repair): Long {
+    override fun delete(repair: Repair): Int {
+        var deleted = 0
         executorService.execute {
-            repair.id = this.repairDao.delete(EntityConverter.repairEntityFrom(repair))
+            deleted = this.repairDao.delete(EntityConverter.repairEntityFrom(repair))
         }
-        return repair.id
+        return deleted
     }
 
     override fun readAll(): LiveData<List<Repair>> {

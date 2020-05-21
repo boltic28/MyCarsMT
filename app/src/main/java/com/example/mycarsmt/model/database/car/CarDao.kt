@@ -10,24 +10,17 @@ interface CarDao {
     fun insert(car: CarEntity): Long
 
     @Update
-    fun update(car: CarEntity): Long
+    fun update(car: CarEntity): Int
 
     @Delete
-    fun delete(car: CarEntity): Long
+    fun delete(car: CarEntity): Int
 
     @Query("SELECT * FROM car WHERE id = :id")
-    fun getById(id: Long): CarEntity
+    fun getById(id: Long): LiveData<CarEntity>
 
     @Query("SELECT * FROM car ORDER BY brand AND model AND number ASC")
-    fun getAllLive(): LiveData<List<CarEntity>>
+    fun getAll(): LiveData<List<CarEntity>>
 
-// for delete
     @Query("SELECT * FROM car ORDER BY brand AND model AND number ASC")
-    fun getAll(): List<CarEntity>
-
-    @Query("SELECT * FROM car WHERE id = :id")
-    fun getByIdLive(id: Long): LiveData<CarEntity>
-
-    @Query("SELECT * from car WHERE id = :id")
-    fun getByIdWithAllElements(id: Long): CarWithAllElements
+    fun getCars(): List<CarEntity>
 }

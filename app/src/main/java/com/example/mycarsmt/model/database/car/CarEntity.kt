@@ -22,7 +22,7 @@ open class CarEntity() {
         year: Int,
         mileage: Int,
         whenMileageRefreshed: LocalDate,
-        condition: CarCondition
+        condition: List<CarCondition>
     ) : this() {
         this.id = id
         this.brand = brand
@@ -53,5 +53,5 @@ open class CarEntity() {
     var whenMileageRefreshed: LocalDate = LocalDate.now()
 
     @TypeConverters(ConditionConverter::class)
-    var condition: CarCondition = CarCondition.OK
+    var condition: List<CarCondition> = listOf(CarCondition.OK)
 }
