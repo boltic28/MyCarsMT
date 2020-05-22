@@ -53,7 +53,7 @@
         android:layout_height="@dimen/car_item_icons_size"
         android:contentDescription="@string/car_item_icon_attention"
         android:src="@drawable/icon_shop"
-        android:tint="@color/colorLightGray"
+        android:tint="@color/colorOff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -64,7 +64,7 @@
         android:layout_marginEnd="@dimen/car_item_icons_margin"
         android:contentDescription="@string/car_item_icon_attention"
         android:src="@drawable/icon_shop"
-        android:tint="@color/colorLightGray"
+        android:tint="@color/colorOff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/carItemIconAttention" />
 
@@ -75,7 +75,7 @@
         android:layout_marginEnd="@dimen/car_item_icons_margin"
         android:contentDescription="@string/car_item_icon_attention"
         android:src="@drawable/icon_shop"
-        android:tint="@color/colorLightGray"
+        android:tint="@color/colorOff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/carItemIconService" />
 
@@ -86,7 +86,7 @@
         android:layout_marginEnd="@dimen/car_item_icons_margin"
         android:contentDescription="@string/car_item_icon_attention"
         android:src="@drawable/icon_shop"
-        android:tint="@color/colorLightGray"
+        android:tint="@color/colorOff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/carItemIconBuy" />
 

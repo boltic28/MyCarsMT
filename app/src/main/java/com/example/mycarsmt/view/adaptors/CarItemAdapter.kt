@@ -2,6 +2,7 @@ package com.example.mycarsmt.view.adaptors
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +15,13 @@ import com.example.mycarsmt.model.enums.CarCondition
 import com.example.mycarsmt.model.repo.car.CarServiceImpl
 
 class CarItemAdapter(
-    context: Context, private val listener: OnCarClickListener
+    carsIn: List<Car>, private val listener: OnCarClickListener
 ) : RecyclerView.Adapter<CarItemAdapter.CarHolder>() {
 
-    private lateinit var cars: List<Car>
-    private val service = CarServiceImpl(context)
+    private var cars = carsIn
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        CarHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_car, parent))
+        CarHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_car, parent, false))
 
     override fun getItemCount() = cars.size
 
@@ -46,22 +46,24 @@ class CarItemAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(car: Car) {
-            name.text = car.brand + " " + car.model
+            var line = "${car.brand} ${car.model}"
+            if (line.length > 15){line = line.substring(13) + ".."}
+            name.text = line
             number.text = car.number
-            mileage.text = car.mileage.toString()
+            mileage.text = "${car.mileage} km"
 
             if (car.condition.contains(CarCondition.ATTENTION))
-                attentionIcon.setColorFilter(R.color.colorAttention)
+                attentionIcon.setColorFilter(Color.argb(255,230,5,5))
             if (car.condition.contains(CarCondition.MAKE_SERVICE))
-                serviceIcon.setColorFilter(R.color.colorService)
+                serviceIcon.setColorFilter(Color.argb(255,230,120,5))
             if (car.condition.contains(CarCondition.BUY_PARTS))
-                buyIcon.setColorFilter(R.color.colorBuy)
+                buyIcon.setColorFilter(Color.argb(255,180,180,5))
             if (car.condition.contains(CarCondition.MAKE_INSPECTION))
-                infoIcon.setColorFilter(R.color.colorInfo)
+                infoIcon.setColorFilter(Color.argb(255,10,120,5))
 
-            val notesCount = service.getCountOfNotes(car)!!
-            if (notesCount > 0) notes.visibility = View.VISIBLE
-            notes.text = service.getCountOfNotes(car).toString()
+//            val notesCount = service.getCountOfNotes(car)!!
+//            if (notesCount > 0) notes.visibility = View.VISIBLE
+//            notes.text = service.getCountOfNotes(car).toString()
 
             carRow.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -69,8 +71,6 @@ class CarItemAdapter(
                 }
             }
         }
-
-
     }
 
     interface OnCarClickListener {

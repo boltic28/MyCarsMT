@@ -5,4 +5,5 @@
     <string name="part_item_icon">part item icon</string>
     <string name="note_item_image">note item level</string>
     <string name="part_item_image">part photo</string>
+    <string name="no_cars_please_add">you have no one car.</string>
 </resources>

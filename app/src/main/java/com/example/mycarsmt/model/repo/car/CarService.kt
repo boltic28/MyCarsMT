@@ -1,5 +1,6 @@
 package com.example.mycarsmt.model.repo.car
 
+import android.os.Handler
 import androidx.lifecycle.LiveData
 import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.Note
@@ -9,22 +10,19 @@ import com.example.mycarsmt.model.database.car.CarEntity
 
 interface CarService {
 
-    fun create(car: Car): Long
-    fun update(car: Car): Int
-    fun delete(car: Car): Int
-    fun readAll(): LiveData<List<Car>>
-    fun readById(id: Long): LiveData<Car>
+    fun create(car: Car)
+    fun update(car: Car)
+    fun delete(car: Car)
+    fun readAll()
+    fun readById(id: Long)
 
-    fun getParts(car: Car): LiveData<List<Part>>
-    fun getNotes(car: Car): LiveData<List<Note>>
-    fun getRepairs(car: Car): LiveData<List<Repair>>
+//    fun getParts(car: Car): List<Part>
+//    fun getNotes(car: Car): List<Note>
+//    fun getRepairs(car: Car): List<Repair>
 
 //    fun getPartsListForBuying(car: Car): List<String>
 //    fun getTasksListForService(car: Car): List<String>
 //    fun getMileageAsLine(car: Car): String
 //    fun getDataForMileageList(car: Car): List<String>
-    fun getCountOfNotes(car: Car): Int?
-
-
-    fun readAllE():LiveData<List<CarEntity>>
+//    fun getCountOfNotes(car: Car)
 }

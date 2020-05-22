@@ -42,8 +42,8 @@ class Car() {
 
     var photo: String = ""
 
-    lateinit var parts: MutableList<Part>
-    lateinit var notes: MutableList<Note>
-    lateinit var repairs: MutableList<Repair>
+    lateinit var parts: List<Part>
+    lateinit var notes: List<Note>
+    lateinit var repairs: List<Repair>
 
 }

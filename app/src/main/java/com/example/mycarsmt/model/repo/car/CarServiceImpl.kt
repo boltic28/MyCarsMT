@@ -2,114 +2,136 @@ package com.example.mycarsmt.model.repo.car
 
 import android.content.Context
 import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.example.mycarsmt.model.Car
-import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.Part
-import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.database.AppDatabase
 import com.example.mycarsmt.model.database.car.CarDao
-import com.example.mycarsmt.model.database.car.CarEntity
 import com.example.mycarsmt.model.database.note.NoteDao
 import com.example.mycarsmt.model.database.part.PartDao
 import com.example.mycarsmt.model.database.repair.RepairDao
 import com.example.mycarsmt.model.enums.CarCondition
 import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.carFrom
-import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.noteFrom
 import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.partEntityFrom
-import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.partFrom
-import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.repairFrom
+import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_ALL_READED
+import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_CREATED
+import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_DELETED
+import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_READED
+import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_UPDATED
 import java.time.LocalDate
-import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 
-
-class CarServiceImpl() : CarService {
+class CarServiceImpl(context: Context, handler: Handler) : CarService {
 
     private val TAG = "testmt"
 
-    private lateinit var executorService: ExecutorService
+    private var mainHandler: Handler
+    private var carDao: CarDao
+    private var partDao: PartDao
+    private var noteDao: NoteDao
+    private var repairDao: RepairDao
 
-    private lateinit var carDao: CarDao
-    private lateinit var partDao: PartDao
-    private lateinit var noteDao: NoteDao
-    private lateinit var repairDao: RepairDao
-
-    private lateinit var cars: LiveData<List<Car>>
-    private lateinit var carsE: LiveData<List<CarEntity>>
-
-    constructor(context: Context) : this() {
+    init {
         val db: AppDatabase = AppDatabase.getInstance(context)!!
-        executorService = db.getDatabaseExecutorService()!!
-
+        mainHandler = handler
         carDao = db.carDao()
         partDao = db.partDao()
         noteDao = db.noteDao()
         repairDao = db.repairDao()
-        carsE = carDao.getAll()
-        cars = Transformations.map(carDao.getAll()){ list -> list.stream()
-            .map { carEntity -> carFrom(carEntity)}.collect(Collectors.toList())}
     }
 
     //settings
     val howMuchDaysBeetweenCorrectOdo = 15
 
-    override fun readAll(): LiveData<List<Car>> {
-        return Transformations.map(carsE){ list -> list.stream()
-            .map { carEntity -> carFrom(carEntity)}.collect(Collectors.toList())}
+    override fun readAll() {
+        var cars: List<Car>
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        handler.post {
+            cars = carDao.getAll().stream().map { carEntity -> carFrom(carEntity) }
+                .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_ALL_READED, cars))
+            handlerThread.quit()
+        }
     }
 
-    override fun readAllE(): LiveData<List<CarEntity>> {
-        return carsE
+    override fun readById(id: Long) {
+        var car: Car
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            car = carFrom(carDao.getById(id))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_READED, car))
+            handlerThread.quit()
+            handlerThread.quit()
+        }
     }
 
-    override fun readById(id: Long): LiveData<Car> {
-        return Transformations.map(carDao.getById(id)){ entity -> carFrom(entity)}
+    override fun create(car: Car) {
+        var carId: Long
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            carId = carDao.insert(carEntityFrom(car))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_CREATED, carId))
+            handlerThread.quit()
+        }
     }
 
-    override fun create(car: Car): Long {
-        executorService.execute { car.id = carDao.insert(carEntityFrom(car)) }
-        Log.d(TAG, "DATA_BASE: car ${car.id} - created")
-        return car.id
+    override fun update(car: Car) {
+
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            carDao.update(carEntityFrom(car))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_UPDATED))
+            handlerThread.quit()
+        }
     }
 
-    override fun update(car: Car): Int {
-        var updated = 0
-        executorService.execute { updated = carDao.update(carEntityFrom(car)) }
-        Log.d(TAG, "DATA_BASE: car ${car.id} - updated")
-        return updated
+    override fun delete(car: Car) {
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            carDao.update(carEntityFrom(car))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_DELETED))
+            handlerThread.quit()
+        }
     }
 
-    override fun delete(car: Car): Int {
-        var deleted = 0
-        executorService.execute { deleted = carDao.delete(carEntityFrom(car)) }
-        Log.d(TAG, "DATA_BASE: car ${car.id} - deleted")
-        return deleted
-    }
-
-    override fun getParts(car: Car): LiveData<List<Part>> {
-        return Transformations.map(partDao.getAllForCarWithMileageLive(car.id)){ list -> list.stream()
-            .map { partEntity -> partFrom(partEntity)}.collect(Collectors.toList())}
-    }
-
-    override fun getNotes(car: Car): LiveData<List<Note>> {
-        return Transformations.map(noteDao.getAllForCarLive(car.id)){ list -> list.stream()
-            .map { noteEntity -> noteFrom(noteEntity)}.collect(Collectors.toList())}
-    }
-
-    override fun getRepairs(car: Car): LiveData<List<Repair>> {
-        return Transformations.map(repairDao.getAllForCarLive(car.id)){ list -> list.stream()
-            .map { repairEntity -> repairFrom(repairEntity)}.collect(Collectors.toList())}
-    }
-
-    override fun getCountOfNotes(car: Car): Int? = noteDao.getAllForCarLive(car.id).value?.size
+//    override fun getCountOfNotes(car: Car) {
+//        var size: Int
+//        val handlerThread = HandlerThread("createThread")
+//        handlerThread.start()
+//        val looper = handlerThread.looper
+//        val handler = Handler(looper)
+//        handler.post {
+//            size = noteDao.getAllForCar(car.id).size
+//
+//            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_NOTES_COUNT, size))
+//            handlerThread.quit()
+//        }
+//    }
 
     //=============================
 
-    fun testing(){
+    fun testing() {
         Log.d(TAG, "TESTING: Creating new cars ....")
         val car1 = Car()
         car1.year = 2015
@@ -129,7 +151,8 @@ class CarServiceImpl() : CarService {
         car2.number = "1111 AA-7"
         car2.vin = "RUIWYTEG34567788"
         car2.whenMileageRefreshed = LocalDate.now()
-        car2.condition = listOf(CarCondition.MAKE_INSPECTION, CarCondition.MAKE_SERVICE, CarCondition.BUY_PARTS)
+        car2.condition =
+            listOf(CarCondition.MAKE_INSPECTION, CarCondition.MAKE_SERVICE, CarCondition.BUY_PARTS)
 
         val car3 = Car()
         car3.year = 2018
@@ -149,9 +172,12 @@ class CarServiceImpl() : CarService {
         car4.number = "7622 AA-7"
         car4.vin = "RUIWYTEG34567788"
         car4.whenMileageRefreshed = LocalDate.now()
-        car4.condition = listOf(CarCondition.OK, CarCondition.BUY_PARTS)
+        car4.condition = listOf(CarCondition.BUY_PARTS, CarCondition.ATTENTION)
 
-        Log.d(TAG, "TESTING: executing create operation. ${car1.brand}, ${car2.brand}, ${car3.brand}, ${car4.brand}")
+        Log.d(
+            TAG,
+            "TESTING: executing create operation. ${car1.brand}, ${car2.brand}, ${car3.brand}, ${car4.brand}"
+        )
         val id1 = carDao.insert(carEntityFrom(car1))
         val id2 = carDao.insert(carEntityFrom(car2))
         val id3 = carDao.insert(carEntityFrom(car3))
@@ -190,15 +216,20 @@ class CarServiceImpl() : CarService {
         part4.description = "testing"
 
 
-                partDao.insert(partEntityFrom(part1))
-                partDao.insert(partEntityFrom(part2))
-                partDao.insert(partEntityFrom(part3))
-                partDao.insert(partEntityFrom(part4))
+        partDao.insert(partEntityFrom(part1))
+        partDao.insert(partEntityFrom(part2))
+        partDao.insert(partEntityFrom(part3))
+        partDao.insert(partEntityFrom(part4))
 
 
-        Log.d(TAG, "TESTING: testing room size cars is: ${carDao.getAll().value?.size}")
-        Log.d(TAG, "TESTING: testing room size parts is: ${partDao.getAllLive().value?.size}")
-        Log.d(TAG, "TESTING: testing room size parts for ${car2.brand} is: ${partDao.getAllForCarWithMileageLive(car2.id).value?.size}")
+        Log.d(TAG, "TESTING: testing room size cars is: ${carDao.getAll().size}")
+        Log.d(TAG, "TESTING: testing room size parts is: ${partDao.getAll().size}")
+        Log.d(
+            TAG,
+            "TESTING: testing room size parts for ${car2.brand} is: ${partDao.getAllForCarWithMileageLive(
+                car2.id
+            ).value?.size}"
+        )
 //                Log.d(TAG, "testing room car with $id1 size parts is: ${partService.readAllForCar(id1).value?.size}")
 //                Log.d(TAG, "testing room car with $id2 size parts is: ${partService.readAllForCar(id2).value?.size}")
 //                Log.d(TAG, "testing room size parts is: ${partService.readAll().value?.size}")
