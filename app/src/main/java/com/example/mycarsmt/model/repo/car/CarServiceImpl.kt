@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import com.example.mycarsmt.model.Car
+import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.Part
 import com.example.mycarsmt.model.database.AppDatabase
 import com.example.mycarsmt.model.database.car.CarDao
@@ -12,18 +13,23 @@ import com.example.mycarsmt.model.database.note.NoteDao
 import com.example.mycarsmt.model.database.part.PartDao
 import com.example.mycarsmt.model.database.repair.RepairDao
 import com.example.mycarsmt.model.enums.CarCondition
+import com.example.mycarsmt.model.enums.NoteLevel
 import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.carFrom
+import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.noteEntityFrom
 import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.partEntityFrom
-import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_ALL_READED
-import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_CREATED
-import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_DELETED
-import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_READED
-import com.example.mycarsmt.view.activities.MainActivity.Companion.RESULT_CAR_UPDATED
 import java.time.LocalDate
 import java.util.stream.Collectors
 
 class CarServiceImpl(context: Context, handler: Handler) : CarService {
+
+    companion object {
+        const val RESULT_CARS_READED = 101
+        const val RESULT_CAR_READED = 102
+        const val RESULT_CAR_CREATED = 103
+        const val RESULT_CAR_UPDATED = 104
+        const val RESULT_CAR_DELETED = 105
+    }
 
     private val TAG = "testmt"
 
@@ -54,7 +60,7 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
             cars = carDao.getAll().stream().map { carEntity -> carFrom(carEntity) }
                 .collect(Collectors.toList())
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_ALL_READED, cars))
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CARS_READED, cars))
             handlerThread.quit()
         }
     }
@@ -69,7 +75,6 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
             car = carFrom(carDao.getById(id))
 
             mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_READED, car))
-            handlerThread.quit()
             handlerThread.quit()
         }
     }
@@ -216,14 +221,47 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
         part4.description = "testing"
 
 
-        partDao.insert(partEntityFrom(part1))
-        partDao.insert(partEntityFrom(part2))
-        partDao.insert(partEntityFrom(part3))
-        partDao.insert(partEntityFrom(part4))
+        val partId1 = partDao.insert(partEntityFrom(part1))
+        val partId2 = partDao.insert(partEntityFrom(part2))
+        val partId3 = partDao.insert(partEntityFrom(part3))
+        val partId4 = partDao.insert(partEntityFrom(part4))
 
+        val note1 = Note()
+        note1.carId = id1
+        note1.date = LocalDate.now()
+        note1.description = "some trouble with car"
+        note1.importantLevel = NoteLevel.MIDDLE
+        note1.partId = partId3
+
+        val note2 = Note()
+        note2.carId = id2
+        note2.date = LocalDate.now()
+        note2.description = "some trouble with car"
+        note2.importantLevel = NoteLevel.MIDDLE
+        note2.partId = partId2
+
+        val note3 = Note()
+        note3.carId = id1
+        note3.date = LocalDate.now()
+        note3.description = "some trouble with car"
+        note3.importantLevel = NoteLevel.MIDDLE
+        note3.partId = partId3
+
+        val note4 = Note()
+        note4.carId = id1
+        note4.date = LocalDate.now()
+        note4.description = "some trouble with car"
+        note4.importantLevel = NoteLevel.MIDDLE
+        note4.partId = partId1
+
+        val noteid1 = noteDao.insert(noteEntityFrom(note1))
+        val noteid2 = noteDao.insert(noteEntityFrom(note2))
+        val noteid3 = noteDao.insert(noteEntityFrom(note3))
+        val noteid4 = noteDao.insert(noteEntityFrom(note4))
 
         Log.d(TAG, "TESTING: testing room size cars is: ${carDao.getAll().size}")
         Log.d(TAG, "TESTING: testing room size parts is: ${partDao.getAll().size}")
+        Log.d(TAG, "TESTING: testing room size notes is: ${noteDao.getAll().size}")
         Log.d(
             TAG,
             "TESTING: testing room size parts for ${car2.brand} is: ${partDao.getAllForCarWithMileageLive(

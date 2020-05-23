@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/carPanel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fragment_car_panel_height">
+    <ImageView
+        android:id="@+id/carPanelMainImage"
+        android:layout_width="@dimen/fragment_car_main_image_width"
+        android:layout_height="@dimen/fragment_car_main_image_height"
+        android:layout_margin="@dimen/fragment_car_main_image_margin"
+        android:contentDescription="@string/main_car_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+        <TextView
+            android:id="@+id/carPanelNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_car_main_image_margin"
+            android:layout_marginEnd="@dimen/fragment_car_main_image_margin"
+            android:layout_marginStart="@dimen/fragment_car_main_image_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/carPanelMainImage"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textAlignment="center"
+            tools:text="2345 AA-7"
+            />
+        <TextView
+            android:id="@+id/carPanelVin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fragment_car_main_image_margin"
+            android:layout_marginStart="@dimen/fragment_car_main_image_margin"
+            app:layout_constraintTop_toBottomOf="@id/carPanelNumber"
+            app:layout_constraintLeft_toRightOf="@id/carPanelMainImage"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textAlignment="center"
+            tools:text="12345 FGHR7 89578"
+            />
+        <Button
+            android:id="@+id/carPanelMileage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fragment_car_main_image_margin"
+            app:layout_constraintTop_toBottomOf="@id/carPanelVin"
+            app:layout_constraintLeft_toRightOf="@id/carPanelMainImage"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textAlignment="center"
+            tools:text="!123000 km"
+            />
+        <ImageView
+            android:id="@+id/carPanelIconAttention"
+            android:layout_width="@dimen/fragment_car_attention_icon_size"
+            android:layout_height="@dimen/fragment_car_attention_icon_size"
+            android:layout_marginBottom="@dimen/fragment_car_main_image_margin"
+            android:layout_marginEnd="@dimen/fragment_car_main_image_margin"
+            android:contentDescription="@string/car_item_icon_attention"
+            app:layout_constraintHorizontal_weight="1"
+            android:src="@drawable/icon_shop"
+            android:tint="@color/colorOff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <ImageView
+            android:id="@+id/carPanelIconService"
+            android:layout_width="@dimen/fragment_car_attention_icon_size"
+            android:layout_height="@dimen/fragment_car_attention_icon_size"
+            android:layout_marginBottom="@dimen/fragment_car_main_image_margin"
+            android:layout_marginEnd="@dimen/car_item_icons_margin"
+            android:contentDescription="@string/car_item_icon_attention"
+            app:layout_constraintHorizontal_weight="1"
+            android:src="@drawable/icon_shop"
+            android:tint="@color/colorOff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/carPanelIconAttention" />
+
+        <ImageView
+            android:id="@+id/carPanelIconBuy"
+            android:layout_width="@dimen/fragment_car_attention_icon_size"
+            android:layout_height="@dimen/fragment_car_attention_icon_size"
+            android:layout_marginBottom="@dimen/fragment_car_main_image_margin"
+            android:layout_marginEnd="@dimen/car_item_icons_margin"
+            android:contentDescription="@string/car_item_icon_attention"
+            app:layout_constraintHorizontal_weight="1"
+            android:src="@drawable/icon_shop"
+            android:tint="@color/colorOff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/carPanelIconService" />
+
+        <ImageView
+            android:id="@+id/carPanelIconInfo"
+            android:layout_width="@dimen/fragment_car_attention_icon_size"
+            android:layout_height="@dimen/fragment_car_attention_icon_size"
+            android:layout_marginBottom="@dimen/fragment_car_main_image_margin"
+            android:layout_marginEnd="@dimen/car_item_icons_margin"
+            android:layout_marginStart="@dimen/fragment_car_main_image_margin"
+            android:contentDescription="@string/car_item_icon_attention"
+            app:layout_constraintHorizontal_weight="1"
+            android:src="@drawable/icon_shop"
+            android:tint="@color/colorOff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/carPanelIconBuy" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/carRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/carEmptyList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_cars_please_add"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/but1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="but1"/>
+        <Button
+            android:id="@+id/but2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="but1"/>
+        <Button
+            android:id="@+id/but3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="but1"/>
+        <Button
+            android:id="@+id/but4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="but1"/>
+    </LinearLayout>
+
+</LinearLayout>

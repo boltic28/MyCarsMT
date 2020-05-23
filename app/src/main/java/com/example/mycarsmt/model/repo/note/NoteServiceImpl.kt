@@ -2,64 +2,132 @@ package com.example.mycarsmt.model.repo.note
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import android.os.Handler
+import android.os.HandlerThread
 import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.database.AppDatabase
-import com.example.mycarsmt.model.database.note.NoteWithMileage
-import com.example.mycarsmt.model.repo.note.NoteService
-import com.example.mycarsmt.model.repo.utils.EntityConverter
-import java.util.concurrent.ExecutorService
+import com.example.mycarsmt.model.database.note.NoteDao
+import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.noteEntityFrom
+import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.noteFrom
 import java.util.stream.Collectors
 
 @SuppressLint("NewApi")
-class NoteServiceImpl(val context: Context) : NoteService {
+class NoteServiceImpl(val context: Context, handler: Handler) : NoteService {
 
-    private var db: AppDatabase = AppDatabase.getInstance(context)!!
-    private val executorService: ExecutorService = db.getDatabaseExecutorService()!!
-    private var noteEntityWithMileageLive: LiveData<List<NoteWithMileage>>? = null
-
-    private val noteDao = db.noteDao()
-
-    override fun create(note: Note): Long {
-        executorService.execute {
-            note.id = this.noteDao.insert(EntityConverter.noteEntityFrom(note))
-        }
-        return note.id
+    companion object {
+        const val RESULT_NOTES_READED = 301
+        const val RESULT_NOTE_READED = 302
+        const val RESULT_NOTE_CREATED = 303
+        const val RESULT_NOTE_UPDATED = 304
+        const val RESULT_NOTE_DELETED = 305
+        const val RESULT_NOTE_FOR_CAR = 306
     }
 
-    override fun update(note: Note): Int {
-        var updated = 0
-        executorService.execute {
-            updated = this.noteDao.update(EntityConverter.noteEntityFrom(note))
-        }
-        return updated
+    private val TAG = "testmt"
+
+    private var mainHandler: Handler
+    private var noteDao: NoteDao
+
+    init {
+        val db: AppDatabase = AppDatabase.getInstance(context)!!
+        mainHandler = handler
+        noteDao = db.noteDao()
     }
 
-    override fun delete(note: Note): Int {
-        var deleted = 0
-        executorService.execute {
-            deleted = this.noteDao.delete(EntityConverter.noteEntityFrom(note))
-        }
-        return deleted
-    }
-
-    override fun readById(id: Long): LiveData<Note> {
-        return Transformations.map(noteDao.getByIdWithMileageLive(id)) { entity ->
-            EntityConverter.noteFrom(entity)
-        }
-    }
-
-    override fun readAll(): LiveData<List<Note>> {
-
-        if (noteEntityWithMileageLive == null) {
-            noteEntityWithMileageLive = noteDao.getAllWithMileageLive()
-        }
-
-        return Transformations.map(noteDao.getAllWithMileageLive()) { list ->
-            list.stream()
-                .map { noteEntity -> EntityConverter.noteFrom(noteEntity) }
+    override fun readAll() {
+        var notes: List<Note>
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        handler.post {
+            notes = noteDao.getAll().stream().map { entity -> noteFrom(entity) }
                 .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTES_READED, notes))
+            handlerThread.quit()
+        }
+    }
+
+    override fun readById(id: Long) {
+        var note: Note
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            note = noteFrom(noteDao.getById(id))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_READED, note))
+            handlerThread.quit()
+        }
+    }
+
+    override fun readAllForCar(carId: Long) {
+        var notes: List<Note>
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        handler.post {
+            notes = noteDao.getAllForCar(carId).stream().map { entity -> noteFrom(entity) }
+                .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_FOR_CAR, notes))
+            handlerThread.quit()
+        }
+    }
+
+    override fun readAllForPart(partId: Long) {
+        var notes: List<Note>
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        handler.post {
+            notes = noteDao.getAllForPart(partId).stream().map { entity -> noteFrom(entity) }
+                .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_FOR_CAR, notes))
+            handlerThread.quit()
+        }
+    }
+
+    override fun create(note: Note) {
+        var carId: Long
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            carId = noteDao.insert(noteEntityFrom(note))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_CREATED, carId))
+            handlerThread.quit()
+        }
+    }
+
+    override fun update(note: Note) {
+
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            noteDao.update(noteEntityFrom(note))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_UPDATED))
+            handlerThread.quit()
+        }
+    }
+
+    override fun delete(note: Note) {
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            noteDao.update(noteEntityFrom(note))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_DELETED))
+            handlerThread.quit()
         }
     }
 

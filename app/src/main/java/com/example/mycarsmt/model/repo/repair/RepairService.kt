@@ -6,10 +6,13 @@ import com.example.mycarsmt.model.Repair
 interface RepairService{
 
     fun create(repair: Repair): Long
-    fun update(repair: Repair): Int
-    fun delete(repair: Repair): Int
-    fun readAll(): LiveData<List<Repair>>
-    fun readById(id: Long): LiveData<Repair>
+    fun update(repair: Repair)
+    fun delete(repair: Repair)
+    fun readAll()
+    fun readAllForCar(carId: Long)
+    fun readAllForPart(partId: Long)
+    fun readById(id: Long)
+
 
 //    fun toStringForCarHistory(): String
 }

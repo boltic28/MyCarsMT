@@ -2,6 +2,8 @@ package com.example.mycarsmt.model.repo.part
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.HandlerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.mycarsmt.model.Note
@@ -9,13 +11,14 @@ import com.example.mycarsmt.model.Part
 import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.database.AppDatabase
 import com.example.mycarsmt.model.database.part.PartWithMileage
+import com.example.mycarsmt.model.repo.note.NoteServiceImpl
 import com.example.mycarsmt.model.repo.utils.EntityConverter
 import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.partEntityFrom
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 
 @SuppressLint("NewApi")
-class PartServiceImpl(val context: Context) : PartService {
+class PartServiceImpl(val context: Context, handler: Handler) : PartService {
 
     private var db: AppDatabase = AppDatabase.getInstance(context)!!
     private val executorService: ExecutorService = db.getDatabaseExecutorService()!!
@@ -70,11 +73,21 @@ class PartServiceImpl(val context: Context) : PartService {
         }
     }
 
-    override fun getNotes(part: Part): LiveData<List<Note>> {
-        return Transformations.map(noteDao.getAllForPartLive(part.id)) { list ->
-            list.stream()
-                .map { noteEntity -> EntityConverter.noteFrom(noteEntity) }
+    override fun getNotes(partId: Long) {
+        var notes: List<Note>
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        handler.post {
+            notes = noteDao.getAllForPart(partId).stream().map { entity ->
+                EntityConverter.noteFrom(
+                    entity
+                )
+            }
                 .collect(Collectors.toList())
+
+//            mainHandler.sendMessage(mainHandler.obtainMessage(NoteServiceImpl.RESULT_NOTE_FOR_CAR, notes))
+//            handlerThread.quit()
         }
     }
 

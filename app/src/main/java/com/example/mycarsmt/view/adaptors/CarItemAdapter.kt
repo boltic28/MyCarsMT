@@ -1,7 +1,6 @@
 package com.example.mycarsmt.view.adaptors
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.R
 import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.enums.CarCondition
-import com.example.mycarsmt.model.repo.car.CarServiceImpl
 
 class CarItemAdapter(
-    carsIn: List<Car>, private val listener: OnCarClickListener
+    carsIn: List<Car>, private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<CarItemAdapter.CarHolder>() {
 
     private var cars = carsIn
@@ -47,19 +45,21 @@ class CarItemAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(car: Car) {
             var line = "${car.brand} ${car.model}"
-            if (line.length > 15){line = line.substring(13) + ".."}
+            if (line.length > 15) {
+                line = line.substring(13) + ".."
+            }
             name.text = line
             number.text = car.number
             mileage.text = "${car.mileage} km"
 
             if (car.condition.contains(CarCondition.ATTENTION))
-                attentionIcon.setColorFilter(Color.argb(255,230,5,5))
+                attentionIcon.setColorFilter(Color.argb(255, 230, 5, 5))
             if (car.condition.contains(CarCondition.MAKE_SERVICE))
-                serviceIcon.setColorFilter(Color.argb(255,230,120,5))
+                serviceIcon.setColorFilter(Color.argb(255, 230, 120, 5))
             if (car.condition.contains(CarCondition.BUY_PARTS))
-                buyIcon.setColorFilter(Color.argb(255,180,180,5))
+                buyIcon.setColorFilter(Color.argb(255, 180, 180, 5))
             if (car.condition.contains(CarCondition.MAKE_INSPECTION))
-                infoIcon.setColorFilter(Color.argb(255,10,120,5))
+                infoIcon.setColorFilter(Color.argb(255, 10, 120, 5))
 
 //            val notesCount = service.getCountOfNotes(car)!!
 //            if (notesCount > 0) notes.visibility = View.VISIBLE
@@ -73,7 +73,7 @@ class CarItemAdapter(
         }
     }
 
-    interface OnCarClickListener {
+    interface OnItemClickListener {
         fun onClick(car: Car)
     }
 }

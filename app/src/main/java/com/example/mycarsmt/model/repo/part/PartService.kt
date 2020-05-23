@@ -16,7 +16,7 @@ interface PartService{
     fun readById(partId: Long): LiveData<Part>
     fun readAllForCar(carId: Long): LiveData<List<Part>>
 
-    fun getNotes(part: Part): LiveData<List<Note>>
+    fun getNotes(partId: Long)
     fun getRepairs(part: Part): LiveData<List<Repair>>
 
 //    fun getMileageToRepair(): Int
