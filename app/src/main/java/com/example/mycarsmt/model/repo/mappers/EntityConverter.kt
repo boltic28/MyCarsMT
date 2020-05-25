@@ -1,4 +1,4 @@
-package com.example.mycarsmt.model.repo.utils
+package com.example.mycarsmt.model.repo.mappers
 
 import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.Note
@@ -10,7 +10,7 @@ import com.example.mycarsmt.model.database.note.NoteWithMileage
 import com.example.mycarsmt.model.database.part.PartEntity
 import com.example.mycarsmt.model.database.part.PartWithMileage
 import com.example.mycarsmt.model.database.repair.RepairEntity
-
+// поделить на мапперы разнести в разные классы
 class EntityConverter {
     companion object {
         fun carEntityFrom(car: Car): CarEntity {
@@ -30,21 +30,24 @@ class EntityConverter {
         fun partEntityFrom(part: Part): PartEntity {
             return PartEntity(
                 part.id, part.carId, part.name, part.codes, part.limitKM, part.limitDays,
-                part.dateLastChange, part.mileageLastChange, part.description, part.photo, part.type
+                part.dateLastChange, part.mileageLastChange, part.description, part.photo,
+                part.type, part.condition
             )
         }
 
         fun partFrom(part: PartEntity): Part {
             return Part(
                 part.id, part.carId, part.name, part.codes, part.limitKM, part.limitDays,
-                part.dateLastChange, part.mileageLastChange, part.description, part.photo, part.type
+                part.dateLastChange, part.mileageLastChange, part.description, part.photo,
+                part.type, part.condition
             )
         }
 
         fun partFrom(part: PartWithMileage): Part {
             return Part(
                 part.id, part.carId, part.mileage, part.name, part.codes, part.limitKM, part.limitDays,
-                part.dateLastChange, part.mileageLastChange, part.description, part.photo, part.type
+                part.dateLastChange, part.mileageLastChange, part.description, part.photo,
+                part.type, part.condition
             )
         }
 

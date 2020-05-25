@@ -16,7 +16,7 @@ class RepairItemAdapter(repairsIn: List<Repair>, private val listener: OnItemCli
     private var repairs = repairsIn
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        RepairHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false))
+        RepairHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_repair, parent, false))
 
     override fun getItemCount() = repairs.size
 
@@ -24,14 +24,17 @@ class RepairItemAdapter(repairsIn: List<Repair>, private val listener: OnItemCli
 
         inner class RepairHolder(private val repairRow: View) : RecyclerView.ViewHolder(repairRow) {
 
-            private val description = repairRow.findViewById<TextView>(R.id.noteItemDescription)
-            private val image = repairRow.findViewById<ImageView>(R.id.noteItemImage)
+            private val date = repairRow.findViewById<TextView>(R.id.repairItemDate)
+            private val mileage = repairRow.findViewById<TextView>(R.id.repairItemMileage)
+            private val description = repairRow.findViewById<TextView>(R.id.repairItemDescription)
+            private val type = repairRow.findViewById<TextView>(R.id.repairItemType)
 
             @SuppressLint("SetTextI18n")
             fun bind(repair: Repair) {
-
+                date.text = repair.date.toString()
+                mileage.text = "${repair.mileage} km"
+                type.text = repair.type
                 description.text = repair.description
-                // image
 
                 repairRow.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {

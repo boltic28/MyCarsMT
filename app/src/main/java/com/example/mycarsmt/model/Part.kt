@@ -1,9 +1,11 @@
 package com.example.mycarsmt.model
 
+import com.example.mycarsmt.model.enums.Condition
 import com.example.mycarsmt.model.enums.PartControlType
+import java.io.Serializable
 import java.time.LocalDate
 
-class Part() {
+class Part(): Serializable {
 
     constructor(
         id: Long,
@@ -17,7 +19,8 @@ class Part() {
         mileageLastChange: Int,
         description: String,
         photo: String,
-        type: PartControlType
+        type: PartControlType,
+        condition: List<Condition>
     ) : this() {
         this.id = id
         this.carId = carId
@@ -31,6 +34,7 @@ class Part() {
         this.description = description
         this.photo = photo
         this.type = type
+        this.condition = condition
     }
 
     constructor(
@@ -44,7 +48,8 @@ class Part() {
         mileageLastChange: Int,
         description: String,
         photo: String,
-        type: PartControlType
+        type: PartControlType,
+        condition: List<Condition>
     ) : this() {
         this.id = id
         this.carId = carId
@@ -57,6 +62,7 @@ class Part() {
         this.description = description
         this.photo = photo
         this.type = type
+        this.condition = condition
     }
 
     var id: Long = 0
@@ -72,4 +78,5 @@ class Part() {
     var description: String = "description"
     var photo = ""
     var type: PartControlType = PartControlType.CHANGE
+    var condition: List<Condition> = listOf(Condition.OK)
 }

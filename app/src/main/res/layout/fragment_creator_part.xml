@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/creatorPartName"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/input_name"
+        android:inputType="text|textPersonName"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/creatorPartCodes"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="@string/input_code"
+        android:inputType="textCapCharacters|textPersonName"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorPartName" />
+
+    <EditText
+        android:id="@+id/creatorPartLastChangeMileage"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="@string/input_mileage_of_last_change"
+        android:inputType="number"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorPartLastChangeDay" />
+
+    <EditText
+        android:id="@+id/creatorPartLimitKm"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="limit km"
+        android:inputType="number"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorPartCodes" />
+
+    <EditText
+        android:id="@+id/creatorPartlimitDAY"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="limit days"
+        android:inputType="number"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorPartLimitKm" />
+
+    <EditText
+        android:id="@+id/creatorPartLastChangeDay"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint='last change "dd.mm.yyyy"'
+        android:inputType="date"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorPartlimitDAY" />
+
+    <EditText
+        android:id="@+id/creatorPartDescription"
+        android:layout_width="0dp"
+        android:layout_height="105dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="20"
+        android:hint="@string/input_description_if_you_need_it"
+        android:inputType="text"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorPartLastChangeMileage" />
+
+    <Button
+        android:id="@+id/buttonCreatePart"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonBackToCar"
+        app:layout_constraintStart_toEndOf="@+id/buttonDeletePart" />
+
+    <Button
+        android:id="@+id/buttonDeletePart"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/delete_car"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonCreatePart"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonBackToCar"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonCreatePart" />
+
+    <TextView
+        android:id="@+id/textDateOfLastService"
+        android:layout_width="189dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="10dp"
+        android:text="Last service :"
+        android:textAlignment="viewEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorPartLastChangeDay"
+        app:layout_constraintTop_toBottomOf="@+id/textLimDays" />
+
+    <TextView
+        android:id="@+id/textLastServKm"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="10dp"
+        android:text="Last service:"
+        android:textAlignment="viewEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorPartLastChangeMileage"
+        app:layout_constraintTop_toBottomOf="@+id/textDateOfLastService" />
+
+    <TextView
+        android:id="@+id/partPanelName"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="10dp"
+        android:text="Name:"
+        android:textAlignment="viewEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorPartCodes"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textCodesForPart"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="10dp"
+        android:text="Codes:"
+        android:textAlignment="viewEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorPartCodes"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelName" />
+
+    <TextView
+        android:id="@+id/textLimitKM"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="10dp"
+        android:text="Limit (km):"
+        android:textAlignment="viewEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorPartLastChangeDay"
+        app:layout_constraintTop_toBottomOf="@+id/textCodesForPart" />
+
+    <TextView
+        android:id="@+id/textLimDays"
+        android:layout_width="189dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="10dp"
+        android:text="Limit (day):"
+        android:textAlignment="viewEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorPartlimitDAY"
+        app:layout_constraintTop_toBottomOf="@+id/textLimitKM" />
+
+    <ImageView
+        android:id="@+id/imageOfPartFromCam"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorPartDescription"
+        app:srcCompat="@drawable/ic_launcher_background" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/buttonCreatePhotoForPart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/imageOfPartFromCam"
+        app:layout_constraintEnd_toEndOf="@+id/imageOfPartFromCam"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <CheckBox
+        android:id="@+id/inspectionOnlyBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:text="Inspection only"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDeletePart"
+        app:layout_constraintEnd_toStartOf="@+id/insuranceBox"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/insuranceBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:checked="false"
+        android:text="Insurance"
+        app:layout_constraintBottom_toTopOf="@+id/buttonBackToCar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/inspectionOnlyBox" />
+</androidx.constraintlayout.widget.ConstraintLayout>

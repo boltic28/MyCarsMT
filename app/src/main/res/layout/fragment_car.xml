@@ -6,6 +6,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/carPanelName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fragment_car_name_height"
+        android:layout_marginStart="@dimen/fragment_car_name_padding"
+        style="@style/CarPanel"
+        tools:text="Ford Focus (2018)"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/carPanel"
         android:layout_width="match_parent"
@@ -27,6 +34,7 @@
             android:layout_marginTop="@dimen/fragment_car_main_image_margin"
             android:layout_marginEnd="@dimen/fragment_car_main_image_margin"
             android:layout_marginStart="@dimen/fragment_car_main_image_margin"
+            style="@style/CarPanel"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/carPanelMainImage"
             app:layout_constraintRight_toRightOf="parent"
@@ -39,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/fragment_car_main_image_margin"
             android:layout_marginStart="@dimen/fragment_car_main_image_margin"
+            style="@style/CarPanel.VIN"
             app:layout_constraintTop_toBottomOf="@id/carPanelNumber"
             app:layout_constraintLeft_toRightOf="@id/carPanelMainImage"
             app:layout_constraintRight_toRightOf="parent"
@@ -50,12 +59,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fragment_car_main_image_margin"
+            style="@style/CarPanel.Mileage"
             app:layout_constraintTop_toBottomOf="@id/carPanelVin"
             app:layout_constraintLeft_toRightOf="@id/carPanelMainImage"
             app:layout_constraintRight_toRightOf="parent"
             android:textAlignment="center"
             tools:text="!123000 km"
             />
+
         <ImageView
             android:id="@+id/carPanelIconAttention"
             android:layout_width="@dimen/fragment_car_attention_icon_size"
@@ -109,6 +120,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/carPanelIconBuy" />
 
+        <TextView
+            android:id="@+id/carPanelNoteCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CarPanel.Note"
+            android:layout_marginBottom="@dimen/fragment_car_main_image_margin"
+            android:layout_marginEnd="@dimen/car_item_icons_margin"
+            android:layout_marginStart="@dimen/fragment_car_main_image_margin"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/carPanelIconInfo"
+            app:layout_constraintLeft_toRightOf="@id/carPanelMainImage"
+            tools:text="notes: 1"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -131,25 +156,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="but1"/>
+            android:text="@string/parts"/>
         <Button
             android:id="@+id/but2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="but1"/>
+            android:text="@string/notes"/>
         <Button
             android:id="@+id/but3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="but1"/>
+            android:text="@string/repairs"/>
         <Button
             android:id="@+id/but4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="but1"/>
+            android:text="@string/create_new"/>
     </LinearLayout>
 
 </LinearLayout>

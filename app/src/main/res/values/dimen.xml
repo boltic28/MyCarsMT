@@ -24,11 +24,13 @@
     <dimen name="repair_item_text_margin">16dp</dimen>
 
 
-    <dimen name="fragment_car_main_image_width">160dp</dimen>
-    <dimen name="fragment_car_main_image_height">120dp</dimen>
+    <dimen name="fragment_car_main_image_width">180dp</dimen>
+    <dimen name="fragment_car_main_image_height">135dp</dimen>
     <dimen name="fragment_car_main_image_margin">8dp</dimen>
     <dimen name="fragment_car_attention_icon_size">24dp</dimen>
-    <dimen name="fragment_car_panel_height">136dp</dimen>
+    <dimen name="fragment_car_panel_height">160dp</dimen>
+    <dimen name="fragment_car_name_padding">24dp</dimen>
+    <dimen name="fragment_car_name_height">36dp</dimen>
 
 
 

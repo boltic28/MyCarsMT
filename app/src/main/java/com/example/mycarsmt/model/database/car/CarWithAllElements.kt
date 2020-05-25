@@ -1,16 +1,5 @@
 package com.example.mycarsmt.model.database.car
 
-import androidx.room.ColumnInfo
-import androidx.room.Relation
-import androidx.room.TypeConverters
-import com.example.mycarsmt.model.enums.CarCondition
-import com.example.mycarsmt.model.database.vconvertors.ConditionConverter
-import com.example.mycarsmt.model.database.vconvertors.LocalDateConverter
-import com.example.mycarsmt.model.database.note.NoteEntity
-import com.example.mycarsmt.model.database.part.PartEntity
-import com.example.mycarsmt.model.database.repair.RepairEntity
-import java.time.LocalDate
-
 class CarWithAllElements {
 
 //    var id: Long = 0

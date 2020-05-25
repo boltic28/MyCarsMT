@@ -2,6 +2,7 @@ package com.example.mycarsmt.model.repo.part
 
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
+import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.Part
 import com.example.mycarsmt.model.Repair
@@ -9,15 +10,15 @@ import com.example.mycarsmt.model.database.repair.RepairEntity
 
 interface PartService{
 
-    fun create(part: Part): Long
-    fun update(part: Part): Int
-    fun delete(part: Part): Int
-    fun readAll(): LiveData<List<Part>>
-    fun readById(partId: Long): LiveData<Part>
-    fun readAllForCar(carId: Long): LiveData<List<Part>>
+    fun create(part: Part)
+    fun update(part: Part)
+    fun delete(part: Part)
+    fun readAll()
+    fun readAllForCar(car: Car)
+    fun readById(partId: Long)
 
-    fun getNotes(partId: Long)
-    fun getRepairs(part: Part): LiveData<List<Repair>>
+    fun getNotesFor(part: Part)
+    fun getRepairsFor(part: Part)
 
 //    fun getMileageToRepair(): Int
 //    fun getUsedMileage(): Int

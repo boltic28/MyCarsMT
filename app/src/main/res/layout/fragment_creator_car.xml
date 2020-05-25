@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/brand"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="@string/input_brand"
+        android:inputType="textCapWords"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/plateNumber"
+        app:layout_constraintEnd_toStartOf="@+id/model"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/model"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="@string/input_model"
+        android:inputType="textCapWords"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/year"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/brand" />
+
+    <EditText
+        android:id="@+id/plateNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="@string/input_number"
+        android:inputType="textCapCharacters"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/vincd"
+        app:layout_constraintEnd_toStartOf="@+id/year"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/vincd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="@string/input_vin_code"
+        android:inputType="textCapCharacters"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/mileage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/year"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="@string/input_year_of_made"
+        android:inputType="number"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/vincd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/plateNumber" />
+
+    <EditText
+        android:id="@+id/mileage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="@string/input_mileage"
+        android:inputType="number"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/createCar"
+        app:layout_constraintEnd_toEndOf="@+id/plateNumber"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/createCar"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonBackTo"
+        app:layout_constraintStart_toEndOf="@+id/buttonDeleteCar" />
+
+    <Button
+        android:id="@+id/buttonDeleteCar"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/delete_car"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/createCar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonBackTo"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/createCar" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/buttonCreateImgOfCar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/imageOfCar"
+        app:layout_constraintEnd_toEndOf="@+id/imageOfCar"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <ImageView
+        android:id="@+id/imageOfCar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+</androidx.constraintlayout.widget.ConstraintLayout>

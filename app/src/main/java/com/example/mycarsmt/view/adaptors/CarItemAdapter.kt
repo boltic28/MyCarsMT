@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.R
 import com.example.mycarsmt.model.Car
-import com.example.mycarsmt.model.enums.CarCondition
+import com.example.mycarsmt.model.enums.Condition
 
 class CarItemAdapter(
     carsIn: List<Car>, private val listener: OnItemClickListener
@@ -52,13 +52,13 @@ class CarItemAdapter(
             number.text = car.number
             mileage.text = "${car.mileage} km"
 
-            if (car.condition.contains(CarCondition.ATTENTION))
+            if (car.condition.contains(Condition.ATTENTION))
                 attentionIcon.setColorFilter(Color.argb(255, 230, 5, 5))
-            if (car.condition.contains(CarCondition.MAKE_SERVICE))
+            if (car.condition.contains(Condition.MAKE_SERVICE))
                 serviceIcon.setColorFilter(Color.argb(255, 230, 120, 5))
-            if (car.condition.contains(CarCondition.BUY_PARTS))
+            if (car.condition.contains(Condition.BUY_PARTS))
                 buyIcon.setColorFilter(Color.argb(255, 180, 180, 5))
-            if (car.condition.contains(CarCondition.MAKE_INSPECTION))
+            if (car.condition.contains(Condition.MAKE_INSPECTION))
                 infoIcon.setColorFilter(Color.argb(255, 10, 120, 5))
 
 //            val notesCount = service.getCountOfNotes(car)!!

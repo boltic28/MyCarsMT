@@ -3,7 +3,7 @@ package com.example.mycarsmt
 import androidx.room.Room
 import androidx.test.InstrumentationRegistry.getContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.mycarsmt.model.enums.CarCondition
+import com.example.mycarsmt.model.enums.Condition
 import com.example.mycarsmt.model.database.AppDatabase
 import com.example.mycarsmt.model.database.car.CarEntity
 import com.example.mycarsmt.model.database.car.CarDao
@@ -42,7 +42,7 @@ class CarDAOTest {
         car.number = "5555 AA-7"
         car.vin = "RUIWYTEG34567788"
         car.whenMileageRefreshed = LocalDate.now()
-        car.condition = CarCondition.OK
+        car.condition = Condition.OK
 
         carDao?.insert(car)
         val list = carDao?.getAll()
@@ -62,7 +62,7 @@ class CarDAOTest {
         car.number = "5555 AA-7"
         car.vin = "RUIWYTEG34567788"
         car.whenMileageRefreshed = LocalDate.now()
-        car.condition = CarCondition.OK
+        car.condition = Condition.OK
 
         val id = carDao?.insert(car)
         val car1 = carDao?.getByIdWithAllElements(id!!)

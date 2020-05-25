@@ -1,18 +1,13 @@
 package com.example.mycarsmt.model.database.vconvertors
 
 import androidx.room.TypeConverter
-import com.example.mycarsmt.model.enums.CarCondition
+import com.example.mycarsmt.model.enums.Condition
 import java.lang.StringBuilder
-import java.util.*
-import java.util.function.Function
-import java.util.stream.Collector
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 class ConditionConverter {
 
     @TypeConverter
-    fun fromCondition(condition: List<CarCondition>): String {
+    fun fromCondition(condition: List<Condition>): String {
         val line = StringBuilder()
         condition.forEach {
             line.append("${it.value},")
@@ -22,11 +17,11 @@ class ConditionConverter {
     }
 
     @TypeConverter
-    fun toCondition(condition: String): List<CarCondition>? {
-        val result: MutableList<CarCondition> = mutableListOf()
+    fun toCondition(condition: String): List<Condition>? {
+        val result: MutableList<Condition> = mutableListOf()
 
         condition.split(',').forEach {
-            if (it.isNotEmpty()) result.add(CarCondition.fromString(it)!!)
+            if (it.isNotEmpty()) result.add(Condition.fromString(it)!!)
             }
 
         return result

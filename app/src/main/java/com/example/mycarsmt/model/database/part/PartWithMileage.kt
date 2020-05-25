@@ -2,8 +2,10 @@ package com.example.mycarsmt.model.database.part
 
 import androidx.room.ColumnInfo
 import androidx.room.TypeConverters
+import com.example.mycarsmt.model.database.vconvertors.ConditionConverter
 import com.example.mycarsmt.model.database.vconvertors.LocalDateConverter
 import com.example.mycarsmt.model.database.vconvertors.TypeControlConverter
+import com.example.mycarsmt.model.enums.Condition
 import com.example.mycarsmt.model.enums.PartControlType
 import java.time.LocalDate
 
@@ -21,7 +23,9 @@ class PartWithMileage() {
         mileageLastChange: Int,
         description: String,
         photo: String,
-        type: PartControlType
+        type: PartControlType,
+        condition: List<Condition>
+
     ) : this() {
         this.id = id
         this.carId = carId
@@ -35,6 +39,7 @@ class PartWithMileage() {
         this.description = description
         this.photo = photo
         this.type = type
+        this.condition = condition
     }
     var id: Long = 0
 
@@ -63,4 +68,7 @@ class PartWithMileage() {
 
     @TypeConverters(TypeControlConverter::class)
     var type: PartControlType = PartControlType.CHANGE
+
+    @TypeConverters(ConditionConverter::class)
+    var condition: List<Condition> = listOf(Condition.OK)
 }

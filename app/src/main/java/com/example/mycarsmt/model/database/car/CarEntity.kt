@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.example.mycarsmt.model.enums.CarCondition
+import com.example.mycarsmt.model.enums.Condition
 import com.example.mycarsmt.model.database.vconvertors.ConditionConverter
 import com.example.mycarsmt.model.database.vconvertors.LocalDateConverter
 import java.time.LocalDate
@@ -22,7 +22,7 @@ open class CarEntity() {
         year: Int,
         mileage: Int,
         whenMileageRefreshed: LocalDate,
-        condition: List<CarCondition>
+        condition: List<Condition>
     ) : this() {
         this.id = id
         this.brand = brand
@@ -53,5 +53,5 @@ open class CarEntity() {
     var whenMileageRefreshed: LocalDate = LocalDate.now()
 
     @TypeConverters(ConditionConverter::class)
-    var condition: List<CarCondition> = listOf(CarCondition.OK)
+    var condition: List<Condition> = listOf(Condition.OK)
 }

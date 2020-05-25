@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/creatorRepairType"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="change/repair"
+        android:inputType="text|textPersonName"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/creatorRepairCost"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint='input cost "100"'
+        android:inputType="number"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorRepairType" />
+
+    <EditText
+        android:id="@+id/creatorRepairMileage"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="mileage"
+        android:inputType="number"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorRepairCost" />
+
+    <EditText
+        android:id="@+id/creatorRepairDate"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint='date of repair "dd.mm.yyyy"'
+        android:inputType="date"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="00.00.2000"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorRepairMileage" />
+
+    <TextView
+        android:id="@+id/textType"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:paddingTop="10dp"
+        android:text="Type:"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/blackMC"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textCostOfRepair"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:paddingTop="10dp"
+        android:text="Cost($):"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/blackMC"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textType" />
+
+    <TextView
+        android:id="@+id/textMileageOfRepair"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:paddingTop="10dp"
+        android:text="Mileage(km):"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/blackMC"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCostOfRepair" />
+
+    <TextView
+        android:id="@+id/textDateOfRepair"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:paddingTop="10dp"
+        android:text="Date repair:"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/blackMC"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textMileageOfRepair" />
+
+    <Button
+        android:id="@+id/buttonCreateRepair"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonBackToCar"
+        app:layout_constraintStart_toEndOf="@+id/buttonDeleteRepair" />
+
+    <Button
+        android:id="@+id/buttonDeleteRepair"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/delete_car"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonCreateRepair"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonBackToCar"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonCreateRepair" />
+
+    <EditText
+        android:id="@+id/creatorRepairDescription"
+        android:layout_width="400dp"
+        android:layout_height="144dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:ems="10"
+        android:hint="description of repair..."
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creatorRepairDate" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

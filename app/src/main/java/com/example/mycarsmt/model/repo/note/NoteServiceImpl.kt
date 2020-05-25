@@ -7,8 +7,8 @@ import android.os.HandlerThread
 import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.database.AppDatabase
 import com.example.mycarsmt.model.database.note.NoteDao
-import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.noteEntityFrom
-import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.noteFrom
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.noteEntityFrom
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.noteFrom
 import java.util.stream.Collectors
 
 @SuppressLint("NewApi")

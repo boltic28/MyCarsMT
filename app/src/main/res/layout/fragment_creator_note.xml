@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/creatorNoteDescription"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="16dp"
+        android:ems="20"
+        android:hint="@string/input_description_if_you_need_it"
+        android:textAlignment="viewStart"
+        android:inputType="text"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/midImpt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonCreateNote"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonCancel"
+        app:layout_constraintStart_toEndOf="@+id/buttonDeleteNote" />
+
+    <Button
+        android:id="@+id/buttonDeleteNote"
+        android:layout_width="117dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/partPanelButtonCancel"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonCreateNote" />
+
+    <RadioButton
+        android:id="@+id/lowImp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="40dp"
+        android:checked="true"
+        android:text="low"
+        android:textColor="@color/colorDarkGray"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDeleteNote"
+        app:layout_constraintEnd_toStartOf="@+id/midImpt"
+        app:layout_constraintStart_toEndOf="@+id/infoImpt" />
+
+    <RadioButton
+        android:id="@+id/midImpt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="40dp"
+        android:checked="false"
+        android:text="middle"
+        android:textColor="@color/colorDarkGray"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCreateNote"
+        app:layout_constraintEnd_toStartOf="@+id/highImpt"
+        app:layout_constraintStart_toEndOf="@+id/lowImp" />
+
+    <RadioButton
+        android:id="@+id/highImpt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="40dp"
+        android:text="high"
+        android:textColor="@color/colorDarkGray"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/partPanelButtonCancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/midImpt" />
+
+    <RadioButton
+        android:id="@+id/infoImpt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="40dp"
+        android:text="info"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDeleteNote"
+        app:layout_constraintEnd_toStartOf="@+id/lowImp"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,98 +4,159 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.Part
 import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.database.AppDatabase
-import com.example.mycarsmt.model.database.part.PartWithMileage
-import com.example.mycarsmt.model.repo.note.NoteServiceImpl
-import com.example.mycarsmt.model.repo.utils.EntityConverter
-import com.example.mycarsmt.model.repo.utils.EntityConverter.Companion.partEntityFrom
-import java.util.concurrent.ExecutorService
+import com.example.mycarsmt.model.database.note.NoteDao
+import com.example.mycarsmt.model.database.part.PartDao
+import com.example.mycarsmt.model.database.repair.RepairDao
+import com.example.mycarsmt.model.repo.mappers.EntityConverter
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.partEntityFrom
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.partFrom
 import java.util.stream.Collectors
 
 @SuppressLint("NewApi")
 class PartServiceImpl(val context: Context, handler: Handler) : PartService {
 
-    private var db: AppDatabase = AppDatabase.getInstance(context)!!
-    private val executorService: ExecutorService = db.getDatabaseExecutorService()!!
-    private var partEntityWithMilleageLive: LiveData<List<PartWithMileage>>? = null
+    companion object {
+        const val RESULT_PARTS_READED = 201
+        const val RESULT_PART_READED = 202
+        const val RESULT_PART_CREATED = 203
+        const val RESULT_PART_UPDATED = 204
+        const val RESULT_PART_DELETED = 205
+        const val RESULT_PARTS_FOR_CAR = 211
+        const val RESULT_NOTES_FOR_PART = 212
+        const val RESULT_REPAIRS_FOR_PART = 213
 
-    private val partDao = db.partDao()
-    private val noteDao = db.noteDao()
-    private val repairDao = db.repairDao()
-
-    override fun create(part: Part): Long {
-        executorService.execute { part.id = partDao.insert(partEntityFrom(part)) }
-        return part.id
     }
 
-    override fun update(part: Part): Int {
-        var updated = 0
-        executorService.execute { updated = partDao.update(partEntityFrom(part)) }
-        return updated
+    private val TAG = "testmt"
+
+    private var mainHandler: Handler
+    private var partDao: PartDao
+    private var noteDao: NoteDao
+    private var repairDao: RepairDao
+
+    init {
+        val db: AppDatabase = AppDatabase.getInstance(context)!!
+        mainHandler = handler
+        partDao = db.partDao()
+        noteDao = db.noteDao()
+        repairDao = db.repairDao()
     }
 
-    override fun delete(part: Part): Int {
-        var deleted = 0
-        executorService.execute { deleted = partDao.delete(partEntityFrom(part)) }
-        return deleted
-    }
+    override fun create(part: Part) {
+        var partId: Long
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            partId = partDao.insert(partEntityFrom(part))
 
-    override fun readAll(): LiveData<List<Part>> {
-        if (partEntityWithMilleageLive == null) {
-            partEntityWithMilleageLive = partDao.getAllWithMileageLive()
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_CREATED, partId))
+            handlerThread.quit()
         }
+    }
 
-        return Transformations.map(partDao.getAllWithMileageLive()) { list ->
-            list.stream()
-                .map { partEntity -> EntityConverter.partFrom(partEntity) }
+    override fun update(part: Part) {
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            partDao.update(partEntityFrom(part))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_UPDATED))
+            handlerThread.quit()
+        }
+    }
+
+    override fun delete(part: Part) {
+        val handlerThread = HandlerThread("createThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            partDao.update(partEntityFrom(part))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_DELETED))
+            handlerThread.quit()
+        }
+    }
+
+    override fun readAll() {
+        var parts: List<Part>
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        handler.post {
+            parts = partDao.getAll().stream().map { entity -> partFrom(entity) }
                 .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_READED, parts))
+            handlerThread.quit()
         }
     }
 
-    override fun readAllForCar(carId: Long): LiveData<List<Part>> {
-        return Transformations.map(partDao.getAllForCarWithMileageLive(carId)) { list ->
-            list.stream()
-                .map { partEntity -> EntityConverter.partFrom(partEntity) }
+    override fun readAllForCar(car: Car) {
+        var parts: List<Part>
+        val handlerThread = HandlerThread("readPartForCarThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            parts = partDao.getAllForCar(car.id).stream().map { entity -> partFrom(entity) }
                 .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_FOR_CAR, parts))
+            handlerThread.quit()
         }
     }
 
-    override fun readById(id: Long): LiveData<Part> {
-        return Transformations.map(partDao.getByIdWithMileageLive(id)) { entity ->
-            EntityConverter.partFrom(
-                entity
-            )
+    override fun readById(id: Long) {
+        var part: Part
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            part = partFrom(partDao.getById(id))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_READED, part))
+            handlerThread.quit()
         }
     }
 
-    override fun getNotes(partId: Long) {
+    override fun getNotesFor(part: Part) {
         var notes: List<Note>
         val handlerThread = HandlerThread("readThread")
         handlerThread.start()
         val handler = Handler(handlerThread.looper)
         handler.post {
-            notes = noteDao.getAllForPart(partId).stream().map { entity ->
-                EntityConverter.noteFrom(
-                    entity
-                )
-            }
+            notes = noteDao.getAllForPart(part.id).stream().map { entity ->
+                EntityConverter.noteFrom(entity) }
                 .collect(Collectors.toList())
 
-//            mainHandler.sendMessage(mainHandler.obtainMessage(NoteServiceImpl.RESULT_NOTE_FOR_CAR, notes))
-//            handlerThread.quit()
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTES_FOR_PART, notes))
+            handlerThread.quit()
         }
     }
 
-    override fun getRepairs(part: Part): LiveData<List<Repair>> {
-        return Transformations.map(repairDao.getAllForPartLive(part.id)) { list ->
-            list.stream()
-                .map { repairEntity -> EntityConverter.repairFrom(repairEntity) }
+    override fun getRepairsFor(part: Part) {
+        var repairs: List<Repair>
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        handler.post {
+            repairs = repairDao.getAllForPart(part.id).stream().map { entity ->
+                EntityConverter.repairFrom(entity) }
                 .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIRS_FOR_PART, repairs))
+            handlerThread.quit()
         }
     }
 

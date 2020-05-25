@@ -1,11 +1,13 @@
 package com.example.mycarsmt.view.fragments
 
+import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.R
 import com.example.mycarsmt.model.Car
@@ -14,14 +16,23 @@ import com.example.mycarsmt.model.repo.car.CarServiceImpl
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CARS_READED
 import com.example.mycarsmt.model.repo.note.NoteServiceImpl
 import com.example.mycarsmt.model.repo.note.NoteServiceImpl.Companion.RESULT_NOTES_READED
+import com.example.mycarsmt.view.activities.MainActivity
 import com.example.mycarsmt.view.adaptors.CarItemAdapter
 import com.example.mycarsmt.view.adaptors.NoteItemAdapter
 import kotlinx.android.synthetic.main.fragment_main_list.*
-import kotlin.collections.emptyList
+
 
 class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private val TAG = "testmt"
+
+    companion object {
+        val FRAG_TAG = "main_Fragment"
+
+        fun getInstance(): MainListFragment {
+            return MainListFragment(R.layout.fragment_main_list)
+        }
+    }
 
     private lateinit var carAdapter: CarItemAdapter
     private lateinit var noteAdapter: NoteItemAdapter
@@ -53,14 +64,14 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
 
         carsSwitcher.setOnClickListener {
-            if (isCars) {
+            isCars = if (isCars) {
                 noteService.readAll()
                 carsSwitcher.setImageResource(R.drawable.icon_car)
-                isCars = false
+                false
             } else {
                 carService.readAll()
                 carsSwitcher.setImageResource(R.drawable.ic_notes)
-                isCars = true
+                true
             }
         }
     }
@@ -121,7 +132,21 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         carAdapter = CarItemAdapter(cars, object :
             CarItemAdapter.OnItemClickListener {
             override fun onClick(car: Car) {
-                // load car fragment
+                val mainActivity: Activity? = activity
+                if (mainActivity is MainActivity) {
+                    val fragmentManager: FragmentManager =
+                        mainActivity.getMainFragmentManager()
+
+                    fragmentManager.beginTransaction()
+                        .hide(this@MainListFragment)
+                        .add(
+                            R.id.fragmentContainer,
+                            CarFragment.getInstance(car),
+                            CarFragment.FRAG_TAG
+                        )
+                        .addToBackStack(CarFragment.FRAG_TAG)
+                        .commit()
+                }
             }
         })
         firstRecycler.adapter = carAdapter
@@ -140,10 +165,15 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     private fun populateBase(service: CarServiceImpl) {
         val handlerThread = HandlerThread("readThread");
         handlerThread.start();
-        val looper = handlerThread.getLooper();
+        val looper = handlerThread.looper;
         val handler = Handler(looper);
         handler.post {
             service.testing()
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
     }
 }

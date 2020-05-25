@@ -11,4 +11,6 @@
     <color name="colorBuy">#B3B006</color>
     <color name="colorInfo">#046C04</color>
     <color name="colorOff">#D5D0D0</color>
+
+    <color name="blackMC">#1C1C1C</color>
 </resources>

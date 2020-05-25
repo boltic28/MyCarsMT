@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/partPanelMainImage"
+        android:layout_width="180dp"
+        android:layout_height="135dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/part_item_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/partPanelPartActButtonSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/partPanelMainImage"
+        app:layout_constraintEnd_toEndOf="@+id/partPanelMainImage"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <TextView
+        android:id="@+id/partPanelTextInstelledInfo"
+        android:layout_width="0dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="6dp"
+        android:text="@string/part_installed_at"
+        android:textColor="@color/blackMC"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelMainImage" />
+
+    <TextView
+        android:id="@+id/partPanelName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="3dp"
+        android:text="@string/name_part"
+        android:textAlignment="center"
+        android:textColor="@color/blackMC"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/partPanelTextToChange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/partPanelMainImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/partPanelTextToChange"
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:text="@string/part_to_change"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/partPanelMainImage"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelName" />
+
+    <TextView
+        android:id="@+id/partPanelTextInstallAtKM"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        tools:text="12 500km"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextInstelledInfo" />
+
+    <TextView
+        android:id="@+id/partPanelTextInstallAtDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        tools:text="13.05.2018"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextInstallAtKM" />
+
+    <TextView
+        android:id="@+id/partPanelTextCodesAndCross"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="6dp"
+        android:text="@string/part_codes_and_crossing_codes"
+        android:textColor="@color/blackMC"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextInstallAtDate" />
+
+    <TextView
+        android:id="@+id/partPanelTextListOfCodes"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:ems="10"
+        android:text="@string/codes_for_part"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextCodesAndCross" />
+
+    <TextView
+        android:id="@+id/partPanelTextDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:text="@string/part_description"
+        android:textColor="@color/blackMC"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextListOfCodes" />
+
+    <TextView
+        android:id="@+id/partPanelTextDescriptionBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:ems="10"
+        android:text="@string/part_hint_decription_of_part"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextDescription" />
+
+    <TextView
+        android:id="@+id/partPanelTextToChangeDKM"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="16dp"
+        tools:text="12500 km/156 days"
+        android:textAlignment="center"
+        android:textColor="@color/blackMC"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/partPanelTextInstelledInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/partPanelMainImage"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextToChange" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/partPanelRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelMainImage"
+        app:layout_constraintBottom_toTopOf="@id/partPanelButtonNotes" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/partPanelRecyclerAddButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/partPanelRecycler"
+        app:layout_constraintEnd_toEndOf="@+id/partPanelRecycler"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <Button
+        android:id="@+id/partPanelButtonSet"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonCancel"
+        app:layout_constraintStart_toEndOf="@+id/partPanelButtonButtonRepairs" />
+
+    <Button
+        android:id="@+id/partPanelButtonCancel"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/partPanelButtonSet" />
+
+    <Button
+        android:id="@+id/partPanelButtonNotes"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/but_notes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonButtonRepairs"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/partPanelButtonButtonRepairs"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/repairs"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonSet"
+        app:layout_constraintStart_toEndOf="@+id/partPanelButtonNotes" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,10 @@
 package com.example.mycarsmt.model
 
-import com.example.mycarsmt.model.enums.CarCondition
+import com.example.mycarsmt.model.enums.Condition
+import java.io.Serializable
 import java.time.LocalDate
 
-class Car() {
+class Car(): Serializable {
 
     constructor(
         id: Long,
@@ -15,7 +16,7 @@ class Car() {
         year: Int,
         mileage: Int,
         whenMileageRefreshed: LocalDate,
-        condition: List<CarCondition>
+        condition: List<Condition>
     ) : this() {
         this.id = id
         this.brand = brand
@@ -38,7 +39,7 @@ class Car() {
     var year: Int = 1980
     var mileage: Int = 0
     var whenMileageRefreshed: LocalDate = LocalDate.now()
-    var condition: List<CarCondition> = listOf(CarCondition.OK)
+    var condition: List<Condition> = listOf(Condition.OK)
 
     var photo: String = ""
 

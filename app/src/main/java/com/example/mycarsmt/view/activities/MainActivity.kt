@@ -26,8 +26,10 @@ class MainActivity : AppCompatActivity() {
 
         fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
-            .add(R.id.fragmentContainer, MainListFragment(R.layout.fragment_main_list), "carsFragment")
-            .addToBackStack("carsFragment")
+            .add(R.id.fragmentContainer, MainListFragment.getInstance(), MainListFragment.FRAG_TAG)
             .commit()
     }
+
+
+
 }

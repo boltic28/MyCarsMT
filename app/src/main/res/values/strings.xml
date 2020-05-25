@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyCarsMT</string>
+    <string name="app_name">MyCars</string>
     <string name="car_item_car_image">car item car image</string>
     <string name="car_item_icon_attention">car item icon attention</string>
     <string name="part_item_icon">part item icon</string>
@@ -7,4 +7,32 @@
     <string name="part_item_image">part photo</string>
     <string name="no_cars_please_add">you have no one car.</string>
     <string name="main_car_image">main car Image</string>
+    <string name="parts">parts</string>
+    <string name="notes">notes</string>
+    <string name="repairs">repairs</string>
+    <string name="create_new">new</string>
+    <string name="input_brand">input brand</string>
+    <string name="input_model">input model</string>
+    <string name="input_number">1234 FF-6</string>
+    <string name="input_vin_code">input VIN code</string>
+    <string name="input_year_of_made">input year</string>
+    <string name="input_mileage">input mileage</string>
+    <string name="create">create</string>
+    <string name="delete_car">remove</string>
+    <string name="cancel">cancel</string>
+    <string name="input_description_if_you_need_it">description</string>
+    <string name="done">done</string>
+    <string name="input_name">input name</string>
+    <string name="input_code">input codes</string>
+    <string name="input_mileage_of_last_change">last chnge mileage</string>
+    <string name="settings">set</string>
+    <string name="name_part">name part</string>
+    <string name="but_service">SERVICE</string>
+    <string name="part_to_change">To change:</string>
+    <string name="part_installed_at">Installed at:</string>
+    <string name="part_codes_and_crossing_codes">Codes and Crossing codes:</string>
+    <string name="codes_for_part">codes for part</string>
+    <string name="part_description">Description:</string>
+    <string name="part_hint_decription_of_part">decription of part</string>
+    <string name="but_notes">notes</string>
 </resources>

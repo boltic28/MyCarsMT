@@ -16,9 +16,9 @@ interface CarService {
     fun readAll()
     fun readById(id: Long)
 
-//    fun getParts(car: Car): List<Part>
-//    fun getNotes(car: Car): List<Note>
-//    fun getRepairs(car: Car): List<Repair>
+    fun getPartsFor(car: Car)
+    fun getNotesFor(car: Car)
+    fun getRepairsFor(car: Car)
 
 //    fun getPartsListForBuying(car: Car): List<String>
 //    fun getTasksListForService(car: Car): List<String>
