@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/creatorRepairType"
+        android:id="@+id/repairCreatorType"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/creatorRepairCost"
+        android:id="@+id/repairCreatorCost"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -34,10 +34,10 @@
         android:paddingRight="8dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorRepairType" />
+        app:layout_constraintTop_toBottomOf="@+id/repairCreatorType" />
 
     <EditText
-        android:id="@+id/creatorRepairMileage"
+        android:id="@+id/repairCreatorMileage"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -49,10 +49,10 @@
         android:paddingRight="8dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorRepairCost" />
+        app:layout_constraintTop_toBottomOf="@+id/repairCreatorCost" />
 
     <EditText
-        android:id="@+id/creatorRepairDate"
+        android:id="@+id/repairCreatorDate"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -65,10 +65,10 @@
         android:text="00.00.2000"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorRepairMileage" />
+        app:layout_constraintTop_toBottomOf="@+id/repairCreatorMileage" />
 
     <TextView
-        android:id="@+id/textType"
+        android:id="@+id/repairCreatorTextType"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="6dp"
@@ -79,12 +79,12 @@
         android:textAlignment="viewEnd"
         android:textColor="@color/blackMC"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintEnd_toStartOf="@+id/repairCreatorType"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textCostOfRepair"
+        android:id="@+id/repairCreatorTextCostOfRepair"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="6dp"
@@ -95,13 +95,13 @@
         android:textAlignment="viewEnd"
         android:textColor="@color/blackMC"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintEnd_toStartOf="@+id/repairCreatorType"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textType" />
+        app:layout_constraintTop_toBottomOf="@+id/repairCreatorTextType" />
 
     <TextView
-        android:id="@+id/textMileageOfRepair"
+        android:id="@+id/repairCreatorTextMileageOfRepair"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="6dp"
@@ -112,13 +112,13 @@
         android:textAlignment="viewEnd"
         android:textColor="@color/blackMC"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintEnd_toStartOf="@+id/repairCreatorType"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textCostOfRepair" />
+        app:layout_constraintTop_toBottomOf="@+id/repairCreatorTextCostOfRepair" />
 
     <TextView
-        android:id="@+id/textDateOfRepair"
+        android:id="@+id/repairCreatorTextDateOfRepair"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="6dp"
@@ -129,35 +129,35 @@
         android:textAlignment="viewEnd"
         android:textColor="@color/blackMC"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorRepairType"
+        app:layout_constraintEnd_toStartOf="@+id/repairCreatorType"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textMileageOfRepair" />
+        app:layout_constraintTop_toBottomOf="@+id/repairCreatorTextMileageOfRepair" />
 
     <Button
-        android:id="@+id/buttonCreateRepair"
+        android:id="@+id/repairCreatorButtonCreate"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="6dp"
         android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonBackToCar"
-        app:layout_constraintStart_toEndOf="@+id/buttonDeleteRepair" />
+        app:layout_constraintEnd_toStartOf="@+id/repairCreatorButtonCancel"
+        app:layout_constraintStart_toEndOf="@+id/repairCreatorButtonDelete" />
 
     <Button
-        android:id="@+id/buttonDeleteRepair"
+        android:id="@+id/repairCreatorButtonDelete"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="6dp"
         android:text="@string/delete_car"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonCreateRepair"
+        app:layout_constraintEnd_toStartOf="@+id/repairCreatorButtonCreate"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonBackToCar"
+        android:id="@+id/repairCreatorButtonCancel"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
@@ -166,10 +166,10 @@
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buttonCreateRepair" />
+        app:layout_constraintStart_toEndOf="@+id/repairCreatorButtonCreate" />
 
     <EditText
-        android:id="@+id/creatorRepairDescription"
+        android:id="@+id/repairCreatorDescription"
         android:layout_width="400dp"
         android:layout_height="144dp"
         android:layout_marginStart="6dp"
@@ -180,6 +180,6 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorRepairDate" />
+        app:layout_constraintTop_toBottomOf="@+id/repairCreatorDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

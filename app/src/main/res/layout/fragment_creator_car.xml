@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/brand"
+        android:id="@+id/carCreatorBrand"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
@@ -17,12 +17,12 @@
         android:inputType="textCapWords"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/plateNumber"
-        app:layout_constraintEnd_toStartOf="@+id/model"
+        app:layout_constraintBottom_toTopOf="@+id/carCreatorPlateNumber"
+        app:layout_constraintEnd_toStartOf="@+id/carCreatorModel"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/model"
+        android:id="@+id/carCreatorModel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -32,12 +32,12 @@
         android:inputType="textCapWords"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/year"
+        app:layout_constraintBottom_toTopOf="@+id/carCreatorYear"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/brand" />
+        app:layout_constraintStart_toEndOf="@+id/carCreatorBrand" />
 
     <EditText
-        android:id="@+id/plateNumber"
+        android:id="@+id/carCreatorPlateNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -47,12 +47,12 @@
         android:inputType="textCapCharacters"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/vincd"
-        app:layout_constraintEnd_toStartOf="@+id/year"
+        app:layout_constraintBottom_toTopOf="@+id/carCreatorVincd"
+        app:layout_constraintEnd_toStartOf="@+id/carCreatorYear"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/vincd"
+        android:id="@+id/carCreatorVincd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -63,13 +63,13 @@
         android:inputType="textCapCharacters"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/mileage"
+        app:layout_constraintBottom_toTopOf="@+id/carCreatorMileage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/year"
+        android:id="@+id/carCreatorYear"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -80,12 +80,12 @@
         android:inputType="number"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/vincd"
+        app:layout_constraintBottom_toTopOf="@+id/carCreatorVincd"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/plateNumber" />
+        app:layout_constraintStart_toEndOf="@+id/carCreatorPlateNumber" />
 
     <EditText
-        android:id="@+id/mileage"
+        android:id="@+id/carCreatorMileage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -95,12 +95,12 @@
         android:inputType="number"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/createCar"
-        app:layout_constraintEnd_toEndOf="@+id/plateNumber"
+        app:layout_constraintBottom_toTopOf="@+id/carCreatorButtonCreate"
+        app:layout_constraintEnd_toEndOf="@+id/carCreatorPlateNumber"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/createCar"
+        android:id="@+id/carCreatorButtonCreate"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="3dp"
@@ -108,11 +108,11 @@
         android:layout_marginBottom="6dp"
         android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonBackTo"
-        app:layout_constraintStart_toEndOf="@+id/buttonDeleteCar" />
+        app:layout_constraintEnd_toStartOf="@+id/carCreatorButtonCancel"
+        app:layout_constraintStart_toEndOf="@+id/carCreatorButtonDelete" />
 
     <Button
-        android:id="@+id/buttonDeleteCar"
+        android:id="@+id/carCreatorButtonDelete"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
@@ -120,11 +120,11 @@
         android:layout_marginBottom="6dp"
         android:text="@string/delete_car"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/createCar"
+        app:layout_constraintEnd_toStartOf="@+id/carCreatorButtonCreate"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonBackTo"
+        android:id="@+id/carCreatorButtonCancel"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="3dp"
@@ -133,21 +133,21 @@
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/createCar" />
+        app:layout_constraintStart_toEndOf="@+id/carCreatorButtonCreate" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/buttonCreateImgOfCar"
+        android:id="@+id/carCreatorFABMakePhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="@+id/imageOfCar"
-        app:layout_constraintEnd_toEndOf="@+id/imageOfCar"
+        app:layout_constraintBottom_toBottomOf="@+id/carCreatorImageOfCar"
+        app:layout_constraintEnd_toEndOf="@+id/carCreatorImageOfCar"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <ImageView
-        android:id="@+id/imageOfCar"
+        android:id="@+id/carCreatorImageOfCar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

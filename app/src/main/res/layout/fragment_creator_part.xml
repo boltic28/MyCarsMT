@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/creatorPartName"
+        android:id="@+id/partCreatorName"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/creatorPartCodes"
+        android:id="@+id/partCreatorCodes"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -33,10 +33,10 @@
         android:paddingRight="8dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorPartName" />
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorName" />
 
     <EditText
-        android:id="@+id/creatorPartLastChangeMileage"
+        android:id="@+id/partCreatorLastChangeMileage"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -48,10 +48,10 @@
         android:paddingRight="8dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorPartLastChangeDay" />
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorLastChangeDay" />
 
     <EditText
-        android:id="@+id/creatorPartLimitKm"
+        android:id="@+id/partCreatorLimitKm"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -63,10 +63,10 @@
         android:paddingRight="8dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorPartCodes" />
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorCodes" />
 
     <EditText
-        android:id="@+id/creatorPartlimitDAY"
+        android:id="@+id/partCreatorLimitDAY"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -78,10 +78,10 @@
         android:paddingRight="8dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorPartLimitKm" />
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorLimitKm" />
 
     <EditText
-        android:id="@+id/creatorPartLastChangeDay"
+        android:id="@+id/partCreatorLastChangeDay"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -93,10 +93,10 @@
         android:paddingRight="8dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorPartlimitDAY" />
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorLimitDAY" />
 
     <EditText
-        android:id="@+id/creatorPartDescription"
+        android:id="@+id/partCreatorDescription"
         android:layout_width="0dp"
         android:layout_height="105dp"
         android:layout_marginStart="8dp"
@@ -110,32 +110,32 @@
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorPartLastChangeMileage" />
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorLastChangeMileage" />
 
     <Button
-        android:id="@+id/buttonCreatePart"
+        android:id="@+id/partCreatorButtonCreate"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="6dp"
         android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonBackToCar"
-        app:layout_constraintStart_toEndOf="@+id/buttonDeletePart" />
+        app:layout_constraintEnd_toStartOf="@+id/repairCreatorButtonCancel"
+        app:layout_constraintStart_toEndOf="@+id/partCreatorButtonDelete" />
 
     <Button
-        android:id="@+id/buttonDeletePart"
+        android:id="@+id/partCreatorButtonDelete"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="6dp"
         android:text="@string/delete_car"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonCreatePart"
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorButtonCreate"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonBackToCar"
+        android:id="@+id/repairCreatorButtonCancel"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="6dp"
@@ -143,10 +143,10 @@
         android:layout_marginBottom="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buttonCreatePart" />
+        app:layout_constraintStart_toEndOf="@+id/partCreatorButtonCreate" />
 
     <TextView
-        android:id="@+id/textDateOfLastService"
+        android:id="@+id/partCreatorTextDateOfLastService"
         android:layout_width="189dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -155,11 +155,11 @@
         android:text="Last service :"
         android:textAlignment="viewEnd"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorPartLastChangeDay"
-        app:layout_constraintTop_toBottomOf="@+id/textLimDays" />
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorLastChangeDay"
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorTextLimDays" />
 
     <TextView
-        android:id="@+id/textLastServKm"
+        android:id="@+id/partCreatorTextLastServKm"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -168,11 +168,11 @@
         android:text="Last service:"
         android:textAlignment="viewEnd"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorPartLastChangeMileage"
-        app:layout_constraintTop_toBottomOf="@+id/textDateOfLastService" />
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorLastChangeMileage"
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorTextDateOfLastService" />
 
     <TextView
-        android:id="@+id/partPanelName"
+        android:id="@+id/partCreatorTextName"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -181,11 +181,11 @@
         android:text="Name:"
         android:textAlignment="viewEnd"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorPartCodes"
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorCodes"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textCodesForPart"
+        android:id="@+id/partCreatorTextCodesForPart"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -194,11 +194,11 @@
         android:text="Codes:"
         android:textAlignment="viewEnd"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorPartCodes"
-        app:layout_constraintTop_toBottomOf="@+id/partPanelName" />
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorCodes"
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorTextName" />
 
     <TextView
-        android:id="@+id/textLimitKM"
+        android:id="@+id/partCreatorTextLimitKM"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -207,11 +207,11 @@
         android:text="Limit (km):"
         android:textAlignment="viewEnd"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorPartLastChangeDay"
-        app:layout_constraintTop_toBottomOf="@+id/textCodesForPart" />
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorLastChangeDay"
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorTextCodesForPart" />
 
     <TextView
-        android:id="@+id/textLimDays"
+        android:id="@+id/partCreatorTextLimDays"
         android:layout_width="189dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -220,45 +220,45 @@
         android:text="Limit (day):"
         android:textAlignment="viewEnd"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/creatorPartlimitDAY"
-        app:layout_constraintTop_toBottomOf="@+id/textLimitKM" />
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorLimitDAY"
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorTextLimitKM" />
 
     <ImageView
-        android:id="@+id/imageOfPartFromCam"
+        android:id="@+id/partCreatorImageOfPartFromCam"
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/creatorPartDescription"
+        app:layout_constraintTop_toBottomOf="@+id/partCreatorDescription"
         app:srcCompat="@drawable/ic_launcher_background" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/buttonCreatePhotoForPart"
+        android:id="@+id/partCreatorFABCreatePhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="@+id/imageOfPartFromCam"
-        app:layout_constraintEnd_toEndOf="@+id/imageOfPartFromCam"
+        app:layout_constraintBottom_toBottomOf="@+id/partCreatorImageOfPartFromCam"
+        app:layout_constraintEnd_toEndOf="@+id/partCreatorImageOfPartFromCam"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <CheckBox
-        android:id="@+id/inspectionOnlyBox"
+        android:id="@+id/partCreatorInspectionOnlyBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:text="Inspection only"
-        app:layout_constraintBottom_toTopOf="@+id/buttonDeletePart"
-        app:layout_constraintEnd_toStartOf="@+id/insuranceBox"
+        app:layout_constraintBottom_toTopOf="@+id/partCreatorButtonDelete"
+        app:layout_constraintEnd_toStartOf="@+id/partCreatorInsuranceBox"
         app:layout_constraintStart_toStartOf="parent" />
 
     <CheckBox
-        android:id="@+id/insuranceBox"
+        android:id="@+id/partCreatorInsuranceBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -266,7 +266,7 @@
         android:layout_marginBottom="8dp"
         android:checked="false"
         android:text="Insurance"
-        app:layout_constraintBottom_toTopOf="@+id/buttonBackToCar"
+        app:layout_constraintBottom_toTopOf="@+id/repairCreatorButtonCancel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/inspectionOnlyBox" />
+        app:layout_constraintStart_toEndOf="@+id/partCreatorInspectionOnlyBox" />
 </androidx.constraintlayout.widget.ConstraintLayout>

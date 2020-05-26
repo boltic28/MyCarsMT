@@ -1,9 +1,10 @@
 package com.example.mycarsmt.model
 
 import com.example.mycarsmt.model.enums.NoteLevel
+import java.io.Serializable
 import java.time.LocalDate
 
-class Note() {
+class Note(): Serializable {
 
     constructor(
         id: Long,

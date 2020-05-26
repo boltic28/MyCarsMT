@@ -55,7 +55,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         partService.getNotesFor(part)
         partService.getRepairsFor(part)
 
-        partPanelName.text = part.name
+        partCreatorTextName.text = part.name
         partPanelTextToChangeDKM.text = ""
         partPanelTextInstallAtKM.text = "${part.mileageLastChange} km"
         partPanelTextInstallAtDate.text = "${part.dateLastChange}"
@@ -79,7 +79,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         partPanelButtonSet.setOnClickListener {
             // to part ceator
         }
-        partPanelButtonCancel.setOnClickListener {
+        noteCreatorButtonCancel.setOnClickListener {
             // to car frag
         }
         partPanelRecyclerAddButton.setOnClickListener {

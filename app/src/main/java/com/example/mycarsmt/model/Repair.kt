@@ -1,8 +1,9 @@
 package com.example.mycarsmt.model
 
+import java.io.Serializable
 import java.time.LocalDate
 
-class Repair() {
+class Repair(): Serializable {
 
     constructor(
         id: Long,
