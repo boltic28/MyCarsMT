@@ -5,6 +5,7 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorDarkGray">#646565</color>
     <color name="colorLightGray">#A9ACAC</color>
+    <color name="colorBGPanel">#CAD7FD</color>
 
     <color name="colorAttention">#F80202</color>
     <color name="colorService">#F67705</color>
@@ -13,4 +14,6 @@
     <color name="colorOff">#D5D0D0</color>
 
     <color name="blackMC">#1C1C1C</color>
+    <color name="redDelete">#BA0C0C</color>
+
 </resources>

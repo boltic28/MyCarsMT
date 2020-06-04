@@ -3,41 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/note_item_row_high"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:padding="4dp"
     android:textAppearance="?android:attr/textAppearanceListItem">
 
-    <ImageView
-        android:id="@+id/noteItemImage"
-        android:layout_width="@dimen/note_item_image_size"
-        android:layout_height="@dimen/note_item_image_size"
-        android:contentDescription="@string/note_item_image"
-        android:src="@drawable/icon_car"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/diagnosticItemCar"
-        style="@style/PartItemText.Secondary"
+        style="@style/DiagnosticItemText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/note_item_text_margin"
         app:layout_constraintBottom_toTopOf="@id/diagnosticItemData"
-        app:layout_constraintLeft_toRightOf="@id/noteItemImage"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="description something" />
+        tools:text="Ford Kuga (234 fg 89" />
 
     <TextView
         android:id="@+id/diagnosticItemData"
-        style="@style/PartItemText.Secondary"
+        style="@style/DiagnosticItemText.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/note_item_text_margin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/noteItemImage"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/diagnosticItemCar"
-        tools:text="20/05/2020" />
+        tools:text=" -> to buy smth \n -> visit shop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

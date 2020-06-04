@@ -13,7 +13,8 @@
         android:layout_width="@dimen/part_item_img_width"
         android:layout_height="@dimen/part_item_img_high"
         android:contentDescription="@string/part_item_image"
-        android:src="@drawable/icon_car"
+        android:scaleType="centerCrop"
+        android:src="@drawable/nophoto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

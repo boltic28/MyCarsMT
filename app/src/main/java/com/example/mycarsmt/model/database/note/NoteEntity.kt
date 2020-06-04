@@ -10,8 +10,6 @@ import java.time.LocalDate
 
 @Entity(tableName = "note", foreignKeys = [
     ForeignKey(entity = CarEntity::class, parentColumns = ["id"], childColumns = ["car_id"],
-        onDelete = ForeignKey.CASCADE),
-    ForeignKey(entity = PartEntity::class, parentColumns = ["id"], childColumns = ["part_id"],
         onDelete = ForeignKey.CASCADE)
 ])
 class NoteEntity() {

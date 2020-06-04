@@ -1,4 +1,4 @@
-package com.example.mycarsmt.view.adaptors
+package com.example.mycarsmt.view.adapters
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -8,9 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.enums.Condition
+import com.squareup.picasso.Picasso
+import java.io.File
 
 class CarItemAdapter(
     carsIn: List<Car>, private val listener: OnItemClickListener
@@ -24,11 +28,6 @@ class CarItemAdapter(
     override fun getItemCount() = cars.size
 
     override fun onBindViewHolder(holder: CarHolder, position: Int) = holder.bind(cars[position])
-
-    fun setCars(list: List<Car>) {
-        cars = list
-        notifyDataSetChanged()
-    }
 
     inner class CarHolder(private val carRow: View) : RecyclerView.ViewHolder(carRow) {
 
@@ -46,7 +45,7 @@ class CarItemAdapter(
         fun bind(car: Car) {
             var line = "${car.brand} ${car.model}"
             if (line.length > 15) {
-                line = line.substring(13) + ".."
+                line = line.substring(0,13) + ".."
             }
             name.text = line
             number.text = car.number
@@ -61,9 +60,12 @@ class CarItemAdapter(
             if (car.condition.contains(Condition.MAKE_INSPECTION))
                 infoIcon.setColorFilter(Color.argb(255, 10, 120, 5))
 
-//            val notesCount = service.getCountOfNotes(car)!!
-//            if (notesCount > 0) notes.visibility = View.VISIBLE
-//            notes.text = service.getCountOfNotes(car).toString()
+            if (car.photo == SpecialWords.NO_PHOTO.value || car.photo.isEmpty()) {
+                Picasso.get().load(R.drawable.nophoto).into(photo)
+            } else {
+                Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
+                    .into(photo)
+            }
 
             carRow.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {

@@ -18,7 +18,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/partPanelPartActButtonSet"
+        android:id="@+id/partPanelFABSet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -188,26 +188,27 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        app:maxImageSize="44dp"
         android:clickable="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/partPanelRecycler"
         app:layout_constraintEnd_toEndOf="@+id/partPanelRecycler"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        app:srcCompat="@drawable/ic_add" />
 
     <Button
-        android:id="@+id/partPanelButtonSet"
+        android:id="@+id/partPanelButtonService"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="3dp"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="6dp"
-        android:text="@string/settings"
+        android:text="@string/service"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/noteCreatorButtonCancel"
+        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonCancel"
         app:layout_constraintStart_toEndOf="@+id/partPanelButtonButtonRepairs" />
 
     <Button
-        android:id="@+id/noteCreatorButtonCancel"
+        android:id="@+id/partPanelButtonCancel"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="3dp"
@@ -216,7 +217,7 @@
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/partPanelButtonSet" />
+        app:layout_constraintStart_toEndOf="@+id/partPanelButtonService" />
 
     <Button
         android:id="@+id/partPanelButtonNotes"
@@ -239,7 +240,7 @@
         android:layout_marginBottom="6dp"
         android:text="@string/repairs"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonSet"
+        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonService"
         app:layout_constraintStart_toEndOf="@+id/partPanelButtonNotes" />
 
 

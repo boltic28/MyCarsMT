@@ -15,11 +15,11 @@
         android:layout_marginBottom="16dp"
         android:ems="20"
         android:hint="@string/input_description_if_you_need_it"
-        android:textAlignment="viewStart"
         android:inputType="text"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/noteCreatorMidImpt"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toTopOf="@+id/noteCreatorRadioGroup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -43,11 +43,11 @@
         android:layout_marginBottom="6dp"
         android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/noteCreatorButtonCancel"
+        app:layout_constraintEnd_toStartOf="@+id/partPanelButtonCancel"
         app:layout_constraintStart_toEndOf="@+id/noteCreatorButtonDone" />
 
     <Button
-        android:id="@+id/noteCreatorButtonCancel"
+        android:id="@+id/partPanelButtonCancel"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="3dp"
@@ -58,60 +58,72 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/noteCreatorButtonCreate" />
 
-    <RadioButton
-        android:id="@+id/noteCreatorLowImp"
-        android:layout_width="0dp"
+    <RadioGroup
+        android:id="@+id/noteCreatorRadioGroup"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="40dp"
-        android:checked="true"
-        android:text="low"
-        android:textColor="@color/colorDarkGray"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/noteCreatorButtonDone"
-        app:layout_constraintEnd_toStartOf="@+id/noteCreatorMidImpt"
-        app:layout_constraintStart_toEndOf="@+id/noteCreatorInfoImpt" />
-
-    <RadioButton
-        android:id="@+id/noteCreatorMidImpt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="40dp"
-        android:checked="false"
-        android:text="middle"
-        android:textColor="@color/colorDarkGray"
-        android:textSize="18sp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/noteCreatorButtonCreate"
-        app:layout_constraintEnd_toStartOf="@+id/noteCreatorHighImpt"
-        app:layout_constraintStart_toEndOf="@+id/noteCreatorLowImp" />
+        >
 
-    <RadioButton
-        android:id="@+id/noteCreatorHighImpt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="40dp"
-        android:text="high"
-        android:textColor="@color/colorDarkGray"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/noteCreatorButtonCancel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/noteCreatorMidImpt" />
+        <RadioButton
+            android:id="@+id/noteCreatorInfoImpt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="40dp"
+            android:text="info"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/noteCreatorLowImp"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <RadioButton
-        android:id="@+id/noteCreatorInfoImpt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="40dp"
-        android:text="info"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/noteCreatorButtonDone"
-        app:layout_constraintEnd_toStartOf="@+id/noteCreatorLowImp"
-        app:layout_constraintStart_toStartOf="parent" />
+        <RadioButton
+            android:id="@+id/noteCreatorLowImp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="40dp"
+            android:checked="true"
+            android:text="low"
+            android:textColor="@color/colorDarkGray"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/noteCreatorMidImpt"
+            app:layout_constraintStart_toEndOf="@+id/noteCreatorInfoImpt" />
+
+        <RadioButton
+            android:id="@+id/noteCreatorMidImpt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="40dp"
+            android:checked="false"
+            android:text="middle"
+            android:textColor="@color/colorDarkGray"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/noteCreatorHighImpt"
+            app:layout_constraintStart_toEndOf="@+id/noteCreatorLowImp" />
+
+        <RadioButton
+            android:id="@+id/noteCreatorHighImpt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="40dp"
+            android:text="high"
+            android:textColor="@color/colorDarkGray"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/noteCreatorMidImpt" />
+    </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

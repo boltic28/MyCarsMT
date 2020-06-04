@@ -36,4 +36,9 @@
     <string name="part_description">Description:</string>
     <string name="part_hint_decription_of_part">decription of part</string>
     <string name="but_notes">notes</string>
+    <string name="delete">delete</string>
+    <string name="removing_obj">removing object</string>
+    <string name="back">back</string>
+    <string name="service">service</string>
+    <string name="no_elements">you have no one element, please add</string>
 </resources>

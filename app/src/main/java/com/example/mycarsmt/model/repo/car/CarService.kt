@@ -20,8 +20,8 @@ interface CarService {
     fun getNotesFor(car: Car)
     fun getRepairsFor(car: Car)
 
-//    fun getPartsListForBuying(car: Car): List<String>
-//    fun getTasksListForService(car: Car): List<String>
+    fun getToBuyList()
+    fun getToDoList()
 //    fun getMileageAsLine(car: Car): String
 //    fun getDataForMileageList(car: Car): List<String>
 //    fun getCountOfNotes(car: Car)

@@ -47,4 +47,14 @@ class Note(): Serializable {
     var description: String = "some note"
     var date: LocalDate = LocalDate.now()
     var importantLevel: NoteLevel = NoteLevel.INFO
+
+    fun done(): Repair{
+        val repair = Repair()
+        repair.type = "fixing"
+        repair.mileage = mileage
+        repair.carId = carId
+        repair.partId = partId
+        repair.description = "${description} has been fixed"
+        return repair
+    }
 }

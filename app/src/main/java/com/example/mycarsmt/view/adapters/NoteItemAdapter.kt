@@ -1,4 +1,4 @@
-package com.example.mycarsmt.view.adaptors
+package com.example.mycarsmt.view.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -23,14 +23,9 @@ class NoteItemAdapter(
 
     override fun onBindViewHolder(holder: NoteHolder, position: Int) = holder.bind(notes[position])
 
-    fun setNotes(list: List<Note>) {
-        notes = list
-        notifyDataSetChanged()
-    }
-
     inner class NoteHolder(private val noteRow: View) : RecyclerView.ViewHolder(noteRow) {
 
-        private val description = noteRow.findViewById<TextView>(R.id.noteItemDescription)
+        private val description = noteRow.findViewById<TextView>(R.id.diagnosticItemCar)
         private val image = noteRow.findViewById<ImageView>(R.id.noteItemImage)
 
         @SuppressLint("SetTextI18n")

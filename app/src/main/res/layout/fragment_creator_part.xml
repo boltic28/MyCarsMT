@@ -88,7 +88,7 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint='last change "dd.mm.yyyy"'
-        android:inputType="date"
+        android:inputType="text"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:textSize="17sp"
@@ -111,6 +111,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/partCreatorLastChangeMileage" />
+
+    <ProgressBar
+        android:id="@+id/partCreatorProgress"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@+id/partCreatorDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
         android:id="@+id/partCreatorButtonCreate"
@@ -141,6 +150,7 @@
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="6dp"
+        android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/partCreatorButtonCreate" />
@@ -224,10 +234,11 @@
         app:layout_constraintTop_toBottomOf="@+id/partCreatorTextLimitKM" />
 
     <ImageView
-        android:id="@+id/partCreatorImageOfPartFromCam"
+        android:id="@+id/partCreatorImageOfPart"
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -241,8 +252,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="@+id/partCreatorImageOfPartFromCam"
-        app:layout_constraintEnd_toEndOf="@+id/partCreatorImageOfPartFromCam"
+        app:layout_constraintBottom_toBottomOf="@+id/partCreatorImageOfPart"
+        app:layout_constraintEnd_toEndOf="@+id/partCreatorImageOfPart"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <CheckBox

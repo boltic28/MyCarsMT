@@ -20,6 +20,9 @@ interface PartService{
     fun getNotesFor(part: Part)
     fun getRepairsFor(part: Part)
 
+    fun getCarFor(part: Part)
+    fun addRepair(repair: Repair)
+
 //    fun getMileageToRepair(): Int
 //    fun getUsedMileage(): Int
 //    fun getDaysToRepair(): Int

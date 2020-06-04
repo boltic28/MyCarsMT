@@ -21,7 +21,7 @@ interface NoteDao {
     @Query("SELECT * FROM note WHERE car_id = :carId")
     fun getAllForCar(carId: Long): List<NoteEntity>
 
-    @Query("SELECT * FROM note WHERE car_id = :partId")
+    @Query("SELECT * FROM note WHERE part_id = :partId")
     fun getAllForPart(partId: Long): List<NoteEntity>
 
     @Query("SELECT * FROM note WHERE id = :id")

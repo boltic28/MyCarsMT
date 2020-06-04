@@ -18,7 +18,7 @@ import java.util.concurrent.Executors
 
 
 @Database(entities = [CarEntity::class, PartEntity::class, NoteEntity::class, RepairEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase() {
@@ -32,7 +32,9 @@ abstract class AppDatabase: RoomDatabase() {
         fun getInstance(context: Context): AppDatabase? {
             if (INSTANCE == null){
                 synchronized(AppDatabase::class){
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "car_app_db").build()
+                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "car_app_db")
+                        .fallbackToDestructiveMigration()
+                        .build()
                 }
             }
             return INSTANCE

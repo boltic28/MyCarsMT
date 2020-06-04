@@ -5,10 +5,17 @@ import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import com.example.mycarsmt.model.Note
+import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.database.AppDatabase
+import com.example.mycarsmt.model.database.car.CarDao
 import com.example.mycarsmt.model.database.note.NoteDao
+import com.example.mycarsmt.model.database.part.PartDao
+import com.example.mycarsmt.model.database.repair.RepairDao
+import com.example.mycarsmt.model.repo.mappers.EntityConverter
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.carFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.noteEntityFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.noteFrom
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.partFrom
 import java.util.stream.Collectors
 
 @SuppressLint("NewApi")
@@ -21,17 +28,25 @@ class NoteServiceImpl(val context: Context, handler: Handler) : NoteService {
         const val RESULT_NOTE_UPDATED = 304
         const val RESULT_NOTE_DELETED = 305
         const val RESULT_NOTE_FOR_CAR = 306
+        const val RESULT_NOTE_CAR = 307
+        const val RESULT_NOTE_PART = 308
     }
 
     private val TAG = "testmt"
 
     private var mainHandler: Handler
     private var noteDao: NoteDao
+    private var carDao: CarDao
+    private var partDao: PartDao
+    private var repairDao: RepairDao
 
     init {
         val db: AppDatabase = AppDatabase.getInstance(context)!!
         mainHandler = handler
         noteDao = db.noteDao()
+        carDao = db.carDao()
+        partDao = db.partDao()
+        repairDao = db.repairDao()
     }
 
     override fun readAll() {
@@ -91,15 +106,14 @@ class NoteServiceImpl(val context: Context, handler: Handler) : NoteService {
     }
 
     override fun create(note: Note) {
-        var carId: Long
         val handlerThread = HandlerThread("createThread")
         handlerThread.start()
         val looper = handlerThread.looper
         val handler = Handler(looper)
         handler.post {
-            carId = noteDao.insert(noteEntityFrom(note))
+            note.id = noteDao.insert(noteEntityFrom(note))
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_CREATED, carId))
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_CREATED, note))
             handlerThread.quit()
         }
     }
@@ -113,7 +127,7 @@ class NoteServiceImpl(val context: Context, handler: Handler) : NoteService {
         handler.post {
             noteDao.update(noteEntityFrom(note))
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_UPDATED))
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_UPDATED, note))
             handlerThread.quit()
         }
     }
@@ -124,39 +138,48 @@ class NoteServiceImpl(val context: Context, handler: Handler) : NoteService {
         val looper = handlerThread.looper
         val handler = Handler(looper)
         handler.post {
-            noteDao.update(noteEntityFrom(note))
+            noteDao.delete(noteEntityFrom(note))
 
             mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_DELETED))
             handlerThread.quit()
         }
     }
 
-    //    override fun create() {
-//        noteDao?.insert(noteEntity)
-//    }
-//
-//    override fun update() {
-//        noteDao?.update(noteEntity)
-//    }
-//
-//    override fun delete() {
-//        noteDao?.delete(noteEntity)
-//    }
-//
-//    override fun checkImportantLevel(imageView: ImageView) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//    override fun isHighImportant() = noteEntity.importantLevel == NoteLevel.HIGH
-//
-//    override fun done() {
-//        val repair = Repair()
-//        repair.type = "fixing"
-//        repair.mileage = note.mileage
-//        repair.carId = note.carId
-//        repair.partId = note.partId
-//        repair.description = "${note.description} has been fixed"
-//
-//        RepairServiceImpl(context, repair).create()
-//    }
+    override fun getCarFor(note: Note) {
+        val handlerThread = HandlerThread("getCarThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            val car = carFrom(carDao.getById(note.carId))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_CAR, car))
+            handlerThread.quit()
+        }
+    }
+
+    override fun getPartFor(note: Note) {
+        val handlerThread = HandlerThread("getPartThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            val part = partFrom(partDao.getById(note.partId))
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTE_PART, part))
+            handlerThread.quit()
+        }
+    }
+
+    override fun addRepair(repair: Repair) {
+        val handlerThread = HandlerThread("addRepair")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            repairDao.insert(EntityConverter.repairEntityFrom(repair))
+
+            handlerThread.quit()
+        }
+    }
 }

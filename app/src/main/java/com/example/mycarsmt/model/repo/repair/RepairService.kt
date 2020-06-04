@@ -11,4 +11,7 @@ interface RepairService{
     fun readById(id: Long)
     fun readAllForCar(carId: Long)
     fun readAllForPart(partId: Long)
+
+    fun getCarFor(repair: Repair)
+    fun getPartFor(repair: Repair)
 }
