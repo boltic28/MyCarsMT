@@ -11,14 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords
-import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.Part
 import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.enums.ContentType
 import com.example.mycarsmt.model.repo.part.PartServiceImpl
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_NOTES_FOR_PART
-import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_PART_CAR
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_PART_UPDATED
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_REPAIRS_FOR_PART
 import com.example.mycarsmt.view.activities.MainActivity
@@ -55,12 +53,17 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     private var repairs: List<Repair> = emptyList()
     private var contentType = ContentType.DEFAULT
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initFragmentManager()
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initHandler()
-        initFragmentManager()
+
         partService = PartServiceImpl(view.context, handler)
 
         part = arguments?.getSerializable("part") as Part
@@ -92,7 +95,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
         partPanelButtonCancel.setOnClickListener {
             if (contentType == ContentType.DEFAULT){
-                partService.getCarFor(part)
+                manager.loadPreviousFragment(this)
             }else{
                 hideRecycler()
             }
@@ -162,11 +165,11 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     if (contentType == ContentType.REPAIRS) setAdapter()
                     true
                 }
-                RESULT_PART_CAR -> {
-                    val car = msg.obj as Car
-                    manager.loadCarFragment(car)
-                    true
-                }
+//                RESULT_PART_CAR -> {
+//                    val car = msg.obj as Car
+//                    manager.loadCarFragment(car)
+//                    true
+//                }
                 else -> {
                     false
                 }
@@ -186,6 +189,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
             }
             ContentType.NOTES -> {
                 if (partPanelRecycler.visibility == View.GONE) showRecycler()
+                checkOnEmpty(notes)
                 partPanelRecycler.adapter = NoteItemAdapter(notes, object :
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
@@ -195,6 +199,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
             }
             ContentType.REPAIRS -> {
                 if (partPanelRecycler.visibility == View.GONE) showRecycler()
+                checkOnEmpty(repairs)
                 partPanelRecycler.adapter = RepairItemAdapter(repairs, object :
                     RepairItemAdapter.OnItemClickListener {
                     override fun onClick(repair: Repair) {
@@ -217,11 +222,16 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
+    private fun checkOnEmpty(list: List<*>){
+        if (list.isEmpty()) partPanelNoElements.visibility = View.VISIBLE
+        else partPanelNoElements.visibility = View.GONE
+    }
+
     private fun hideRecycler() {
         partPanelRecycler.visibility = View.GONE
         partPanelRecyclerAddButton.visibility = View.GONE
 
-        partPanelTextInstelledInfo.visibility = View.VISIBLE
+        partPanelTextInstalledInfo.visibility = View.VISIBLE
         partPanelTextInstallAtDate.visibility = View.VISIBLE
         partPanelTextInstallAtKM.visibility = View.VISIBLE
         partPanelTextDescription.visibility = View.VISIBLE
@@ -229,11 +239,12 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         partPanelTextListOfCodes.visibility = View.VISIBLE
         partPanelTextCodesAndCross.visibility = View.VISIBLE
 
+        partPanelNoElements.visibility = View.GONE
         contentType = ContentType.DEFAULT
     }
 
     private fun showRecycler() {
-        partPanelTextInstelledInfo.visibility = View.GONE
+        partPanelTextInstalledInfo.visibility = View.GONE
         partPanelTextInstallAtDate.visibility = View.GONE
         partPanelTextInstallAtKM.visibility = View.GONE
         partPanelTextDescription.visibility = View.GONE

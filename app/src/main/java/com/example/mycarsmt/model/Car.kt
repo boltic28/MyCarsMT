@@ -36,10 +36,10 @@ class Car(): Serializable {
 
     var id: Long = 0
 
-    var brand: String = ""
-    var model: String = ""
-    var number: String = ""
-    var vin: String = ""
+    var brand: String = "brand"
+    var model: String = "model"
+    var number: String = "0000 AA-7"
+    var vin: String = "VIN CODE"
     var year: Int = 1980
     var mileage: Int = 0
     var whenMileageRefreshed: LocalDate = LocalDate.now()
@@ -109,7 +109,6 @@ class Car(): Serializable {
     fun getListToBuy(): List<String>{
         val list: MutableList<String> = mutableListOf()
 
-        list.add(getFullName())
         parts.forEach {
             val line = it.getLineForBuyList()
             if (line.isNotEmpty()) list.add(line)
@@ -120,7 +119,6 @@ class Car(): Serializable {
     fun getListToDo(): List<String>{
         val list: MutableList<String> = mutableListOf()
 
-        list.add(getFullName())
         parts.forEach {
             val line = it.getLineForService()
             if (line.isNotEmpty()) list.add(line)

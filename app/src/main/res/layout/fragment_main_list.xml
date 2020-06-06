@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/no_cars_please_add"/>
+        android:text="@string/no_elements"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/carsAddCar"
@@ -58,6 +58,5 @@
         android:background="@color/colorLightGray"
         app:maxImageSize="44dp"
         app:srcCompat="@drawable/ic_add" />
-
 
 </FrameLayout>

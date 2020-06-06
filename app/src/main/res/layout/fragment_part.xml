@@ -29,7 +29,20 @@
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <TextView
-        android:id="@+id/partPanelTextInstelledInfo"
+        android:id="@+id/partPanelNoElements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blackMC"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partPanelMainImage"
+        app:layout_constraintBottom_toTopOf="@+id/partPanelButtonNotes"
+        android:text="@string/no_elements"/>
+
+
+    <TextView
+        android:id="@+id/partPanelTextInstalledInfo"
         android:layout_width="0dp"
         android:layout_height="37dp"
         android:layout_marginStart="6dp"
@@ -85,7 +98,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/partPanelTextInstelledInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/partPanelTextInstalledInfo" />
 
     <TextView
         android:id="@+id/partPanelTextInstallAtDate"
@@ -169,7 +182,7 @@
         android:textColor="@color/blackMC"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/partPanelTextInstelledInfo"
+        app:layout_constraintBottom_toTopOf="@+id/partPanelTextInstalledInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/partPanelMainImage"
         app:layout_constraintTop_toBottomOf="@+id/partPanelTextToChange" />

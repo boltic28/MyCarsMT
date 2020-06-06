@@ -71,8 +71,7 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         if (isExist) {
             setCreatorData()
-        }
-        else{
+        } else {
             partCreatorLastChangeDay.setText(dateFormatter.format(LocalDate.now()))
             partCreatorLastChangeMileage.setText(part.mileage.toString())
         }
@@ -81,50 +80,49 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         partCreatorButtonCreate.setOnClickListener {
             if (partCreatorName.text.isNotEmpty() &&
-                checkDataFormat(partCreatorLastChangeDay.text.toString())) {
+                checkDataFormat(partCreatorLastChangeDay.text.toString())
+            ) {
 
-                    part.name = partCreatorName.text.toString()
-                    part.photo = photo
+                part.name = partCreatorName.text.toString()
+                part.photo = photo
 
-                    if (partCreatorCodes.text.isNotEmpty()) part.codes =
-                        partCreatorCodes.text.toString()
-                    if (partCreatorLimitKm.text.isNotEmpty()) part.limitKM =
-                        Integer.valueOf(partCreatorLimitKm.text.toString())
-                    if (partCreatorLimitDAY.text.isNotEmpty()) part.limitDays =
-                        Integer.valueOf(partCreatorLimitDAY.text.toString())
-                    if (partCreatorLastChangeMileage.text.isNotEmpty()) part.mileageLastChange =
-                        Integer.valueOf(partCreatorLastChangeMileage.text.toString())
-                    if (partCreatorLastChangeDay.text.isNotEmpty()) part.dateLastChange =
-                        LocalDate.parse(partCreatorLastChangeDay.text.toString(), dateFormatter)
-                    if (partCreatorDescription.text.isNotEmpty()) part.description =
-                        partCreatorDescription.text.toString()
+                if (partCreatorCodes.text.isNotEmpty()) part.codes =
+                    partCreatorCodes.text.toString()
+                if (partCreatorLimitKm.text.isNotEmpty()) part.limitKM =
+                    Integer.valueOf(partCreatorLimitKm.text.toString())
+                if (partCreatorLimitDAY.text.isNotEmpty()) part.limitDays =
+                    Integer.valueOf(partCreatorLimitDAY.text.toString())
+                if (partCreatorLastChangeMileage.text.isNotEmpty()) part.mileageLastChange =
+                    Integer.valueOf(partCreatorLastChangeMileage.text.toString())
+                if (partCreatorLastChangeDay.text.isNotEmpty()) part.dateLastChange =
+                    LocalDate.parse(partCreatorLastChangeDay.text.toString(), dateFormatter)
+                if (partCreatorDescription.text.isNotEmpty()) part.description =
+                    partCreatorDescription.text.toString()
 
-                    if (partCreatorInsuranceBox.isChecked) {
-                        part.codes = SpecialWords.INSURANCE.value
-                        part.limitDays = 365
-                        part.limitKM = 0
-                    }
-
-                    if (partCreatorInspectionOnlyBox.isChecked) part.codes = SpecialWords.INSP.value
-
-                    if (isExist) {
-                        partService.update(part)
-                        showProgressBar()
-                    } else {
-                        partService.create(part)
-                        showProgressBar()
-                    }
+                if (partCreatorInsuranceBox.isChecked) {
+                    part.codes = SpecialWords.INSURANCE.value
+                    part.limitDays = 365
+                    part.limitKM = 0
                 }
+
+                if (partCreatorInspectionOnlyBox.isChecked) part.codes = SpecialWords.INSP.value
+
+                if (isExist) {
+                    partService.update(part)
+                    showProgressBar()
+                } else {
+                    partService.create(part)
+                    showProgressBar()
+                }
+            } else {
+                //show snack input name or correct data 14.05.2020
+            }
         }
         partCreatorButtonDelete.setOnClickListener {
             manager.loadDeleter(part)
         }
         repairCreatorButtonCancel.setOnClickListener {
-            if( part.id == 0L ){
-                manager.hideFragment(this)
-            }else {
-                manager.loadPartFragment(part)
-            }
+            manager.loadPreviousFragment()
         }
         partCreatorFABCreatePhoto.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -139,7 +137,7 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
             when (msg.what) {
                 RESULT_PART_CREATED -> {
                     val part = msg.obj as Part
-                    manager.loadPartFragment(part)
+                    manager.loadPartFragmentWithoutBackStack(part)
                     Log.d(
                         TAG,
                         "Handler: ${part.name} was created"
@@ -149,7 +147,7 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
                 }
                 RESULT_PART_UPDATED -> {
                     val part = msg.obj as Part
-                    manager.loadPartFragment(part)
+                    manager.loadPartFragmentWithoutBackStack(part)
                     Log.d(
                         TAG,
                         "Handler: ${part.name} was updated"
@@ -164,7 +162,7 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         })
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         partCreatorProgress.visibility = View.VISIBLE
     }
 
@@ -182,11 +180,11 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         photo = part.photo
     }
 
-    private fun checkDataFormat(string: String): Boolean{
+    private fun checkDataFormat(string: String): Boolean {
         return try {
             LocalDate.parse(string, DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH))
             true
-        }catch (e: Exception){
+        } catch (e: Exception) {
 //            Toast.makeText(this@MainActivity,"date format must be dd.MM.yyyy - 01.06.2019"
 //                , Toast.LENGTH_LONG).show()   snack!!!
             false

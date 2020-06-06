@@ -26,7 +26,7 @@ class PartDeleteDialog: DialogFragment() {
     private val TAG = "testmt"
 
     companion object {
-        val FRAG_TAG = "partDeleter"
+        val FRAG_TAG = "deleter"
 
         fun getInstance(part: Part): PartDeleteDialog {
 
@@ -53,12 +53,15 @@ class PartDeleteDialog: DialogFragment() {
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
             "Do you want to delete ${part.name}"
+
         view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
             dismiss()
         }
+
         view.findViewById<Button>(R.id.deleteFragmentButtonDelete).setOnClickListener {
             partService.delete(part)
         }
+
         return view
     }
 
@@ -66,10 +69,9 @@ class PartDeleteDialog: DialogFragment() {
         return Handler(looper, Handler.Callback { msg ->
             Log.d(TAG, "Handler: took data from database: result " + msg.what)
             if (msg.what == RESULT_PART_CAR ){
-                val car = msg.obj as Car
                 val mainActivity: Activity? = activity
                 if (mainActivity is MainActivity) {
-                    mainActivity.loadCarFragment(car)
+                    mainActivity.loadPreviousFragmentWithStack(CarFragment.FRAG_TAG)
                 }
                 dismiss()
                 true

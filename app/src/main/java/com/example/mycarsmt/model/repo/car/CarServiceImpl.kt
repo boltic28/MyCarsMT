@@ -181,7 +181,12 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
                     car.parts = partDao.getAllForCar(car.id).stream()
                         .map { entity -> partFrom(entity) }
                         .collect(Collectors.toList())
-                    buyList.add(DiagnosticElement(car, car.getListToBuy()))
+
+                    val element = DiagnosticElement(car, car.getListToBuy())
+
+                    if (element.list.isNotEmpty()) {
+                        buyList.add(DiagnosticElement(car, car.getListToBuy()))
+                    }
                 }
 
             mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_BUY_LIST, buyList))
@@ -203,7 +208,12 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
                     car.parts = partDao.getAllForCar(car.id).stream()
                         .map { entity -> partFrom(entity) }
                         .collect(Collectors.toList())
-                    toDoList.add(DiagnosticElement(car, car.getListToDo()))
+
+                    val element = DiagnosticElement(car, car.getListToBuy())
+
+                    if (element.list.isNotEmpty()) {
+                        toDoList.add(DiagnosticElement(car, car.getListToDo()))
+                    }
                 }
 
             mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_TO_DO_LIST, toDoList))

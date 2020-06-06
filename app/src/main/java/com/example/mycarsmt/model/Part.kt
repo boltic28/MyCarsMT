@@ -42,7 +42,7 @@ class Part(): Serializable {
         this.description = description
         this.photo = photo
         this.type = type
-        this.condition = checkCondition()
+        this.condition = condition
     }
 
     constructor(
@@ -70,7 +70,7 @@ class Part(): Serializable {
         this.description = description
         this.photo = photo
         this.type = type
-        this.condition = checkCondition()
+        this.condition = condition
     }
 
     var id: Long = 0
@@ -122,7 +122,7 @@ class Part(): Serializable {
 
     fun getLineForBuyList(): String {
         return if(isNeedToBuy()){
-            "   -> ${name}: ${codes}"
+            " $name: $codes"
         }else{
             ""
         }
@@ -131,17 +131,17 @@ class Part(): Serializable {
     fun getLineForService(): String {
         if(type == PartControlType.INSPECTION){
             if (isOverRide())
-                return "    -> Make inspection for $name"
+                return " Make inspection for $name"
         }else{
             if (isOverRide())
-                return "    -> !!!ATTENTION!!! $name  OVERUSED ${checkDayOrKm(0, 0)}"
+                return " !!!ATTENTION!!! $name  OVERUSED ${checkDayOrKm(0, 0)}"
             if (isNeedToService()) {
-                return "    -> Make service for $name, do service in ${checkDayOrKm(warnDayToServ, warnKMToServ)}"
+                return " Make service for $name, do service in ${checkDayOrKm(warnDayToServ, warnKMToServ)}"
             }
             if (isNeedToBuy() && limitKM == 0)
-                return "    -> Ready to continue $name, left ${getDaysToRepair()} day(s)"
+                return " Ready to continue $name, left ${getDaysToRepair()} day(s)"
             if (isNeedToBuy())
-                return "    -> Buy $name, left ${checkDayOrKm(warnDayToBuy, warnKMToBuy)}"
+                return " Buy $name, left ${checkDayOrKm(warnDayToBuy, warnKMToBuy)}"
         }
         return ""
     }

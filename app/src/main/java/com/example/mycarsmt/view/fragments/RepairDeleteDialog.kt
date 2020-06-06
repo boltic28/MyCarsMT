@@ -25,7 +25,7 @@ class RepairDeleteDialog : DialogFragment() {
     private val TAG = "testmt"
 
     companion object {
-        val FRAG_TAG = "repairDeleter"
+        val FRAG_TAG = "deleter"
 
         fun getInstance(repair: Repair): RepairDeleteDialog {
 
@@ -68,7 +68,7 @@ class RepairDeleteDialog : DialogFragment() {
                 val car = msg.obj as Car
                 val mainActivity: Activity? = activity
                 if (mainActivity is MainActivity) {
-                    mainActivity.loadCarFragment(car)
+                    mainActivity.loadPreviousFragment()
                 }
                 dismiss()
                 true

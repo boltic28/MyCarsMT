@@ -34,6 +34,7 @@ import java.io.File
 class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private val TAG = "testmt"
+    private val DIAGNOSTIC_IS_READY = 121
 
     companion object {
         const val FRAG_TAG = "carFragment"
@@ -50,23 +51,25 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private val DIAGNOSTIC_IS_READY = 121
     private lateinit var manager: MainActivity
     private lateinit var carService: CarServiceImpl
     private lateinit var car: Car
     private lateinit var handler: Handler
-    //fagment
     private var notes: List<Note> = emptyList()
     private var parts: List<Part> = emptyList()
     private var repairs: List<Repair> = emptyList()
     private var contentType = ContentType.PARTS
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initFragmentManager()
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initHandler()
-        initFragmentManager()
         carService = CarServiceImpl(view.context, handler)
 
         car = arguments?.getSerializable("car") as Car
@@ -89,7 +92,7 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
             setAdapter()
         }
         carPanelButtonCancel.setOnClickListener {
-            manager.loadMainFragment()
+            manager.loadPreviousFragment(this)
         }
         carPanelFABSettings.setOnClickListener{
             manager.loadCarCreator(car)

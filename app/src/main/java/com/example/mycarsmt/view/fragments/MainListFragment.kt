@@ -47,13 +47,21 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     private lateinit var handler: Handler
     private var contentType = ContentType.DEFAULT
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
+        initFragmentManager()
 
         cars = emptyList()
         notes = emptyList()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated")
+
         initHandler()
-        initFragmentManager()
+
         carService = CarServiceImpl(view.context, handler)
         noteService = NoteServiceImpl(view.context, handler)
 
@@ -64,6 +72,12 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         setRecycler()
         setButtons()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
+        setAdapter()
     }
 
     private fun setButtons(){
@@ -95,7 +109,6 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initHandler() {
         handler = Handler(view!!.context.mainLooper, Handler.Callback { msg ->
-            Log.d(TAG, "Handler: took data from database: result " + msg.what)
             when (msg.what) {
                 RESULT_CARS_READED -> {
                     cars = msg.obj as List<Car>
@@ -103,7 +116,6 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                         TAG,
                         "Handler: took cars from database: list size ${cars.size}"
                     )
-
                     if(contentType == ContentType.DEFAULT) setAdapter()
                     true
                 }
@@ -113,7 +125,6 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                         TAG,
                         "Handler: took notes from database: list size ${notes.size}"
                     )
-
                     if(contentType == ContentType.NOTES) setAdapter()
                     true
                 }
@@ -177,6 +188,7 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                 })
             }
             ContentType.TO_BUY_LIST -> {
+                listIsEmpty(listToBuy)
                 firstRecycler.adapter = DiagnosticElementAdapter(listToBuy, object :
                     DiagnosticElementAdapter.OnItemClickListener {
                     override fun onClick(element: DiagnosticElement) {
@@ -185,6 +197,7 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                 })
             }
             ContentType.TO_DO_LIST -> {
+                listIsEmpty(listToDo)
                 firstRecycler.adapter = DiagnosticElementAdapter(listToDo, object :
                     DiagnosticElementAdapter.OnItemClickListener {
                     override fun onClick(element: DiagnosticElement) {

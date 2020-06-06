@@ -102,11 +102,7 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
             manager.loadDeleter(car)
         }
         carCreatorButtonCancel.setOnClickListener {
-            if( car.id == 0L ){
-                manager.loadMainFragment()
-            }else {
-                manager.loadCarFragment(car)
-            }
+            manager.loadPreviousFragment()
         }
         carCreatorFABCreatePhoto.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -147,7 +143,7 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
             when (msg.what) {
                 RESULT_CAR_CREATED -> {
                     val car = msg.obj as Car
-                    manager.loadCarFragment(car)
+                    manager.loadCarFragmentWithoutBackStack(car)
                     Log.d(
                         TAG,
                         "Handler: ${car.brand} ${car.model} was created"
@@ -157,7 +153,7 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
                 }
                 RESULT_CAR_UPDATED -> {
                     val car = msg.obj as Car
-                    manager.loadCarFragment(car)
+                    manager.loadPreviousFragment()
                     Log.d(
                         TAG,
                         "Handler: ${car.brand} ${car.model} was updated"
