@@ -50,6 +50,10 @@ class NoteCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
         handler = Handler(view.context.mainLooper)
         noteService = NoteServiceImpl(view.context, handler)
         note = arguments?.getSerializable("note") as Note
+        manager.title =
+            if (note.id == 0L) "Create new car"
+            else "Updating note"
+
         isExist = note.id > 0
         noteCreatorButtonDone.isActivated = false
         if (isExist) setCreatorData()
@@ -143,7 +147,8 @@ class NoteCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initFragmentManager() {
         val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity)
+        if (mainActivity is MainActivity) {
             manager = mainActivity
+        }
     }
 }

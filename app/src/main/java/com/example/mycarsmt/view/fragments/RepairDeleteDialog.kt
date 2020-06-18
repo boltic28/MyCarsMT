@@ -18,7 +18,6 @@ import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.repo.repair.RepairServiceImpl
 import com.example.mycarsmt.model.repo.repair.RepairServiceImpl.Companion.RESULT_REPAIR_CAR
 import com.example.mycarsmt.view.activities.MainActivity
-import kotlinx.android.synthetic.main.fragment_delete.*
 
 class RepairDeleteDialog : DialogFragment() {
 
@@ -45,7 +44,7 @@ class RepairDeleteDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_delete, container, false)
+        val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
         val handler = initHandler(container!!.context.mainLooper)
         val repair = arguments?.getSerializable("repair") as Repair
         val repairService = RepairServiceImpl(view.context, handler)
@@ -65,7 +64,6 @@ class RepairDeleteDialog : DialogFragment() {
         return Handler(looper, Handler.Callback { msg ->
             Log.d(TAG, "Handler: took data from database: result " + msg.what)
             if (msg.what == RESULT_REPAIR_CAR ){
-                val car = msg.obj as Car
                 val mainActivity: Activity? = activity
                 if (mainActivity is MainActivity) {
                     mainActivity.loadPreviousFragment()

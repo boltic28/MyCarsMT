@@ -1,6 +1,7 @@
 package com.example.mycarsmt.view.adapters
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.R
 import com.example.mycarsmt.model.Note
+import com.example.mycarsmt.model.enums.NoteLevel
 
 class NoteItemAdapter(
     notesIn: List<Note>, private val listener: OnItemClickListener
@@ -32,7 +34,13 @@ class NoteItemAdapter(
         fun bind(note: Note) {
 
             description.text = note.description
-            // image
+            image.setImageResource(R.drawable.ic_attention)
+            when(note.importantLevel){
+                NoteLevel.INFO -> image.setColorFilter(Color.argb(255, 5, 180, 5))
+                NoteLevel.LOW -> image.setColorFilter(Color.argb(255, 180, 180, 5))
+                NoteLevel.MIDDLE -> image.setColorFilter(Color.argb(255, 230, 120, 5))
+                NoteLevel.HIGH -> image.setColorFilter(Color.argb(255, 230, 5, 5))
+            }
 
             noteRow.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {

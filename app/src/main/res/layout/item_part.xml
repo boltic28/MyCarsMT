@@ -45,7 +45,7 @@
         android:layout_height="@dimen/part_item_icon_size"
         android:padding="@dimen/part_item_icon_padding"
         android:contentDescription="@string/part_item_icon"
-        android:src="@drawable/icon_shop"
+        android:src="@drawable/ic_buy"
         android:tint="@color/colorLightGray"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

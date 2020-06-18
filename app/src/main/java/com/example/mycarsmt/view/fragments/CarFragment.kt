@@ -5,7 +5,6 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.os.HandlerThread
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -20,7 +19,10 @@ import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.enums.Condition
 import com.example.mycarsmt.model.enums.ContentType
 import com.example.mycarsmt.model.repo.car.CarServiceImpl
+import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CAR_READED
+import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CAR_UPDATED
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_NOTES_FOR_CAR
+import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_PARTS_ADDED_TO_CAR
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_PARTS_FOR_CAR
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_REPAIRS_FOR_CAR
 import com.example.mycarsmt.view.activities.MainActivity
@@ -33,10 +35,8 @@ import java.io.File
 
 class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
-    private val TAG = "testmt"
-    private val DIAGNOSTIC_IS_READY = 121
-
     companion object {
+        const val TAG = "testmt"
         const val FRAG_TAG = "carFragment"
 
         fun getInstance(car: Car): CarFragment {
@@ -73,12 +73,23 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         carService = CarServiceImpl(view.context, handler)
 
         car = arguments?.getSerializable("car") as Car
-        loadListsForCar()
-        loadCarDataIntoView()
+        carService.readById(car.id)
 
+        loadCarDataIntoView()
         loadPhoto()
         setRecycler()
 
+        setButtons()
+    }
+//delete if you don't need it
+    fun reload(){
+        carService.readById(car.id)
+    }
+
+    private fun setButtons(){
+        carPanelMileage.setOnClickListener {
+            manager.loadMileageCorrector(car, FRAG_TAG)
+        }
         carPanelButtonNotes.setOnClickListener {
             contentType = ContentType.NOTES
             setAdapter()
@@ -100,22 +111,15 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         carPanelFABNew.setOnClickListener {
             createNew()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        loadListsForCar()
-    }
-
-    private fun loadListsForCar(){
-        carService.getPartsFor(car)
-        carService.getNotesFor(car)
-        carService.getRepairsFor(car)
+        carPanelButtonCreateCommonParts.setOnClickListener {
+            carService.createCommonPartsFor(car)
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private fun loadCarDataIntoView(){
-        carPanelName.text = "${car.brand} ${car.model} (${car.year})"
+        manager.title = car.getFullName()
+
         carPanelNumber.text = car.number
         carPanelVin.text = car.vin
         carPanelMileage.text = "${car.mileage} km"
@@ -125,6 +129,8 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     @SuppressLint("SetTextI18n")
     private fun refreshCondition(){
+        Log.d(TAG, "CarFragment: refreshing conditions")
+
         if (car.condition.contains(Condition.ATTENTION))
             carPanelIconAttention.setColorFilter(Color.argb(255, 230, 5, 5))
         if (car.condition.contains(Condition.MAKE_SERVICE))
@@ -138,28 +144,31 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
             carPanelMileage.text = "!${car.mileage} km"
     }
 
+    private fun loadListsForCar(){
+        carService.getPartsFor(car)
+        carService.getNotesFor(car)
+        carService.getRepairsFor(car)
+    }
+
+    private fun loadPhoto() {
+        if (car.photo == SpecialWords.NO_PHOTO.value || car.photo.isEmpty()) {
+            Picasso.get().load(R.drawable.nophoto).into(carPanelMainImage)
+        } else {
+            Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
+                .into(carPanelMainImage)
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun initHandler() {
         handler = Handler(view!!.context.mainLooper, Handler.Callback { msg ->
-            Log.d(TAG, "Handler: took data from database: result " + msg.what)
             when (msg.what) {
-
-//                RESULT_CAR_UPDATED -> {
-//                    car = msg.obj as Car
-//                    loadCarDataIntoView()
-//                    Log.d(
-//                        TAG,
-//                        "Handler: took updated car from database: ${car.brand} ${car.model}"
-//                    )
-//                    true
-//                }
                 RESULT_PARTS_FOR_CAR -> {
                     parts = msg.obj as List<Part>
                     Log.d(
                         TAG,
-                        "Handler: took parts from database: list size ${parts.size}"
+                        "HandlerCF: took parts from database: list size ${parts.size}"
                     )
-                    startDiagnostic()
                     if (contentType == ContentType.PARTS) setAdapter()
                     true
                 }
@@ -167,7 +176,7 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     notes = msg.obj as List<Note>
                     Log.d(
                         TAG,
-                        "Handler: took notes from database: list size ${notes.size}"
+                        "HandlerCF: took notes from database: list size ${notes.size}"
                     )
                     carPanelNoteCount.text = "notes: ${notes.size}"
                     if (contentType == ContentType.NOTES) setAdapter()
@@ -177,14 +186,20 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     repairs = msg.obj as List<Repair>
                     Log.d(
                         TAG,
-                        "Handler: took repairs from database: list size ${repairs.size}"
+                        "HandlerCF: took repairs from database: list size ${repairs.size}"
                     )
                     if (contentType == ContentType.REPAIRS) setAdapter()
                     true
                 }
-                DIAGNOSTIC_IS_READY ->{
+                RESULT_CAR_READED, RESULT_CAR_UPDATED -> {
+                    car = msg.obj as Car
+                    Log.d(
+                        TAG,
+                        "HandlerCF: data for car is ready"
+                    )
+                    loadListsForCar()
+                    turnOffIcons()
                     refreshCondition()
-                    carService.update(car)
                     true
                 }
                 else -> {
@@ -196,8 +211,9 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initFragmentManager() {
         val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity)
+        if (mainActivity is MainActivity) {
             manager = mainActivity
+        }
     }
 
     private fun setRecycler() {
@@ -221,6 +237,7 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
             ContentType.PARTS -> {
                 car.parts = parts
                 checkOnEmpty(parts)
+                if (parts.isEmpty()) carPanelButtonCreateCommonParts.visibility = View.VISIBLE
                 carRecycler.adapter = PartItemAdapter(parts, object :
                     PartItemAdapter.OnItemClickListener {
                     override fun onClick(part: Part) {
@@ -245,6 +262,7 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     }
 
     private fun checkOnEmpty(list: List<*>){
+        carPanelButtonCreateCommonParts.visibility = View.INVISIBLE
         if (list.isEmpty()) carEmptyList.visibility = View.VISIBLE
         else carEmptyList.visibility = View.GONE
     }
@@ -278,25 +296,10 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private fun startDiagnostic() {
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            car.checkConditions()
-
-            handler.sendMessage(handler.obtainMessage(DIAGNOSTIC_IS_READY))
-            handlerThread.quit()
-        }
-    }
-
-    private fun loadPhoto() {
-        if (car.photo == SpecialWords.NO_PHOTO.value || car.photo.isEmpty()) {
-            Picasso.get().load(R.drawable.nophoto).into(carPanelMainImage)
-        } else {
-            Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
-                .into(carPanelMainImage)
-        }
+    private fun turnOffIcons(){
+        carPanelIconAttention.setColorFilter(Color.argb(255, 208, 208, 208))
+        carPanelIconService.setColorFilter(Color.argb(255, 208, 208, 208))
+        carPanelIconBuy.setColorFilter(Color.argb(255, 208, 208, 208))
+        carPanelIconInfo.setColorFilter(Color.argb(255, 208, 208, 208))
     }
 }

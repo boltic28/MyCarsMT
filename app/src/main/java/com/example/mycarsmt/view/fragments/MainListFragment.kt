@@ -3,6 +3,8 @@ package com.example.mycarsmt.view.fragments
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -11,10 +13,14 @@ import com.example.mycarsmt.R
 import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.DiagnosticElement
 import com.example.mycarsmt.model.Note
+import com.example.mycarsmt.model.enums.Condition
 import com.example.mycarsmt.model.enums.ContentType
 import com.example.mycarsmt.model.repo.car.CarServiceImpl
+import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.DIAGNOSTIC_IS_READY
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_BUY_LIST
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CARS_READED
+import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CAR_READED
+import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CAR_UPDATED
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_TO_DO_LIST
 import com.example.mycarsmt.model.repo.note.NoteServiceImpl
 import com.example.mycarsmt.model.repo.note.NoteServiceImpl.Companion.RESULT_NOTES_READED
@@ -23,14 +29,14 @@ import com.example.mycarsmt.view.adapters.CarItemAdapter
 import com.example.mycarsmt.view.adapters.DiagnosticElementAdapter
 import com.example.mycarsmt.view.adapters.NoteItemAdapter
 import kotlinx.android.synthetic.main.fragment_main_list.*
-
+import java.util.*
+import java.util.stream.Collectors
 
 class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
-    private val TAG = "testmt"
-
     companion object {
         const val FRAG_TAG = "main_Fragment"
+        const val TAG = "testmt"
 
         fun getInstance(): MainListFragment {
             return MainListFragment(R.layout.fragment_main_list)
@@ -61,11 +67,13 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         Log.d(TAG, "onViewCreated")
 
         initHandler()
+        manager.title = "My Cars"
 
         carService = CarServiceImpl(view.context, handler)
         noteService = NoteServiceImpl(view.context, handler)
 
         carService.readAll()
+        //method diagnostic is in carService inside, if will need make, it here
         carService.getToBuyList()
         carService.getToDoList()
         noteService.readAll()
@@ -77,35 +85,63 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-        setAdapter()
     }
 
-    private fun setButtons(){
-        carsAddCar.setOnClickListener {
-            manager.loadCarCreator(Car())
-        }
-
-        carsSwitcher.setOnClickListener {
-            contentType = if (contentType == ContentType.DEFAULT) {
-                carsSwitcher.setImageResource(R.drawable.icon_car)
-                ContentType.NOTES
-            } else {
-                carsSwitcher.setImageResource(R.drawable.ic_notes)
-                ContentType.DEFAULT
+    private fun setButtons() {
+        mainSearchingText.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(editable: Editable) {
+                val findingText = mainSearchingText.text.toString()
+                if (findingText.isNotEmpty()) {
+                    val list = cars.stream()
+                        .filter { car -> car.getFullName().toLowerCase(Locale.ROOT).contains(findingText) }
+                        .collect(Collectors.toList())
+                    setAdapter(list)
+                }else{
+                    contentType = ContentType.DEFAULT
+                    setAdapter()
+                }
             }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
+
+        mainSearchingButtonCars.setOnClickListener {
+            contentType = ContentType.DEFAULT
             setAdapter()
         }
 
-        carsToBuy.setOnClickListener {
+        mainSearchingButtonNotes.setOnClickListener {
+            contentType = ContentType.NOTES
+            setAdapter()
+        }
+
+        mainSearchingButtonBuy.setOnClickListener {
             contentType = ContentType.TO_BUY_LIST
             setAdapter()
         }
 
-        carsToDo.setOnClickListener {
+        mainSearchingButtonService.setOnClickListener {
             contentType = ContentType.TO_DO_LIST
             setAdapter()
         }
+
+        mainSearchingButtonAttention.setOnClickListener {
+            val list = cars.stream()
+                .filter { car -> !car.condition.contains(Condition.OK) }
+                .collect(Collectors.toList())
+            setAdapter(list)
+        }
+
+        mainSearchingButtonClearFilter.setOnClickListener {
+            contentType = ContentType.DEFAULT
+            setAdapter()
+        }
+
+        carsAddCar.setOnClickListener {
+            manager.loadCarCreator(Car())
+        }
     }
+
 
     private fun initHandler() {
         handler = Handler(view!!.context.mainLooper, Handler.Callback { msg ->
@@ -114,8 +150,18 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     cars = msg.obj as List<Car>
                     Log.d(
                         TAG,
-                        "Handler: took cars from database: list size ${cars.size}"
+                        "HandlerMF: took cars from database: list size ${cars.size}"
                     )
+                    if(contentType == ContentType.DEFAULT) setAdapter()
+                    true
+                }
+                DIAGNOSTIC_IS_READY ->{
+                    cars = msg.obj as List<Car>
+                    Log.d(
+                        TAG,
+                        "HandlerMF: took cars from database after diagnostic: list size ${cars.size}"
+                    )
+
                     if(contentType == ContentType.DEFAULT) setAdapter()
                     true
                 }
@@ -123,27 +169,30 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     notes = msg.obj as List<Note>
                     Log.d(
                         TAG,
-                        "Handler: took notes from database: list size ${notes.size}"
+                        "HandlerMF: took notes from database: list size ${notes.size}"
                     )
                     if(contentType == ContentType.NOTES) setAdapter()
+                    // turn off diagnostic loading 30%
                     true
                 }
                 RESULT_TO_DO_LIST -> {
                     listToDo = msg.obj as List<DiagnosticElement>
                     Log.d(
                         TAG,
-                        "Handler: took listToDo from database: list size ${listToDo.size}"
+                        "HandlerMF: took listToDo from database: list size ${listToDo.size}"
                     )
                     if(contentType == ContentType.TO_DO_LIST) setAdapter()
+                    // turn off diagnostic loading 30%
                     true
                 }
                 RESULT_BUY_LIST ->{
                     listToBuy = msg.obj as List<DiagnosticElement>
                     Log.d(
                         TAG,
-                        "Handler: took listToBuy from database: list size ${listToBuy.size}"
+                        "HandlerMF: took listToBuy from database: list size ${listToBuy.size}"
                     )
                     if(contentType == ContentType.TO_BUY_LIST) setAdapter()
+                    // turn off diagnostic loading 30%
                     true
                 }
                 else -> {
@@ -167,7 +216,23 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         setAdapter()
     }
 
+    private fun setAdapter(list: MutableList<Car>){
+        if (list.isEmpty()) carsNoResult.visibility = View.VISIBLE
+        else carsNoResult.visibility = View.GONE
+        contentType = ContentType.DEFAULT
+        firstRecycler.adapter = CarItemAdapter(list, object :
+            CarItemAdapter.OnItemClickListener {
+            override fun onClick(car: Car) {
+                manager.loadCarFragment(car)
+            }
+            override fun onMileageClick(car: Car) {
+                manager.loadMileageCorrector(car, FRAG_TAG)
+            }
+        })
+    }
+
     private fun setAdapter() {
+        carsNoResult.visibility = View.GONE
         when (contentType) {
             ContentType.DEFAULT -> {
                 listIsEmpty(cars)
@@ -175,6 +240,9 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     CarItemAdapter.OnItemClickListener {
                     override fun onClick(car: Car) {
                         manager.loadCarFragment(car)
+                    }
+                    override fun onMileageClick(car: Car) {
+                        manager.loadMileageCorrector(car, FRAG_TAG)
                     }
                 })
             }
@@ -213,7 +281,8 @@ class MainListFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initFragmentManager() {
         val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity)
+        if (mainActivity is MainActivity) {
             manager = mainActivity
+        }
     }
 }

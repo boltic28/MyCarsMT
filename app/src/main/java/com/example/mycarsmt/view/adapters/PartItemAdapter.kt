@@ -34,7 +34,7 @@ class PartItemAdapter(
         private val name = partRow.findViewById<TextView>(R.id.partItemName)
         private val serviceData = partRow.findViewById<TextView>(R.id.partItemToServiceInfo)
         private val image = partRow.findViewById<ImageView>(R.id.partItemImage)
-        private val servIcon = partRow.findViewById<ImageView>(R.id.partItemIconAttention)
+        private val serviceIcon = partRow.findViewById<ImageView>(R.id.partItemIconAttention)
 
         @SuppressLint("SetTextI18n")
         fun bind(part: Part) {
@@ -50,14 +50,26 @@ class PartItemAdapter(
                     .into(image)
             }
 
-            if (part.condition.contains(Condition.MAKE_INSPECTION))
-                servIcon.setColorFilter(Color.argb(255, 10, 120, 5))
-            if (part.condition.contains(Condition.BUY_PARTS))
-                servIcon.setColorFilter(Color.argb(255, 180, 180, 5))
-            if (part.condition.contains(Condition.MAKE_SERVICE))
-                servIcon.setColorFilter(Color.argb(255, 230, 120, 5))
-            if (part.condition.contains(Condition.ATTENTION))
-                servIcon.setColorFilter(Color.argb(255, 230, 5, 5))
+            if (part.condition.contains(Condition.OK)) {
+                serviceIcon.setImageResource(R.drawable.ic_ok)
+                serviceIcon.setColorFilter(Color.argb(255, 5, 180, 5))
+            }
+            if (part.condition.contains(Condition.MAKE_INSPECTION)) {
+                serviceIcon.setImageResource(R.drawable.ic_info)
+                serviceIcon.setColorFilter(Color.argb(255, 10, 120, 5))
+            }
+            if (part.condition.contains(Condition.BUY_PARTS)) {
+                serviceIcon.setImageResource(R.drawable.ic_buy)
+                serviceIcon.setColorFilter(Color.argb(255, 180, 180, 5))
+            }
+            if (part.condition.contains(Condition.MAKE_SERVICE)) {
+                serviceIcon.setImageResource(R.drawable.ic_service)
+                serviceIcon.setColorFilter(Color.argb(255, 230, 120, 5))
+            }
+            if (part.condition.contains(Condition.OVERUSED)) {
+                serviceIcon.setImageResource(R.drawable.ic_attention)
+                serviceIcon.setColorFilter(Color.argb(255, 230, 5, 5))
+            }
 
             partRow.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {

@@ -36,12 +36,13 @@ class CarItemAdapter(
         private val mileage = carRow.findViewById<TextView>(R.id.carItemMileage)
         private val notes = carRow.findViewById<TextView>(R.id.carItemIconInfoMsgCount)
         private val photo = carRow.findViewById<ImageView>(R.id.carItemImage)
+        private val refreshIcon = carRow.findViewById<ImageView>(R.id.carItemIconRefresh)
         private val attentionIcon = carRow.findViewById<ImageView>(R.id.carItemIconAttention)
         private val serviceIcon = carRow.findViewById<ImageView>(R.id.carItemIconService)
         private val buyIcon = carRow.findViewById<ImageView>(R.id.carItemIconBuy)
         private val infoIcon = carRow.findViewById<ImageView>(R.id.carItemIconInfo)
 
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun bind(car: Car) {
             var line = "${car.brand} ${car.model}"
             if (line.length > 15) {
@@ -49,7 +50,12 @@ class CarItemAdapter(
             }
             name.text = line
             number.text = car.number
-            mileage.text = "${car.mileage} km"
+            if (car.condition.contains(Condition.CHECK_MILEAGE)) {
+                mileage.text = "! ${car.mileage} km"
+                mileage.setTextColor(Color.argb(255, 230, 5, 5))
+            }else{
+                mileage.text = "${car.mileage} km"
+            }
 
             if (car.condition.contains(Condition.ATTENTION))
                 attentionIcon.setColorFilter(Color.argb(255, 230, 5, 5))
@@ -59,12 +65,20 @@ class CarItemAdapter(
                 buyIcon.setColorFilter(Color.argb(255, 180, 180, 5))
             if (car.condition.contains(Condition.MAKE_INSPECTION))
                 infoIcon.setColorFilter(Color.argb(255, 10, 120, 5))
+            if (car.condition.contains(Condition.CHECK_MILEAGE))
+                refreshIcon.setColorFilter(Color.argb(255, 90, 30, 5))
 
             if (car.photo == SpecialWords.NO_PHOTO.value || car.photo.isEmpty()) {
                 Picasso.get().load(R.drawable.nophoto).into(photo)
             } else {
                 Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
                     .into(photo)
+            }
+
+            mileage.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onMileageClick(cars[adapterPosition])
+                }
             }
 
             carRow.setOnClickListener {
@@ -77,5 +91,6 @@ class CarItemAdapter(
 
     interface OnItemClickListener {
         fun onClick(car: Car)
+        fun onMileageClick(car: Car)
     }
 }

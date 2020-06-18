@@ -68,6 +68,10 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         carService = CarServiceImpl(view.context, handler)
         car = arguments?.getSerializable("car") as Car
         isExist = car.id > 0
+        manager.title =
+            if (car.id == 0L) "Create new car"
+            else "Updating ${car.brand} ${car.model}"
+
         carCreatorButtonDelete.isClickable = false
 
         if (isExist) setCreatorData()
@@ -132,7 +136,7 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         carCreatorProgress.visibility = View.VISIBLE
     }
 
@@ -200,7 +204,8 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initFragmentManager() {
         val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity)
+        if (mainActivity is MainActivity) {
             manager = mainActivity
+        }
     }
 }

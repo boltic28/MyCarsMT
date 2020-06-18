@@ -2,6 +2,7 @@ package com.example.mycarsmt.model.repo.part
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Handler
 import android.os.HandlerThread
 import com.example.mycarsmt.model.Car
@@ -13,19 +14,24 @@ import com.example.mycarsmt.model.database.car.CarDao
 import com.example.mycarsmt.model.database.note.NoteDao
 import com.example.mycarsmt.model.database.part.PartDao
 import com.example.mycarsmt.model.database.repair.RepairDao
+import com.example.mycarsmt.model.enums.PartControlType
 import com.example.mycarsmt.model.repo.mappers.EntityConverter
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.carFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.partFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.repairEntityFrom
+import com.example.mycarsmt.view.fragments.SettingFragment
 import java.util.stream.Collectors
 
 @SuppressLint("NewApi")
 class PartServiceImpl(val context: Context, handler: Handler) : PartService {
 
     companion object {
-        const val RESULT_PARTS_READED = 201
-        const val RESULT_PART_READED = 202
+        const val TAG = "testmt"
+
+        const val RESULT_PARTS_READ = 201
+        const val RESULT_PART_READ = 202
         const val RESULT_PART_CREATED = 203
         const val RESULT_PART_UPDATED = 204
         const val RESULT_PART_DELETED = 205
@@ -33,16 +39,14 @@ class PartServiceImpl(val context: Context, handler: Handler) : PartService {
         const val RESULT_PARTS_FOR_CAR = 211
         const val RESULT_NOTES_FOR_PART = 212
         const val RESULT_REPAIRS_FOR_PART = 213
-
     }
-
-    private val TAG = "testmt"
 
     private var mainHandler: Handler
     private var partDao: PartDao
     private var noteDao: NoteDao
     private var carDao: CarDao
     private var repairDao: RepairDao
+    private var preferences: SharedPreferences
 
     init {
         val db: AppDatabase = AppDatabase.getInstance(context)!!
@@ -51,6 +55,10 @@ class PartServiceImpl(val context: Context, handler: Handler) : PartService {
         noteDao = db.noteDao()
         carDao = db.carDao()
         repairDao = db.repairDao()
+        preferences = context.getSharedPreferences(
+            SettingFragment.APP_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
     }
 
     override fun create(part: Part) {
@@ -72,7 +80,15 @@ class PartServiceImpl(val context: Context, handler: Handler) : PartService {
         val looper = handlerThread.looper
         val handler = Handler(looper)
         handler.post {
+            part.checkCondition(preferences)
             partDao.update(partEntityFrom(part))
+
+            val car = carFrom(carDao.getById(part.carId))
+            car.parts = partDao.getAllForCar(car.id).stream()
+                .map{entity -> partFrom(entity)}
+                .collect(Collectors.toList())
+            car.checkConditions(preferences)
+            carDao.update(carEntityFrom(car))
 
             mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_UPDATED, part))
             handlerThread.quit()
@@ -102,7 +118,7 @@ class PartServiceImpl(val context: Context, handler: Handler) : PartService {
             parts = partDao.getAll().stream().map { entity -> partFrom(entity) }
                 .collect(Collectors.toList())
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_READED, parts))
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_READ, parts))
             handlerThread.quit()
         }
     }
@@ -122,16 +138,16 @@ class PartServiceImpl(val context: Context, handler: Handler) : PartService {
         }
     }
 
-    override fun readById(id: Long) {
+    override fun readById(partId: Long) {
         var part: Part
         val handlerThread = HandlerThread("readThread")
         handlerThread.start()
         val looper = handlerThread.looper
         val handler = Handler(looper)
         handler.post {
-            part = partFrom(partDao.getById(id))
+            part = partFrom(partDao.getById(partId))
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_READED, part))
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_READ, part))
             handlerThread.quit()
         }
     }
@@ -180,7 +196,7 @@ class PartServiceImpl(val context: Context, handler: Handler) : PartService {
     }
 
     override fun addRepair(repair: Repair) {
-        val handlerThread = HandlerThread("getCarThread")
+        val handlerThread = HandlerThread("repairThread")
         handlerThread.start()
         val looper = handlerThread.looper
         val handler = Handler(looper)

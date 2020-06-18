@@ -1,6 +1,7 @@
 package com.example.mycarsmt.model.repo.car
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Handler
 import android.os.HandlerThread
 import com.example.mycarsmt.model.*
@@ -9,16 +10,20 @@ import com.example.mycarsmt.model.database.car.CarDao
 import com.example.mycarsmt.model.database.note.NoteDao
 import com.example.mycarsmt.model.database.part.PartDao
 import com.example.mycarsmt.model.database.repair.RepairDao
+import com.example.mycarsmt.model.enums.PartControlType
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.carFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.noteFrom
+import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.partFrom
 import com.example.mycarsmt.model.repo.mappers.EntityConverter.Companion.repairFrom
+import com.example.mycarsmt.view.fragments.SettingFragment
 import java.util.stream.Collectors
 
 class CarServiceImpl(context: Context, handler: Handler) : CarService {
 
     companion object {
+        const val TAG = "testmt"
         const val RESULT_CARS_READED = 101
         const val RESULT_CAR_READED = 102
         const val RESULT_CAR_CREATED = 103
@@ -29,16 +34,19 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
         const val RESULT_REPAIRS_FOR_CAR = 113
         const val RESULT_BUY_LIST = 114
         const val RESULT_TO_DO_LIST = 115
-
+        const val DIAGNOSTIC_IS_READY = 120
+        const val DIAGNOSTIC_CAR_IS_READY = 121
+        const val RESULT_PARTS_ADDED_TO_CAR = 122
     }
-
-    private val TAG = "testmt"
 
     private var mainHandler: Handler
     private var carDao: CarDao
     private var partDao: PartDao
     private var noteDao: NoteDao
     private var repairDao: RepairDao
+    private var preferences: SharedPreferences
+
+    private lateinit var cars: List<Car>
 
     init {
         val db: AppDatabase = AppDatabase.getInstance(context)!!
@@ -47,13 +55,13 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
         partDao = db.partDao()
         noteDao = db.noteDao()
         repairDao = db.repairDao()
+        preferences = context.getSharedPreferences(
+            SettingFragment.APP_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
     }
 
-    //settings
-    val howMuchDaysBeetweenCorrectOdo = 15
-
     override fun readAll() {
-        var cars: List<Car>
         val handlerThread = HandlerThread("readThread")
         handlerThread.start()
         val handler = Handler(handlerThread.looper)
@@ -94,15 +102,14 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
     }
 
     override fun update(car: Car) {
-
-        val handlerThread = HandlerThread("createThread")
+        val handlerThread = HandlerThread("updateThread")
         handlerThread.start()
         val looper = handlerThread.looper
         val handler = Handler(looper)
         handler.post {
-            carDao.update(carEntityFrom(car))
+            val carResult = makeDiagnosticAndSave(car)
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_UPDATED, car))
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_CAR_UPDATED, carResult))
             handlerThread.quit()
         }
     }
@@ -221,15 +228,84 @@ class CarServiceImpl(context: Context, handler: Handler) : CarService {
         }
     }
 
-//    override fun getMileageAsLine(): String {
-//        return "${car.brand} ${car.model} ${car.number}: ${car.mileage}km"
-//    }
-//
-//    override fun getDataForMileageList(): List<String> {
-//        val list: MutableList<String> = mutableListOf()
-//        list.add("${car.brand} ${car.model} (${car.number}):")
-//        list.add("\t ${car.mileage} km")
-//        return list
-//    }
-//
+    override fun doDiagnosticAllCars() {
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            val cars = carDao.getAll().stream()
+                .map { entity -> carFrom(entity) }
+                .map { car -> makeDiagnosticAndSave(car) }
+                .collect(Collectors.toList())
+
+            mainHandler.sendMessage(handler.obtainMessage(DIAGNOSTIC_IS_READY, cars))
+            handlerThread.quit()
+        }
+    }
+
+    override fun doDiagnosticForCar(car: Car) {
+        val handlerThread = HandlerThread("readThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            val carResult = makeDiagnosticAndSave(car)
+
+            mainHandler.sendMessage(handler.obtainMessage(DIAGNOSTIC_CAR_IS_READY, makeDiagnosticAndSave(carResult)))
+            handlerThread.quit()
+        }
+    }
+
+    override fun createCommonPartsFor(car: Car) {
+        val handlerThread = HandlerThread("createPartsThread")
+        handlerThread.start()
+        val looper = handlerThread.looper
+        val handler = Handler(looper)
+        handler.post {
+            val list = mutableListOf<Part>()
+            list.add(Part(car.id, car.mileage, "Oil level", 5000, 15, PartControlType.INSPECTION))
+            list.add(Part(car.id, car.mileage, "Oil filter", 15000, 365, PartControlType.CHANGE))
+            list.add(Part(car.id, car.mileage, "Air filter", 30000, 365, PartControlType.CHANGE))
+            list.add(Part(car.id, car.mileage, "Cabin filter", 30000, 365, PartControlType.CHANGE))
+            list.add(Part(car.id, car.mileage, "Spark plugs", 30000, 0, PartControlType.CHANGE))
+            list.add(Part(car.id, car.mileage, "Front brake", 40000, 0, PartControlType.INSPECTION))
+            list.add(Part(car.id, car.mileage, "Rear brake", 40000, 0, PartControlType.INSPECTION))
+            list.add(Part(car.id, car.mileage, "Wipers", 0, 183, PartControlType.INSPECTION))
+            list.add(Part(car.id, car.mileage, "Insurance", 0, 365, PartControlType.INSURANCE))
+            list.add(Part(car.id, car.mileage, "Tech view", 0, 365, PartControlType.INSURANCE))
+
+            list.forEach { part ->
+                part.checkCondition(preferences)
+                partDao.insert(partEntityFrom(part))
+            }
+
+            car.parts = list
+            car.checkConditions(preferences)
+            carDao.update(carEntityFrom(car))
+
+            val part = partDao.getAllForCar(car.id).stream()
+                .map { entity -> partFrom(entity) }
+                .collect(Collectors.toList())
+
+            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_FOR_CAR, part))
+            handlerThread.quit()
+        }
+    }
+
+    override fun makeDiagnosticAndSave(car: Car): Car{
+        car.parts = partDao.getAllForCar(car.id).stream()
+            .map { entity -> partFrom(entity) }
+            .collect(Collectors.toList())
+
+        car.parts.forEach { part ->
+            part.checkCondition(preferences)
+            partDao.update(partEntityFrom(part))
+        }
+
+        car.checkConditions(preferences)
+        carDao.update(carEntityFrom(car))
+
+        return car
+    }
 }

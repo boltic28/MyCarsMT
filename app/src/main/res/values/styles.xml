@@ -14,7 +14,7 @@
         <item name="android:textColor">@color/colorDarkGray</item>
     </style>
 
-    <style name="CarItemText.Secondary" >
+    <style name="CarItemText.Secondary">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/colorDarkGray</item>
@@ -27,7 +27,7 @@
         <item name="android:textColor">@color/colorDarkGray</item>
     </style>
 
-    <style name="PartItemText.Secondary" >
+    <style name="PartItemText.Secondary">
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/colorDarkGray</item>
@@ -64,13 +64,13 @@
         <item name="android:textColor">@color/colorDarkGray</item>
     </style>
 
-    <style name="CarPanel.VIN" >
+    <style name="CarPanel.VIN">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/colorDarkGray</item>
     </style>
 
-    <style name="CarPanel.Note" >
+    <style name="CarPanel.Note">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/colorDarkGray</item>
@@ -94,5 +94,121 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">italic</item>
         <item name="android:textColor">@color/colorDarkGray</item>
+    </style>
+
+    <style name="Settings" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="Settings.Value">
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:inputType">number</item>
+        <item name="background">@color/colorLightGray</item>
+        <item name="android:textColor">@color/colorDarkGray</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="SearchingButtons" parent="TextAppearance.AppCompat.Button">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:background">@drawable/bg_searching_buttons</item>
+    </style>
+
+    <style name="SearchingField" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:inputType">text</item>
+        <item name="android:hint">@string/searching</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="FAB" parent="Widget.Design.FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:background">@color/colorLightGray</item>
+        <item name="maxImageSize">36dp</item>
+        <item name="android:tint">@color/white</item>
+    </style>
+
+    <style name="Delete.Question" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="Dialog.Title" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="Mileage.Edit" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/colorDarkGray</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="Mileage.Button" parent="TextAppearance.AppCompat.Button">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="Mileage.Button.Main" parent="TextAppearance.AppCompat.Button">
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="Button.CommonListParts" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">@string/create_common_list_of_parts</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:background">@drawable/bg_button_corners</item>
+        <item name="backgroundTint">@color/info</item>
     </style>
 </resources>

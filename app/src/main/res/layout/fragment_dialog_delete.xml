@@ -5,19 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:background="@color/colorLightGray">
+    android:background="@drawable/bg_dialog">
 
-    <TextView
+    <FrameLayout
         android:id="@+id/deleteFragmentHeader"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_margin="20dp"
-        android:text="@string/removing_obj"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:background="@drawable/bg_dialog_title"
+        android:backgroundTint="@color/redDelete">
+
+        <TextView
+            android:id="@+id/titleText"
+            style="@style/Dialog.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/removing_obj"/>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/deleteFragmentQuestion"
+        style="@style/Delete.Question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -36,7 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@color/redDelete"
+            android:backgroundTint="@color/redDelete"
+            android:textColor="@color/white"
             android:text="@string/delete"/>
 
         <Button

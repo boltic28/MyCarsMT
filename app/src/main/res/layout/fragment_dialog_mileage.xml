@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/bg_dialog"
+    android:paddingBottom="16dp">
+
+    <FrameLayout
+        android:id="@+id/mileageCarNamePanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/mileageCarName"
+            style="@style/Dialog.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Brand Model (0000 AA-7)" />
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/mileageTMPOdo"
+        style="@style/Mileage.Edit"
+        android:hint="@string/_10_000km"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mileageCarNamePanel" />
+
+    <Button
+        android:id="@+id/mileageButton100"
+        style="@style/Mileage.Button"
+        android:layout_marginStart="16dp"
+        android:text="@string/_p100_km"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/mileageButton500"
+        app:layout_constraintTop_toBottomOf="@+id/mileageTMPOdo" />
+
+    <Button
+        android:id="@+id/mileageButton500"
+        style="@style/Mileage.Button"
+        android:text="@string/_p500_km"
+        app:layout_constraintLeft_toRightOf="@id/mileageButton100"
+        app:layout_constraintRight_toLeftOf="@+id/mileageButton1000"
+        app:layout_constraintTop_toBottomOf="@+id/mileageTMPOdo" />
+
+    <Button
+        android:id="@+id/mileageButton1000"
+        style="@style/Mileage.Button"
+        android:layout_marginEnd="16dp"
+        android:text="@string/_p1000_km"
+        app:layout_constraintLeft_toRightOf="@id/mileageButton500"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mileageTMPOdo" />
+
+    <Button
+        android:id="@+id/mileageButtonOk"
+        style="@style/Mileage.Button.Main"
+        android:backgroundTint="@color/info"
+        android:text="@string/ok"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/mileageButtonCancel"
+        app:layout_constraintTop_toBottomOf="@+id/mileageButton500" />
+
+    <Button
+        android:id="@+id/mileageButtonCancel"
+        style="@style/Mileage.Button.Main"
+        android:backgroundTint="@color/redDelete"
+        android:text="@string/cancel"
+        app:layout_constraintLeft_toRightOf="@id/mileageButtonOk"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mileageButton500" />
+</androidx.constraintlayout.widget.ConstraintLayout>

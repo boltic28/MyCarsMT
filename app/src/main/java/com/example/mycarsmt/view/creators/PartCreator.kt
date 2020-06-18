@@ -10,17 +10,15 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.model.Part
+import com.example.mycarsmt.model.enums.PartControlType
 import com.example.mycarsmt.model.repo.part.PartServiceImpl
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_PART_CREATED
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_PART_UPDATED
 import com.example.mycarsmt.view.activities.MainActivity
-import com.example.mycarsmt.view.fragments.PartDeleteDialog
-import com.example.mycarsmt.view.fragments.PartFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_creator_part.*
 import java.io.ByteArrayOutputStream
@@ -33,10 +31,10 @@ import java.util.*
 
 class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
-    private val TAG = "testmt"
-
     companion object {
-        val FRAG_TAG = "partCreator"
+        const val TAG = "testmt"
+        const val FRAG_TAG = "partCreator"
+        const val CAMERA = 2
 
         fun getInstance(part: Part): PartCreator {
             val bundle = Bundle()
@@ -49,7 +47,6 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private val CAMERA = 2
     private var photo = SpecialWords.NO_PHOTO.value
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)
     private lateinit var manager: MainActivity
@@ -66,7 +63,11 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         initHandler()
         partService = PartServiceImpl(view.context, handler)
         part = arguments?.getSerializable("part") as Part
+        manager.title =
+            if (part.id == 0L) "Create new part"
+            else "Updating ${part.name}"
         isExist = part.id > 0
+
         partCreatorButtonDelete.isActivated = false
 
         if (isExist) {
@@ -100,12 +101,13 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     partCreatorDescription.text.toString()
 
                 if (partCreatorInsuranceBox.isChecked) {
-                    part.codes = SpecialWords.INSURANCE.value
+                    part.type = PartControlType.INSURANCE
                     part.limitDays = 365
                     part.limitKM = 0
                 }
 
-                if (partCreatorInspectionOnlyBox.isChecked) part.codes = SpecialWords.INSP.value
+                if (partCreatorInspectionOnlyBox.isChecked)
+                    part.type = PartControlType.INSPECTION
 
                 if (isExist) {
                     partService.update(part)
@@ -177,6 +179,8 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         partCreatorButtonCreate.setText(R.string.update)
         partCreatorButtonDelete.isActivated = true
+        if(part.type == PartControlType.INSURANCE) partCreatorInsuranceBox.isChecked = true
+        if(part.type == PartControlType.INSPECTION) partCreatorInspectionOnlyBox.isChecked = true
         photo = part.photo
     }
 
@@ -235,7 +239,9 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initFragmentManager() {
         val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity)
+        if (mainActivity is MainActivity) {
             manager = mainActivity
+        }
+
     }
 }

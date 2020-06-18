@@ -1,9 +1,12 @@
 package com.example.mycarsmt.view.activities
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,6 +17,7 @@ import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.Note
 import com.example.mycarsmt.model.Part
 import com.example.mycarsmt.model.Repair
+import com.example.mycarsmt.model.enums.ContentType
 import com.example.mycarsmt.view.creators.CarCreator
 import com.example.mycarsmt.view.creators.NoteCreator
 import com.example.mycarsmt.view.creators.PartCreator
@@ -22,12 +26,12 @@ import com.example.mycarsmt.view.fragments.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val TAG = "testmt"
-    private val PERMISSION_REQUEST_CODE = 7777
+    companion object {
+        const val TAG = "testmt"
+        const val PERMISSION_REQUEST_CODE = 7777
+    }
 
     private lateinit var fragmentManager: FragmentManager
-
-    fun getMainFragmentManager() = fragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,20 +74,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_settings) loadSettings()
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun loadSettings() {
+        Log.d(TAG, "FRAG manager: load settings fragment")
+        fragmentManager.beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                SettingFragment.getInstance(),
+                SettingFragment.FRAG_TAG
+            )
+            .addToBackStack(SettingFragment.FRAG_TAG)
+            .commit()
+    }
+
     fun loadMainFragment() {
         Log.d(TAG, "FRAG manager: create main fragment")
+
+            fragmentManager.popBackStack(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+
         fragmentManager.beginTransaction()
             .replace(
                 R.id.fragmentContainer,
                 MainListFragment.getInstance(),
                 MainListFragment.FRAG_TAG
             )
+            .addToBackStack(MainListFragment.FRAG_TAG)
             .commit()
-
-        if (fragmentManager.backStackEntryCount > 0){
-            fragmentManager.popBackStack(fragmentManager.getBackStackEntryAt(0).id,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
     }
 
     fun loadCarFragment(car: Car) {
@@ -102,9 +130,11 @@ class MainActivity : AppCompatActivity() {
     fun loadCarFragmentWithoutBackStack(car: Car) {
         Log.d(TAG, "FRAG manager: create car fragment")
 
-        if (fragmentManager.backStackEntryCount > 1){
-            fragmentManager.popBackStack(fragmentManager.getBackStackEntryAt(1).id,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        if (fragmentManager.backStackEntryCount > 1) {
+            fragmentManager.popBackStack(
+                fragmentManager.getBackStackEntryAt(1).id,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
         }
 
         fragmentManager.beginTransaction()
@@ -131,7 +161,7 @@ class MainActivity : AppCompatActivity() {
     fun loadPartFragmentWithoutBackStack(part: Part) {
         Log.d(TAG, "FRAG manager: create part fragment")
 
-        if(fragmentManager.backStackEntryCount > 0) {
+        if (fragmentManager.backStackEntryCount > 0) {
             fragmentManager.popBackStack(PartFragment.FRAG_TAG, 0)
         }
 
@@ -193,6 +223,29 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    fun loadMileageCorrector(car: Car, tag: String) {
+        Log.d(TAG, "FRAG manager: load mileage fragment")
+        fragmentManager.beginTransaction()
+            .add(
+                R.id.fragmentContainer,
+                MileageFragmentDialog.getInstance(car, tag),
+                MileageFragmentDialog.FRAG_TAG
+            )
+            .addToBackStack(MileageFragmentDialog.FRAG_TAG)
+            .commit()
+    }
+
+    fun loadServiceFragment(part: Part) {
+        Log.d(TAG, "FRAG manager: load mileage fragment")
+        fragmentManager.beginTransaction()
+            .add(
+                R.id.fragmentContainer,
+                ServiceFragmentDialog.getInstance(part),
+                ServiceFragmentDialog.FRAG_TAG
+            )
+            .commit()
+    }
+
     fun loadDeleter(car: Car) {
         Log.d(TAG, "FRAG manager: load carDeleter fragment")
         fragmentManager.beginTransaction()
@@ -238,6 +291,17 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.beginTransaction()
             .remove(fragment)
             .commit()
+    }
+
+    fun loadLastInBackStack(){
+        Log.d(TAG, "FRAG manager: load last in backStack")
+//        fragmentManager.getBackStackEntryAt(fragmentManager.backStackEntryCount - 1)
+    }
+
+    fun reloadFragmentLast(){
+        //TODO
+//        fragmentManager.findFragmentByTag(CarFragment.FRAG_TAG).
+
     }
 
     // will make test

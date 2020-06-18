@@ -7,13 +7,17 @@
     <color name="colorLightGray">#A9ACAC</color>
     <color name="colorBGPanel">#CAD7FD</color>
 
-    <color name="colorAttention">#F80202</color>
-    <color name="colorService">#F67705</color>
-    <color name="colorBuy">#B3B006</color>
-    <color name="colorInfo">#046C04</color>
-    <color name="colorOff">#D5D0D0</color>
+    <color name="attention">#F80202</color>
+    <color name="refresh">#5A280A</color>
+    <color name="service">#F67705</color>
+    <color name="buy">#B3B006</color>
+    <color name="info">#0A7E0A</color>
+    <color name="off">#D0D0D0</color>
+    <color name="white">#FFFFFF</color>
 
-    <color name="blackMC">#1C1C1C</color>
+    <color name="black">#1C1C1C</color>
     <color name="redDelete">#BA0C0C</color>
+
+    <color name="bgDialog">#C6C4C4</color>
 
 </resources>

@@ -1,19 +1,22 @@
 package com.example.mycarsmt.model
 
+import android.content.SharedPreferences
 import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.model.enums.Condition
 import com.example.mycarsmt.model.enums.PartControlType
+import com.example.mycarsmt.view.fragments.SettingFragment
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class Part(): Serializable {
 
-    //settings
     var warnKMToBuy = 2000
-    var warnKMToServ = 1000
+    var warnKMToService = 1000
     var warnDayToBuy = 30
-    var warnDayToServ = 10
+    var warnDayToService = 10
+    var insurancePeriod = 365
+    var viewPeriod = 365
 
     constructor(
         id: Long,
@@ -73,6 +76,23 @@ class Part(): Serializable {
         this.condition = condition
     }
 
+    constructor(
+        carId: Long,
+        mileage: Int,
+        name: String,
+        limitKM: Int,
+        limitDays: Int,
+        type: PartControlType
+    ) : this() {
+        this.carId = carId
+        this.mileage = mileage
+        this.name = name
+        this.limitKM = limitKM
+        this.limitDays = limitDays
+        this.type = type
+        mileageLastChange = mileage
+    }
+
     var id: Long = 0
 
     var carId: Long = 0
@@ -88,37 +108,31 @@ class Part(): Serializable {
     var type: PartControlType = PartControlType.CHANGE
     var condition: List<Condition> = listOf(Condition.OK)
 
+    fun checkCondition(preferences: SharedPreferences){
+
+        warnKMToBuy = preferences.getInt(SettingFragment.KM_TO_BUY, 2000)
+        warnKMToService = preferences.getInt(SettingFragment.KM_TO_CHANGE, 1000)
+        warnDayToBuy = preferences.getInt(SettingFragment.DAY_TO_BUY, 30)
+        warnDayToService = preferences.getInt(SettingFragment.DAY_TO_CHANGE, 10)
+        insurancePeriod = preferences.getInt(SettingFragment.DAY_TO_REFRESH_INSURANCE, 365)
+        viewPeriod = preferences.getInt(SettingFragment.DAY_TO_REFRESH_VIEW, 365)
+
+        val list = mutableListOf<Condition>()
+        if (isNeedToInspection()) list.add(Condition.MAKE_INSPECTION)
+        if (isNeedToBuy()) list.add(Condition.BUY_PARTS)
+        if (isNeedToService()) list.add(Condition.MAKE_SERVICE)
+        if (isOverRide()) list.add(Condition.OVERUSED)
+        if (list.isEmpty()) list.add(Condition.OK)
+        condition = list
+    }
+
     fun getInfoToChange(): String {
         if (limitDays == 0) return "${getMileageToRepair()} km"
         if (limitKM == 0)   return "${getDaysToRepair()} days"
-        return "${getMileageToRepair()} km/${getDaysToRepair()} days"
+        return "To service: ${getMileageToRepair()} km/${getDaysToRepair()} days"
     }
 
     fun getUsedMileage() = mileage - mileageLastChange
-
-    fun isNeedToBuy(): Boolean {
-        if (type == PartControlType.INSPECTION) return false
-        if (getMileageToRepairForDayOrKmIsNull() < warnKMToBuy ||
-            getDaysToRepairForDayOrKmIsNull() < warnDayToBuy) return true
-        return false
-    }
-
-    fun isNeedToService(): Boolean {
-        if (type == PartControlType.INSPECTION) return isOverRide()
-        if (getDaysToRepairForDayOrKmIsNull() < warnDayToServ ||
-            getMileageToRepairForDayOrKmIsNull() < warnKMToServ) return true
-        return false
-    }
-
-    fun isNeedToInspection(): Boolean {
-        if (isOverRide()) return true
-        return false
-    }
-
-    fun isOverRide(): Boolean {
-        if (getDaysToRepairForDayOrKmIsNull() < 0 || getMileageToRepairForDayOrKmIsNull() < 0) return true
-        return false
-    }
 
     fun getLineForBuyList(): String {
         return if(isNeedToBuy()){
@@ -136,7 +150,7 @@ class Part(): Serializable {
             if (isOverRide())
                 return " !!!ATTENTION!!! $name  OVERUSED ${checkDayOrKm(0, 0)}"
             if (isNeedToService()) {
-                return " Make service for $name, do service in ${checkDayOrKm(warnDayToServ, warnKMToServ)}"
+                return " Make service for $name, do service in ${checkDayOrKm(warnDayToService, warnKMToService)}"
             }
             if (isNeedToBuy() && limitKM == 0)
                 return " Ready to continue $name, left ${getDaysToRepair()} day(s)"
@@ -149,7 +163,9 @@ class Part(): Serializable {
     fun makeService(): Repair {
         mileageLastChange = mileage
 
-        dateLastChange = if (codes == SpecialWords.INSURANCE.value) dateLastChange.plusYears(1)
+        dateLastChange = if (type == PartControlType.INSURANCE) dateLastChange.plusDays(
+            insurancePeriod.toLong()
+        )
         else LocalDate.now()
 
         val repair = Repair()
@@ -160,12 +176,14 @@ class Part(): Serializable {
         repair.description = "changed during technical works: $codes"
         repair.date = LocalDate.now()
         if (codes == SpecialWords.INSURANCE.value)
-            repair.description = "auto increase insurance to: ${dateLastChange.plusYears(1)}"
-        condition = checkCondition()
+            repair.description = "auto increase insurance for: ${dateLastChange.plusDays(
+                insurancePeriod.toLong()//? check it on preference correct working
+            )}"
+        condition = refreshCondition()
         return repair
     }
 
-    private fun checkCondition(): List<Condition>{
+    private fun refreshCondition(): List<Condition>{
         val list = mutableListOf<Condition>()
         if (isNeedToInspection()) list.add(Condition.MAKE_INSPECTION)
         if (isNeedToBuy()) list.add(Condition.BUY_PARTS)
@@ -173,6 +191,30 @@ class Part(): Serializable {
         if (isOverRide()) list.add(Condition.ATTENTION)
         if (list.isEmpty()) list.add(Condition.OK)
         return list
+    }
+
+    private fun isNeedToBuy(): Boolean {
+        if (type == PartControlType.INSPECTION) return false
+        if (getMileageToRepairForDayOrKmIsNull() < warnKMToBuy ||
+            getDaysToRepairForDayOrKmIsNull() < warnDayToBuy) return true
+        return false
+    }
+
+    private fun isNeedToService(): Boolean {
+        if (type == PartControlType.INSPECTION) return isOverRide()
+        if (getDaysToRepairForDayOrKmIsNull() < warnDayToService ||
+            getMileageToRepairForDayOrKmIsNull() < warnKMToService) return true
+        return false
+    }
+
+    private fun isNeedToInspection(): Boolean {
+        if (isOverRide() && codes == SpecialWords.INSPECTION_ONLY.value) return true
+        return false
+    }
+
+    private fun isOverRide(): Boolean {
+        if (getDaysToRepairForDayOrKmIsNull() < 0 || getMileageToRepairForDayOrKmIsNull() < 0) return true
+        return false
     }
 
     private fun getDaysToRepair() = limitDays - ChronoUnit.DAYS.between(dateLastChange, LocalDate.now()).toInt()

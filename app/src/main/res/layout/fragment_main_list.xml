@@ -1,62 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/firstRecycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/mainSearchingView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/mainSearchingView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:gravity="end"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstRecycler">
+
+        <ImageButton
+            android:id="@+id/mainSearchingButtonClearFilter"
+            style="@style/SearchingButtons"
+            android:layout_marginStart="4dp"
+            android:contentDescription="@string/searching_button"
+            android:src="@drawable/ic_close" />
+
+        <EditText
+            android:id="@+id/mainSearchingText"
+            style="@style/SearchingField"
+            android:drawableStart="@drawable/ic_search"
+            android:importantForAutofill="no" />
+
+        <ImageButton
+            android:id="@+id/mainSearchingButtonCars"
+            style="@style/SearchingButtons"
+            android:contentDescription="@string/searching_button"
+            android:src="@drawable/ic_car"
+            android:tint="@color/info"/>
+
+        <ImageButton
+            android:id="@+id/mainSearchingButtonNotes"
+            style="@style/SearchingButtons"
+            android:contentDescription="@string/searching_button"
+            android:src="@drawable/ic_notes"
+            android:tint="@color/info" />
+
+        <ImageButton
+            android:id="@+id/mainSearchingButtonBuy"
+            style="@style/SearchingButtons"
+            android:contentDescription="@string/searching_button"
+            android:src="@drawable/ic_buy"
+            android:tint="@color/buy" />
+
+        <ImageButton
+            android:id="@+id/mainSearchingButtonService"
+            style="@style/SearchingButtons"
+            android:contentDescription="@string/searching_button"
+            android:src="@drawable/ic_list_to_service"
+            android:tint="@color/service" />
+
+        <ImageButton
+            android:id="@+id/mainSearchingButtonAttention"
+            style="@style/SearchingButtons"
+            android:contentDescription="@string/searching_button"
+            android:src="@drawable/ic_attention"
+            android:tint="@color/attention" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/carsEmptyList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/no_elements"/>
+        android:text="@string/no_elements"
+        app:layout_constraintBottom_toBottomOf="@+id/firstRecycler"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/firstRecycler" />
+
+    <TextView
+        android:id="@+id/carsNoResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_result"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/firstRecycler"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/firstRecycler" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/carsAddCar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin_end"
-        android:layout_marginBottom="@dimen/fab_margin_bottom"
-        android:background="@color/colorLightGray"
-        app:maxImageSize="44dp"
+        style="@style/FAB"
+        app:layout_constraintBottom_toTopOf="@+id/mainSearchingView"
+        app:layout_constraintRight_toRightOf="@id/firstRecycler"
         app:srcCompat="@drawable/ic_add" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/carsSwitcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin_end"
-        android:layout_marginBottom="118dp"
-        android:background="@color/colorLightGray"
-        app:maxImageSize="44dp"
-        app:srcCompat="@drawable/ic_notes" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/carsToDo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin_end"
-        android:layout_marginBottom="180dp"
-        android:background="@color/colorLightGray"
-        app:maxImageSize="44dp"
-        app:srcCompat="@drawable/ic_add" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/carsToBuy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin_end"
-        android:layout_marginBottom="242dp"
-        android:background="@color/colorLightGray"
-        app:maxImageSize="44dp"
-        app:srcCompat="@drawable/ic_add" />
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

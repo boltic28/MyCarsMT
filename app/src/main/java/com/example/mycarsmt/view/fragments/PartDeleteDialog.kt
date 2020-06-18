@@ -2,7 +2,6 @@ package com.example.mycarsmt.view.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,12 +13,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.example.mycarsmt.R
-import com.example.mycarsmt.model.Car
 import com.example.mycarsmt.model.Part
 import com.example.mycarsmt.model.repo.part.PartServiceImpl
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_PART_CAR
 import com.example.mycarsmt.view.activities.MainActivity
-import kotlinx.android.synthetic.main.fragment_delete.*
 
 class PartDeleteDialog: DialogFragment() {
 
@@ -46,7 +43,7 @@ class PartDeleteDialog: DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_delete, container, false)
+        val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
         val handler = initHandler(container!!.context.mainLooper)
         val part = arguments?.getSerializable("part") as Part
         val partService = PartServiceImpl(view.context, handler)

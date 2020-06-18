@@ -53,6 +53,9 @@ class RepairCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
         handler = Handler(view.context.mainLooper)
         repairService = RepairServiceImpl(view.context, handler)
         repair = arguments?.getSerializable("repair") as Repair
+        manager.title =
+            if (repair.id == 0L) "Create new repair"
+            else "Updating repair"
         isExist = repair.id > 0
         repairCreatorButtonDelete.isActivated = false
 
@@ -115,7 +118,8 @@ class RepairCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initFragmentManager() {
         val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity)
+        if (mainActivity is MainActivity) {
             manager = mainActivity
+        }
     }
 }

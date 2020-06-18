@@ -4,7 +4,7 @@ enum class SpecialWords(val value: String){
     NO_NEED("no need"),
     NO_PHOTO("nophoto"),
     NO_CAR("no car"),
-    INSP("INSP"),
+    INSPECTION_ONLY("INSP"),
     INSURANCE("INSUR"),
     NO_DESCRIPTION("no description")
 

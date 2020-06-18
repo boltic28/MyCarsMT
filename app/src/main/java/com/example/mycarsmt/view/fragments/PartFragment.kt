@@ -17,6 +17,7 @@ import com.example.mycarsmt.model.Repair
 import com.example.mycarsmt.model.enums.ContentType
 import com.example.mycarsmt.model.repo.part.PartServiceImpl
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_NOTES_FOR_PART
+import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_PART_READ
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_PART_UPDATED
 import com.example.mycarsmt.model.repo.part.PartServiceImpl.Companion.RESULT_REPAIRS_FOR_PART
 import com.example.mycarsmt.view.activities.MainActivity
@@ -28,10 +29,9 @@ import java.io.File
 
 class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
-    private val TAG = "testmt"
-
     companion object {
-        val FRAG_TAG = "partFragment"
+        const val FRAG_TAG = "partFragment"
+        const val TAG = "testmt"
 
         fun getInstance(part: Part): PartFragment {
 
@@ -67,9 +67,10 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         partService = PartServiceImpl(view.context, handler)
 
         part = arguments?.getSerializable("part") as Part
+        partService.readById(part.id)
+
         partService.getNotesFor(part)
         partService.getRepairsFor(part)
-
         loadPartData()
 
         loadPhoto()
@@ -85,31 +86,30 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
             setAdapter()
         }
         partPanelButtonService.setOnClickListener {
-            partService.addRepair(part.makeService())
-            partService.update(part)
-            partService.getRepairsFor(part)
+            manager.loadServiceFragment(part)
             // snack about service
         }
         partPanelFABSet.setOnClickListener {
+            contentType = ContentType.DEFAULT
             manager.loadPartCreator(part)
         }
         partPanelButtonCancel.setOnClickListener {
-            if (contentType == ContentType.DEFAULT){
+            if (contentType == ContentType.DEFAULT) {
                 manager.loadPreviousFragment(this)
-            }else{
+            } else {
                 hideRecycler()
             }
         }
         partPanelRecyclerAddButton.setOnClickListener {
-            when(contentType){
-                ContentType.NOTES ->{
+            when (contentType) {
+                ContentType.NOTES -> {
                     val note = Note()
                     note.carId = part.carId
                     note.partId = part.id
                     note.mileage = part.mileage
                     manager.loadNoteCreator(note)
                 }
-                ContentType.REPAIRS ->{
+                ContentType.REPAIRS -> {
                     val repair = Repair()
                     repair.carId = part.carId
                     repair.partId = part.id
@@ -124,7 +124,9 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun loadPartData(){
+    private fun loadPartData() {
+        manager.title = part.name
+
         partCreatorTextName.text = part.name
         partPanelTextToChangeDKM.text = part.getInfoToChange()
         partPanelTextInstallAtKM.text = "${part.mileageLastChange} km"
@@ -136,14 +138,13 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     @SuppressLint("SetTextI18n")
     private fun initHandler() {
         handler = Handler(view!!.context.mainLooper, Handler.Callback { msg ->
-            Log.d(TAG, "Handler: took data from database: result " + msg.what)
             when (msg.what) {
                 RESULT_PART_UPDATED -> {
                     part = msg.obj as Part
                     loadPartData()
                     Log.d(
                         TAG,
-                        "Handler: took notes from database: list size ${notes.size}"
+                        "HandlerPF: took notes from database: list size ${part.name}"
                     )
                     true
                 }
@@ -151,7 +152,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     notes = msg.obj as List<Note>
                     Log.d(
                         TAG,
-                        "Handler: took notes from database: list size ${notes.size}"
+                        "HandlerPF: took notes from database: list size ${notes.size}"
                     )
                     if (contentType == ContentType.NOTES) setAdapter()
                     true
@@ -160,14 +161,20 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     repairs = msg.obj as List<Repair>
                     Log.d(
                         TAG,
-                        "Handler: took repairs from database: list size ${repairs.size}"
+                        "HandlerPF: took repairs from database: list size ${repairs.size}"
                     )
                     if (contentType == ContentType.REPAIRS) setAdapter()
                     true
                 }
-//                RESULT_PART_CAR -> {
-//                    val car = msg.obj as Car
-//                    manager.loadCarFragment(car)
+//                RESULT_PART_READ -> {
+//                    part = msg.obj as Part
+//                    loadPartData()
+//                    Log.d(
+//                        TAG,
+//                        "HandlerPF: took part from database"
+//                    )
+//                    partService.getNotesFor(part)
+//                    partService.getRepairsFor(part)
 //                    true
 //                }
                 else -> {
@@ -185,7 +192,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     private fun setAdapter() {
         when (contentType) {
             ContentType.DEFAULT -> {
-                if(partPanelRecycler.visibility == View.VISIBLE) hideRecycler ()
+                if (partPanelRecycler.visibility == View.VISIBLE) hideRecycler()
             }
             ContentType.NOTES -> {
                 if (partPanelRecycler.visibility == View.GONE) showRecycler()
@@ -207,7 +214,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     }
                 })
             }
-            else ->{
+            else -> {
 
             }
         }
@@ -222,7 +229,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private fun checkOnEmpty(list: List<*>){
+    private fun checkOnEmpty(list: List<*>) {
         if (list.isEmpty()) partPanelNoElements.visibility = View.VISIBLE
         else partPanelNoElements.visibility = View.GONE
     }
@@ -258,7 +265,8 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initFragmentManager() {
         val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity)
+        if (mainActivity is MainActivity) {
             manager = mainActivity
+        }
     }
 }

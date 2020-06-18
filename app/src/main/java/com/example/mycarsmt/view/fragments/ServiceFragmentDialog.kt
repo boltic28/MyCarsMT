@@ -13,23 +13,22 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.example.mycarsmt.R
-import com.example.mycarsmt.model.Car
-import com.example.mycarsmt.model.repo.car.CarServiceImpl
-import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CAR_DELETED
+import com.example.mycarsmt.model.Part
+import com.example.mycarsmt.model.repo.part.PartServiceImpl
 import com.example.mycarsmt.view.activities.MainActivity
 
-class CarDeleteDialog : DialogFragment() {
+class ServiceFragmentDialog : DialogFragment() {
 
     companion object {
         const val TAG = "testmt"
-        const val FRAG_TAG = "deleter"
+        const val FRAG_TAG = "service"
 
-        fun getInstance(car: Car): CarDeleteDialog {
+        fun getInstance(part: Part): ServiceFragmentDialog {
 
             val bundle = Bundle()
-            bundle.putSerializable("car", car)
+            bundle.putSerializable("part", part)
 
-            val fragment = CarDeleteDialog()
+            val fragment = ServiceFragmentDialog()
             fragment.arguments = bundle
 
             return fragment
@@ -41,31 +40,35 @@ class CarDeleteDialog : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_dialog_service, container, false)
 
-        val car = arguments?.getSerializable("car") as Car
+        val part = arguments?.getSerializable("part") as Part
         val handler = initHandler(container!!.context.mainLooper)
-        val carService = CarServiceImpl(view.context, handler)
+        val partService = PartServiceImpl(view.context, handler)
 
-        view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
-            "Do you want to delete ${car.brand} ${car.model}"
-        view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
+        view.findViewById<TextView>(R.id.serviceFragmentQuestion).text =
+            "Do you want to make service for: ${part.name}"
+
+        view.findViewById<Button>(R.id.serviceFragmentButtonCancel).setOnClickListener {
             dismiss()
         }
-        view.findViewById<Button>(R.id.deleteFragmentButtonDelete).setOnClickListener {
-            carService.delete(car)
+
+        view.findViewById<Button>(R.id.serviceFragmentButtonMakeService).setOnClickListener {
+            partService.addRepair(part.makeService())
+            partService.update(part)
         }
+
         return view
     }
 
     private fun initHandler(looper: Looper): Handler {
         return Handler(looper, Handler.Callback { msg ->
             Log.d(TAG, "Handler: took data from database: result " + msg.what)
-            if (msg.what == RESULT_CAR_DELETED ){
+            if (msg.what == PartServiceImpl.RESULT_PART_UPDATED){
                 val mainActivity: Activity? = activity
                 if (mainActivity is MainActivity) {
-                    mainActivity.loadMainFragment()
+                    mainActivity.loadPreviousFragmentWithStack(CarFragment.FRAG_TAG)
                 }
                 dismiss()
                 true
