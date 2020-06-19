@@ -84,6 +84,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/firstRecycler" />
+<!--delete-->
+    <Button
+        android:id="@+id/carsCreateTestPark"
+        style="@style/Button.CommonListParts"
+        android:visibility="invisible"
+        android:text="Try app with test cars, CLICK"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/carsEmptyList" />
 
     <TextView
         android:id="@+id/carsNoResult"

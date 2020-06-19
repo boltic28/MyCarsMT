@@ -19,7 +19,8 @@ interface CarService {
 
     fun doDiagnosticAllCars()
     fun doDiagnosticForCar(car: Car)
+    fun makeDiagnosticAndSave(car: Car): Car
+    fun makeDiagnosticForNotification()
 
     fun createCommonPartsFor(car: Car)
-    fun makeDiagnosticAndSave(car: Car): Car
 }

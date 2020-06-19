@@ -22,7 +22,6 @@ import com.example.mycarsmt.model.repo.car.CarServiceImpl
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CAR_READED
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_CAR_UPDATED
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_NOTES_FOR_CAR
-import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_PARTS_ADDED_TO_CAR
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_PARTS_FOR_CAR
 import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_REPAIRS_FOR_CAR
 import com.example.mycarsmt.view.activities.MainActivity
@@ -76,14 +75,9 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         carService.readById(car.id)
 
         loadCarDataIntoView()
-        loadPhoto()
         setRecycler()
 
         setButtons()
-    }
-//delete if you don't need it
-    fun reload(){
-        carService.readById(car.id)
     }
 
     private fun setButtons(){
@@ -124,30 +118,8 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         carPanelVin.text = car.vin
         carPanelMileage.text = "${car.mileage} km"
 
+        loadPhoto()
         refreshCondition()
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun refreshCondition(){
-        Log.d(TAG, "CarFragment: refreshing conditions")
-
-        if (car.condition.contains(Condition.ATTENTION))
-            carPanelIconAttention.setColorFilter(Color.argb(255, 230, 5, 5))
-        if (car.condition.contains(Condition.MAKE_SERVICE))
-            carPanelIconService.setColorFilter(Color.argb(255, 230, 120, 5))
-        if (car.condition.contains(Condition.BUY_PARTS))
-            carPanelIconBuy.setColorFilter(Color.argb(255, 180, 180, 5))
-        if (car.condition.contains(Condition.MAKE_INSPECTION))
-            carPanelIconInfo.setColorFilter(Color.argb(255, 10, 120, 5))
-
-        if (car.condition.contains(Condition.CHECK_MILEAGE))
-            carPanelMileage.text = "!${car.mileage} km"
-    }
-
-    private fun loadListsForCar(){
-        carService.getPartsFor(car)
-        carService.getNotesFor(car)
-        carService.getRepairsFor(car)
     }
 
     private fun loadPhoto() {
@@ -157,6 +129,24 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
             Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
                 .into(carPanelMainImage)
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun refreshCondition(){
+        Log.d(TAG, "CarFragment: refreshing conditions")
+
+        turnOffIcons()
+
+        if (car.condition.contains(Condition.ATTENTION))
+            carPanelIconAttention.setColorFilter(Color.argb(255, 230, 5, 5))
+        if (car.condition.contains(Condition.MAKE_SERVICE))
+            carPanelIconService.setColorFilter(Color.argb(255, 230, 120, 5))
+        if (car.condition.contains(Condition.BUY_PARTS))
+            carPanelIconBuy.setColorFilter(Color.argb(255, 180, 180, 5))
+        if (car.condition.contains(Condition.MAKE_INSPECTION))
+            carPanelIconInfo.setColorFilter(Color.argb(255, 10, 120, 5))
+        if (car.condition.contains(Condition.CHECK_MILEAGE))
+            carPanelMileage.text = "!${car.mileage} km"
     }
 
     @SuppressLint("SetTextI18n")
@@ -198,7 +188,6 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                         "HandlerCF: data for car is ready"
                     )
                     loadListsForCar()
-                    turnOffIcons()
                     refreshCondition()
                     true
                 }
@@ -207,6 +196,12 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
                 }
             }
         })
+    }
+
+    private fun loadListsForCar(){
+        carService.getPartsFor(car)
+        carService.getNotesFor(car)
+        carService.getRepairsFor(car)
     }
 
     private fun initFragmentManager() {

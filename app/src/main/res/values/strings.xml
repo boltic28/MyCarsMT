@@ -69,4 +69,5 @@
     <string name="create_common_list_of_parts">create common list of parts</string>
     <string name="park_is_counting">park is counting...</string>
     <string name="days_between_correcting_odo_days">Days between correcting odo, days</string>
+    <string name="check_your_cars">check your cars</string>
 </resources>

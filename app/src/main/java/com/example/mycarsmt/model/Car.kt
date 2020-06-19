@@ -130,13 +130,4 @@ class Car() : Serializable {
         return list
     }
 
-//    private fun isHasImportantNotes(): Boolean {
-//        if (notes.isEmpty()) return false
-//
-//        notes.listIterator().forEach {
-//            if (it.isHighImportant()) return true
-//        }
-//        return false
-//    }
-
 }

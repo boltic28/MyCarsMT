@@ -38,12 +38,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Log.d(TAG, "MAIN: new start-------------------------------------------")
-        checkPermissions()
-
         fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
             .add(R.id.fragmentContainer, MainListFragment.getInstance(), MainListFragment.FRAG_TAG)
             .commit()
+
+        checkPermissions()
     }
 
     private fun checkPermissions() {
@@ -99,19 +99,16 @@ class MainActivity : AppCompatActivity() {
     fun loadMainFragment() {
         Log.d(TAG, "FRAG manager: create main fragment")
 
-            fragmentManager.popBackStack(
-                null,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE
-            )
-
         fragmentManager.beginTransaction()
             .replace(
                 R.id.fragmentContainer,
                 MainListFragment.getInstance(),
                 MainListFragment.FRAG_TAG
             )
-            .addToBackStack(MainListFragment.FRAG_TAG)
             .commit()
+
+        fragmentManager.popBackStack(
+            null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     fun loadCarFragment(car: Car) {

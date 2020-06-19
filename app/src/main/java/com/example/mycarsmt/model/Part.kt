@@ -127,8 +127,8 @@ class Part(): Serializable {
     }
 
     fun getInfoToChange(): String {
-        if (limitDays == 0) return "${getMileageToRepair()} km"
-        if (limitKM == 0)   return "${getDaysToRepair()} days"
+        if (limitDays == 0) return "To service: ${getMileageToRepair()} km"
+        if (limitKM == 0)   return "To service: ${getDaysToRepair()} days"
         return "To service: ${getMileageToRepair()} km/${getDaysToRepair()} days"
     }
 
@@ -175,7 +175,7 @@ class Part(): Serializable {
         repair.partId = id
         repair.description = "changed during technical works: $codes"
         repair.date = LocalDate.now()
-        if (codes == SpecialWords.INSURANCE.value)
+        if (type == PartControlType.INSURANCE)
             repair.description = "auto increase insurance for: ${dateLastChange.plusDays(
                 insurancePeriod.toLong()//? check it on preference correct working
             )}"
@@ -208,7 +208,7 @@ class Part(): Serializable {
     }
 
     private fun isNeedToInspection(): Boolean {
-        if (isOverRide() && codes == SpecialWords.INSPECTION_ONLY.value) return true
+        if (isOverRide() && type == PartControlType.INSPECTION) return true
         return false
     }
 
