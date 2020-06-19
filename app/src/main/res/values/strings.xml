@@ -70,4 +70,14 @@
     <string name="park_is_counting">park is counting...</string>
     <string name="days_between_correcting_odo_days">Days between correcting odo, days</string>
     <string name="check_your_cars">check your cars</string>
+    <string name="description_of_repair">description of repair...</string>
+    <string name="date_repair">Date repair:</string>
+    <string name="mileage_km">Mileage(km):</string>
+    <string name="cost">Cost($):</string>
+    <string name="type">Type:</string>
+    <string name="_00_00_2000">00.00.2000</string>
+    <string name="date_of_repair_dd_mm_yyyy">date of repair dd.mm.yyyy</string>
+    <string name="mileage">mileage</string>
+    <string name="input_cost_100">input cost 100</string>
+    <string name="change_repair">change/repair</string>
 </resources>

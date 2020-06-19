@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,7 +12,7 @@
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
-        android:hint="change/repair"
+        android:hint="@string/change_repair"
         android:inputType="text|textPersonName"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
@@ -28,7 +27,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:hint='input cost "100"'
+        android:hint="@string/input_cost_100"
         android:inputType="number"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
@@ -43,7 +42,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:hint="mileage"
+        android:hint="@string/mileage"
         android:inputType="number"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
@@ -58,11 +57,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:hint='date of repair "dd.mm.yyyy"'
+        android:hint="@string/date_of_repair_dd_mm_yyyy"
         android:inputType="date"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:text="00.00.2000"
+        android:text="@string/_00_00_2000"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/repairCreatorMileage" />
@@ -75,7 +74,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="6dp"
         android:paddingTop="10dp"
-        android:text="Type:"
+        android:text="@string/type"
         android:textAlignment="viewEnd"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -91,7 +90,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="6dp"
         android:paddingTop="10dp"
-        android:text="Cost($):"
+        android:text="@string/cost"
         android:textAlignment="viewEnd"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -108,7 +107,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="6dp"
         android:paddingTop="10dp"
-        android:text="Mileage(km):"
+        android:text="@string/mileage_km"
         android:textAlignment="viewEnd"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -125,7 +124,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="6dp"
         android:paddingTop="10dp"
-        android:text="Date repair:"
+        android:text="@string/date_repair"
         android:textAlignment="viewEnd"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -176,10 +175,11 @@
         android:layout_marginTop="6dp"
         android:layout_marginEnd="6dp"
         android:ems="10"
-        android:hint="description of repair..."
+        android:hint="@string/description_of_repair"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/repairCreatorButtonCreate"
         app:layout_constraintTop_toBottomOf="@+id/repairCreatorDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
