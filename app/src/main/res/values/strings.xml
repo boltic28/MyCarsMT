@@ -80,4 +80,10 @@
     <string name="mileage">mileage</string>
     <string name="input_cost_100">input cost 100</string>
     <string name="change_repair">change/repair</string>
+    <string name="limit_day">Limit (day):</string>
+    <string name="limit_km">Limit (km):</string>
+    <string name="codes">Codes:</string>
+    <string name="name">Name:</string>
+    <string name="last_service">Last service:</string>
+    <string name="last_service">Last service:</string>
 </resources>

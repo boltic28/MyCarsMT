@@ -10,13 +10,12 @@ import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.mycarsmt.R
-import com.example.mycarsmt.view.activities.MainActivity
+import com.example.mycarsmt.presentation.activities.MainActivity
 
 
 class NotificationCar(val context: Context) {
 
     companion object {
-
         const val CHANNEL_ID = "MY_CARS"
         const val CHANNEL_NAME = "com.example.mycarsmt"
         const val CHANNEL_DESCRIPTION = "Info about cars"

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".view.activities.MainActivity"
+            android:name=".presentation.activities.MainActivity"
             android:screenOrientation="locked">
 
             <intent-filter>

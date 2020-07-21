@@ -5,8 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
-import com.example.mycarsmt.model.repo.car.CarServiceImpl
-import com.example.mycarsmt.model.repo.car.CarServiceImpl.Companion.RESULT_DIAGNOSTIC_FOR_NOTIFICATION
+import com.example.mycarsmt.domain.service.car.CarServiceImpl
+import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_DIAGNOSTIC_FOR_NOTIFICATION
 
 class CarReceiver : BroadcastReceiver() {
 
