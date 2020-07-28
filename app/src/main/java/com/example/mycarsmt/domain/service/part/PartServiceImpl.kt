@@ -9,7 +9,7 @@ import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.data.database.AppDatabase
+import com.example.mycarsmt.data.AppDatabase
 import com.example.mycarsmt.data.database.car.CarDao
 import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao

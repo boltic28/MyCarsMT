@@ -1,4 +1,4 @@
-package com.example.mycarsmt.data.database.vconvertors
+package com.example.mycarsmt.data.vconvertors
 
 import androidx.room.TypeConverter
 import com.example.mycarsmt.data.enums.NoteLevel

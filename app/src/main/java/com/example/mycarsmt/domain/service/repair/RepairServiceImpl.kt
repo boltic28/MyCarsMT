@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.data.database.AppDatabase
+import com.example.mycarsmt.data.AppDatabase
 import com.example.mycarsmt.data.database.car.CarDao
 import com.example.mycarsmt.data.database.part.PartDao
 import com.example.mycarsmt.data.database.repair.RepairDao

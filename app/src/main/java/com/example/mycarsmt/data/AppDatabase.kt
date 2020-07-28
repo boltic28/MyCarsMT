@@ -1,4 +1,4 @@
-package com.example.mycarsmt.data.database
+package com.example.mycarsmt.data
 
 import android.content.Context
 import androidx.room.Database

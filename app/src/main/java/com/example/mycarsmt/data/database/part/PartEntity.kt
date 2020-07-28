@@ -3,9 +3,9 @@ package com.example.mycarsmt.data.database.part
 import androidx.room.*
 import com.example.mycarsmt.data.enums.PartControlType
 import com.example.mycarsmt.data.database.car.CarEntity
-import com.example.mycarsmt.data.database.vconvertors.ConditionConverter
-import com.example.mycarsmt.data.database.vconvertors.LocalDateConverter
-import com.example.mycarsmt.data.database.vconvertors.TypeControlConverter
+import com.example.mycarsmt.data.vconvertors.ConditionConverter
+import com.example.mycarsmt.data.vconvertors.LocalDateConverter
+import com.example.mycarsmt.data.vconvertors.TypeControlConverter
 import com.example.mycarsmt.data.enums.Condition
 import java.time.LocalDate
 

@@ -1,7 +1,7 @@
 package com.example.mycarsmt.data.database.repair
 
 import androidx.room.*
-import com.example.mycarsmt.data.database.vconvertors.LocalDateConverter
+import com.example.mycarsmt.data.vconvertors.LocalDateConverter
 import com.example.mycarsmt.data.database.car.CarEntity
 import java.time.LocalDate
 

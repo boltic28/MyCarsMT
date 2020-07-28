@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.mycarsmt.data.enums.Condition
-import com.example.mycarsmt.data.database.vconvertors.ConditionConverter
-import com.example.mycarsmt.data.database.vconvertors.LocalDateConverter
+import com.example.mycarsmt.data.vconvertors.ConditionConverter
+import com.example.mycarsmt.data.vconvertors.LocalDateConverter
 import java.time.LocalDate
 
 @Entity(tableName = "car")

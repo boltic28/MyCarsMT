@@ -30,6 +30,8 @@ android {
 }
 
 dependencies {
+//dagger2
+    implementation group: 'com.google.dagger', name: 'dagger', version: '2.28'
 //room
     implementation 'androidx.room:room-runtime:2.2.5'
     kapt 'androidx.room:room-compiler:2.2.5'

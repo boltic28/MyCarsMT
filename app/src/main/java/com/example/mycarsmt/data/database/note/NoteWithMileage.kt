@@ -3,8 +3,8 @@ package com.example.mycarsmt.data.database.note
 import androidx.room.ColumnInfo
 import androidx.room.TypeConverters
 import com.example.mycarsmt.data.enums.NoteLevel
-import com.example.mycarsmt.data.database.vconvertors.LocalDateConverter
-import com.example.mycarsmt.data.database.vconvertors.NoteLevelConverter
+import com.example.mycarsmt.data.vconvertors.LocalDateConverter
+import com.example.mycarsmt.data.vconvertors.NoteLevelConverter
 import java.time.LocalDate
 
 class NoteWithMileage() {

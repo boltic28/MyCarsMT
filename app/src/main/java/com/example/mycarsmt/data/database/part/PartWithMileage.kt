@@ -2,9 +2,9 @@ package com.example.mycarsmt.data.database.part
 
 import androidx.room.ColumnInfo
 import androidx.room.TypeConverters
-import com.example.mycarsmt.data.database.vconvertors.ConditionConverter
-import com.example.mycarsmt.data.database.vconvertors.LocalDateConverter
-import com.example.mycarsmt.data.database.vconvertors.TypeControlConverter
+import com.example.mycarsmt.data.vconvertors.ConditionConverter
+import com.example.mycarsmt.data.vconvertors.LocalDateConverter
+import com.example.mycarsmt.data.vconvertors.TypeControlConverter
 import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.data.enums.PartControlType
 import java.time.LocalDate

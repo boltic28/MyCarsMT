@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Relation
 import androidx.room.TypeConverters
 import com.example.mycarsmt.data.enums.PartControlType
-import com.example.mycarsmt.data.database.vconvertors.LocalDateConverter
-import com.example.mycarsmt.data.database.vconvertors.TypeControlConverter
+import com.example.mycarsmt.data.vconvertors.LocalDateConverter
+import com.example.mycarsmt.data.vconvertors.TypeControlConverter
 import com.example.mycarsmt.data.database.note.NoteEntity
 import com.example.mycarsmt.data.database.repair.RepairEntity
 import java.time.LocalDate
