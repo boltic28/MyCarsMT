@@ -45,7 +45,7 @@ class NoteCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         initFragmentManager()
         handler = Handler(view.context.mainLooper)
-        noteService = NoteServiceImpl(view.context, handler)
+        noteService = NoteServiceImpl()
         note = arguments?.getSerializable("note") as Note
         manager.title =
             if (note.id == 0L) "Create new car"

@@ -51,7 +51,7 @@ class MileageFragmentDialog: DialogFragment() {
 
         val car = arguments?.getSerializable("car") as Car
         val handler = initHandler(container!!.context.mainLooper)
-        val carService = CarServiceImpl(view.context, handler)
+        val carService = CarServiceImpl()
         val editMileage = view.findViewById<EditText>(R.id.mileageTMPOdo)
 
         view.findViewById<TextView>(R.id.mileageCarName).text = car.getFullName()

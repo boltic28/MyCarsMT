@@ -47,7 +47,7 @@ class CarDeleteDialog : DialogFragment() {
 
         val car = arguments?.getSerializable("car") as Car
         val handler = initHandler(container!!.context.mainLooper)
-        val carService = CarServiceImpl(view.context, handler)
+        val carService = CarServiceImpl()
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
             "Do you want to delete ${car.brand} ${car.model}"

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Handler
 import android.os.HandlerThread
+import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part
@@ -17,14 +18,21 @@ import com.example.mycarsmt.data.database.repair.RepairDao
 import com.example.mycarsmt.domain.service.mappers.EntityConverter
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
+import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairEntityFrom
+import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
 import com.example.mycarsmt.presentation.fragments.SettingFragment
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Single
+import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
+import javax.inject.Inject
 
 @SuppressLint("NewApi")
-class PartServiceImpl(val context: Context, handler: Handler) : PartService {
+class PartServiceImpl @Inject constructor() : PartService {
 
     companion object {
         const val TAG = "testmt"
@@ -40,169 +48,84 @@ class PartServiceImpl(val context: Context, handler: Handler) : PartService {
         const val RESULT_REPAIRS_FOR_PART = 213
     }
 
-    private var mainHandler: Handler
-    private var partDao: PartDao
-    private var noteDao: NoteDao
-    private var carDao: CarDao
-    private var repairDao: RepairDao
-    private var preferences: SharedPreferences
+    @Inject
+    lateinit var carDao: CarDao
+    @Inject
+    lateinit var partDao: PartDao
+    @Inject
+    lateinit var noteDao: NoteDao
+    @Inject
+    lateinit var repairDao: RepairDao
+    @Inject
+    lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var executor: ExecutorService
 
     init {
-        val db: AppDatabase = AppDatabase.getInstance(context)!!
-        mainHandler = handler
-        partDao = db.partDao()
-        noteDao = db.noteDao()
-        carDao = db.carDao()
-        repairDao = db.repairDao()
-        preferences = context.getSharedPreferences(
-            SettingFragment.APP_PREFERENCES,
-            Context.MODE_PRIVATE
-        )
+        App.component.injectService(this)
     }
 
-    override fun create(part: Part) {
-        val handlerThread = HandlerThread("createThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            part.id = partDao.insert(partEntityFrom(part))
+    override fun create(part: Part): Single<Part> {
+        return partDao.getById(
+            partDao.insert(partEntityFrom(part)))
+            .map { entity -> partFrom(entity) }
+            .single(part)
+    }
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_CREATED, part))
-            handlerThread.quit()
+    override fun update(part: Part): Single<Part> {
+        executor.execute {
+            Runnable { partDao.update(partEntityFrom(part)) }.run()
         }
+        return Single.just(part)
     }
 
-    override fun update(part: Part) {
-        val handlerThread = HandlerThread("createThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            part.checkCondition(preferences)
-            partDao.update(partEntityFrom(part))
+    override fun delete(part: Part): Single<Int> {
+        return Single.just(partDao.delete(partEntityFrom(part)))
+    }
 
-            val car = carFrom(carDao.getById(part.carId))
-            car.parts = partDao.getAllForCar(car.id).stream()
-                .map{entity -> partFrom(entity)}
+    override fun readAll(): Flowable<List<Part>> {
+        return partDao.getAll().map { value ->
+            value.stream()
+                .map { entity -> partFrom(entity) }
                 .collect(Collectors.toList())
-            car.checkConditions(preferences)
-            carDao.update(carEntityFrom(car))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_UPDATED, part))
-            handlerThread.quit()
         }
     }
 
-    override fun delete(part: Part) {
-        val handlerThread = HandlerThread("createThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            partDao.delete(partEntityFrom(part))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_DELETED, part))
-            getCarFor(part)
-            handlerThread.quit()
-        }
-    }
-
-    override fun readAll() {
-        var parts: List<Part>
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val handler = Handler(handlerThread.looper)
-        handler.post {
-            parts = partDao.getAll().stream().map { entity -> partFrom(entity) }
+    override fun readAllForCar(car: Car): Flowable<List<Part>> {
+        return partDao.getAllForCar(car.id).map { value ->
+            value.stream()
+                .map { entity -> partFrom(entity) }
                 .collect(Collectors.toList())
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_READ, parts))
-            handlerThread.quit()
         }
     }
 
-    override fun readAllForCar(car: Car) {
-        var parts: List<Part>
-        val handlerThread = HandlerThread("readPartForCarThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            parts = partDao.getAllForCar(car.id).stream().map { entity -> partFrom(entity) }
+    override fun readById(partId: Long): Flowable<Part> {
+        return partDao.getById(partId).map { value -> partFrom(value) }
+    }
+
+    override fun getNotesFor(part: Part): Flowable<List<Note>> {
+        return noteDao.getAllForPart(part.id).map { value ->
+            value.stream()
+                .map { entity -> noteFrom(entity) }
                 .collect(Collectors.toList())
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_FOR_CAR, parts))
-            handlerThread.quit()
         }
     }
 
-    override fun readById(partId: Long) {
-        var part: Part
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            part = partFrom(partDao.getById(partId))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_READ, part))
-            handlerThread.quit()
-        }
-    }
-
-    override fun getNotesFor(part: Part) {
-        var notes: List<Note>
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val handler = Handler(handlerThread.looper)
-        handler.post {
-            notes = noteDao.getAllForPart(part.id).stream().map { entity ->
-                EntityConverter.noteFrom(entity) }
+    override fun getRepairsFor(part: Part): Flowable<List<Repair>> {
+        return repairDao.getAllForPart(part.id).map { value ->
+            value.stream()
+                .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_NOTES_FOR_PART, notes))
-            handlerThread.quit()
         }
     }
 
-    override fun getRepairsFor(part: Part) {
-        var repairs: List<Repair>
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val handler = Handler(handlerThread.looper)
-        handler.post {
-            repairs = repairDao.getAllForPart(part.id).stream().map { entity ->
-                EntityConverter.repairFrom(entity) }
-                .collect(Collectors.toList())
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIRS_FOR_PART, repairs))
-            handlerThread.quit()
-        }
-    }
-
-    override fun getCarFor(part: Part) {
-        val handlerThread = HandlerThread("getCarThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            val car = carFrom(carDao.getById(part.carId))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PART_CAR, car))
-            handlerThread.quit()
-        }
+    override fun getCarFor(part: Part): Maybe<Car> {
+        return carDao.getById(part.carId).map { value -> carFrom(value) }.singleElement()
     }
 
     override fun addRepair(repair: Repair) {
-        val handlerThread = HandlerThread("repairThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            repairDao.insert(repairEntityFrom(repair))
-
-            handlerThread.quit()
+        executor.execute{
+            Runnable { repairDao.insert(repairEntityFrom(repair)) }
         }
     }
 }

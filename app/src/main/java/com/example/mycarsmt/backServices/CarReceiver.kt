@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_DIAGNOSTIC_FOR_NOTIFICATION
+//import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_DIAGNOSTIC_FOR_NOTIFICATION
 
 class CarReceiver : BroadcastReceiver() {
 
@@ -16,24 +16,24 @@ class CarReceiver : BroadcastReceiver() {
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (context != null) {
-            handler = initHandler(context)
-            notification = NotificationCar(context)
-            notification.createNotificationChannel()
-
-            carServiceImpl = CarServiceImpl(context, handler)
-        }
+//        if (context != null) {
+//            handler = initHandler(context)
+//            notification = NotificationCar(context)
+//            notification.createNotificationChannel()
+//
+//            carServiceImpl = CarServiceImpl(context, handler)
+//        }
     }
 
-    private fun initHandler(context: Context) =
-        Handler(context.mainLooper, Handler.Callback { msg ->
-            if (msg.what == RESULT_DIAGNOSTIC_FOR_NOTIFICATION) {
-                val string = msg.obj as String
-                notification.showNotification(context, string)
-                true
-            } else {
-                false
-            }
-        })
+//    private fun initHandler(context: Context) =
+//        Handler(context.mainLooper, Handler.Callback { msg ->
+//            if (msg.what == RESULT_DIAGNOSTIC_FOR_NOTIFICATION) {
+//                val string = msg.obj as String
+//                notification.showNotification(context, string)
+//                true
+//            } else {
+//                false
+//            }
+//        })
 
 }

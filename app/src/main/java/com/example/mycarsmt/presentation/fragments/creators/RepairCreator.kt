@@ -47,7 +47,7 @@ class RepairCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         initFragmentManager()
         handler = Handler(view.context.mainLooper)
-        repairService = RepairServiceImpl(view.context, handler)
+        repairService = RepairServiceImpl()
         repair = arguments?.getSerializable("repair") as Repair
         manager.title =
             if (repair.id == 0L) "Create new repair"

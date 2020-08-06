@@ -2,21 +2,31 @@ package com.example.mycarsmt.domain.service.repair
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Handler
 import android.os.HandlerThread
+import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Repair
 import com.example.mycarsmt.data.AppDatabase
 import com.example.mycarsmt.data.database.car.CarDao
+import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao
 import com.example.mycarsmt.data.database.repair.RepairDao
+import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Single
+import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
+import javax.inject.Inject
 
 @SuppressLint("NewApi")
-class RepairServiceImpl(var context: Context, handler: Handler): RepairService {
+class RepairServiceImpl @Inject constructor(): RepairService {
 
     companion object {
         const val RESULT_REPAIRS_READED = 401
@@ -32,141 +42,72 @@ class RepairServiceImpl(var context: Context, handler: Handler): RepairService {
 
     private val TAG = "testmt"
 
-    private var mainHandler: Handler
-    private var repairDao: RepairDao
-    private var carDao: CarDao
-    private var partDao: PartDao
+    @Inject
+    lateinit var carDao: CarDao
+    @Inject
+    lateinit var partDao: PartDao
+    @Inject
+    lateinit var repairDao: RepairDao
+    @Inject
+    lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var executor: ExecutorService
 
     init {
-        val db: AppDatabase = AppDatabase.getInstance(context)!!
-        mainHandler = handler
-        repairDao = db.repairDao()
-        carDao = db.carDao()
-        partDao = db.partDao()
+        App.component.injectService(this)
     }
 
-    override fun create(repair: Repair) {
-        var repairId: Long
-        val handlerThread = HandlerThread("createThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            repairId = repairDao.insert(repairEntityFrom(repair))
+    override fun create(repair: Repair): Single<Repair> {
+        return repairDao.getById(
+            repairDao.insert(repairEntityFrom(repair)))
+            .map { entity -> repairFrom(entity) }
+            .single(repair)
+    }
 
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIR_CREATED, repairId))
-            handlerThread.quit()
+    override fun update(repair: Repair): Single<Repair> {
+        executor.execute {
+            Runnable { repairDao.update(repairEntityFrom(repair)) }.run()
         }
+        return Single.just(repair)
     }
 
-    override fun update(repair: Repair) {
-        val handlerThread = HandlerThread("createThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            repairDao.update(repairEntityFrom(repair))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIR_UPDATED))
-            handlerThread.quit()
-        }
+    override fun delete(repair: Repair): Single<Int> {
+        return Single.just(repairDao.delete(repairEntityFrom(repair)))
     }
 
-    override fun delete(repair: Repair) {
-        val handlerThread = HandlerThread("createThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            repairDao.delete(repairEntityFrom(repair))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIR_DELETED))
-            //get car or part
-            getCarFor(repair)
-            handlerThread.quit()
-        }
-    }
-
-    override fun readAll() {
-        var repairs: List<Repair>
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val handler = Handler(handlerThread.looper)
-        handler.post {
-            repairs = repairDao.getAll().stream().map { entity -> repairFrom(entity) }
+    override fun readAll(): Flowable<List<Repair>> {
+        return repairDao.getAll().map { value ->
+            value.stream()
+                .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIRS_READED, repairs))
-            handlerThread.quit()
         }
     }
 
-    override fun readById(id: Long) {
-        var repair: Repair
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            repair = repairFrom(repairDao.getById(id))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIR_READED, repair))
-            handlerThread.quit()
-        }
+    override fun readById(id: Long): Flowable<Repair> {
+        return repairDao.getById(id).map { value -> repairFrom(value) }
     }
 
-    override fun readAllForCar(carId: Long) {
-        var repairs: List<Repair>
-        val handlerThread = HandlerThread("readPartForCarThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            repairs = repairDao.getAllForCar(carId).stream().map { entity -> repairFrom(entity) }
+    override fun readAllForCar(car: Car): Flowable<List<Repair>> {
+        return repairDao.getAllForCar(car.id).map { value ->
+            value.stream()
+                .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIRS_FOR_CAR, repairs))
-            handlerThread.quit()
         }
     }
 
-    override fun readAllForPart(partId: Long) {
-        var repairs: List<Repair>
-        val handlerThread = HandlerThread("readThread")
-        handlerThread.start()
-        val handler = Handler(handlerThread.looper)
-        handler.post {
-            repairs = repairDao.getAllForPart(partId).stream().map { entity -> repairFrom(entity) }
+    override fun readAllForPart(part: Part): Flowable<List<Repair>> {
+        return repairDao.getAllForCar(part.id).map { value ->
+            value.stream()
+                .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIRS_FOR_PART, repairs))
-            handlerThread.quit()
         }
     }
 
-    override fun getCarFor(repair: Repair) {
-        val handlerThread = HandlerThread("getCarThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            val car = carFrom(carDao.getById(repair.carId))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIR_CAR, car))
-            handlerThread.quit()
-        }
+    override fun getCarFor(repair: Repair): Maybe<Car> {
+        return carDao.getById(repair.carId).map { value -> carFrom(value) }.singleElement()
     }
 
-    override fun getPartFor(repair: Repair) {
-        val handlerThread = HandlerThread("getPartThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            val part = partFrom(partDao.getById(repair.partId))
-
-            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_REPAIR_PART, part))
-            handlerThread.quit()
-        }
+    override fun getPartFor(repair: Repair): Maybe<Part> {
+        return partDao.getById(repair.partId).map { value -> partFrom(value) }.singleElement()
     }
 }

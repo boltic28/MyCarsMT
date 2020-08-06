@@ -63,7 +63,7 @@ class PartFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         initHandler()
 
-        partService = PartServiceImpl(view.context, handler)
+        partService = PartServiceImpl()
 
         part = arguments?.getSerializable("part") as Part
         partService.readById(part.id)

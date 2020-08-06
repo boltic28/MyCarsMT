@@ -9,30 +9,30 @@ import com.example.mycarsmt.domain.service.car.CarServiceImpl
 class WorkManagerCars(context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {
 
-    private var handler: Handler
-    private var carService:CarServiceImpl
-    private var notification: NotificationCar
+//    private var handler: Handler
+//    private var carService:CarServiceImpl
+//    private var notification: NotificationCar
 
     init {
-        handler = initHandler(context)
-        carService = CarServiceImpl(context, handler)
-        notification = NotificationCar(context)
-        notification.createNotificationChannel()
+//        handler = initHandler(context)
+//        carService = CarServiceImpl(context, handler)
+//        notification = NotificationCar(context)
+//        notification.createNotificationChannel()
     }
 
     override fun doWork(): Result {
-        carService.makeDiagnosticForNotification()
+//        carService.makeDiagnosticForNotification()
         return Result.success()
     }
 
-    private fun initHandler(context: Context) =
-        Handler(context.mainLooper, Handler.Callback { msg ->
-            if (msg.what == CarServiceImpl.RESULT_DIAGNOSTIC_FOR_NOTIFICATION) {
-                val string = msg.obj as String
-                notification.showNotification(context, string)
-                true
-            } else {
-                false
-            }
-        })
+//    private fun initHandler(context: Context) =
+//        Handler(context.mainLooper, Handler.Callback { msg ->
+//            if (msg.what == CarServiceImpl.RESULT_DIAGNOSTIC_FOR_NOTIFICATION) {
+//                val string = msg.obj as String
+//                notification.showNotification(context, string)
+//                true
+//            } else {
+//                false
+//            }
+//        })
 }

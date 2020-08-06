@@ -61,7 +61,7 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         initFragmentManager()
 
         initHandler()
-        carService = CarServiceImpl(view.context, handler)
+        carService = CarServiceImpl()
         car = arguments?.getSerializable("car") as Car
         isExist = car.id > 0
         manager.title =

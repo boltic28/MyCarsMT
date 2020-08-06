@@ -1,6 +1,7 @@
 package com.example.mycarsmt.data.database.repair
 
 import androidx.room.*
+import io.reactivex.Flowable
 
 @Dao
 interface RepairDao {
@@ -15,14 +16,14 @@ interface RepairDao {
     fun delete(repairEntity: RepairEntity): Int
 
     @Query("SELECT * FROM repair WHERE id = :id")
-    fun getById(id: Long): RepairEntity
+    fun getById(id: Long): Flowable<RepairEntity>
 
     @Query("SELECT * FROM repair")
-    fun getAll(): List<RepairEntity>
+    fun getAll(): Flowable<List<RepairEntity>>
 
     @Query("SELECT * FROM repair WHERE car_id = :carId")
-    fun getAllForCar(carId: Long): List<RepairEntity>
+    fun getAllForCar(carId: Long): Flowable<List<RepairEntity>>
 
     @Query("SELECT * FROM repair WHERE part_id = :partId")
-    fun getAllForPart(partId: Long): List<RepairEntity>
+    fun getAllForPart(partId: Long): Flowable<List<RepairEntity>>
 }

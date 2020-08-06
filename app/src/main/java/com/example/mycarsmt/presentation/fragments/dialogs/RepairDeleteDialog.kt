@@ -47,7 +47,7 @@ class RepairDeleteDialog : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
         val handler = initHandler(container!!.context.mainLooper)
         val repair = arguments?.getSerializable("repair") as Repair
-        val repairService = RepairServiceImpl(view.context, handler)
+        val repairService = RepairServiceImpl()
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
             "Do you want to delete ${repair.description}"

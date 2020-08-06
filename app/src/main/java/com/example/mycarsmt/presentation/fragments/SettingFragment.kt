@@ -48,7 +48,7 @@ class SettingFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         )
 
         initHandler(view.context)
-        carService = CarServiceImpl(view.context, handler)
+        carService = CarServiceImpl()
 
         settingsKmToBuyValue.setText(preferences?.getInt(KM_TO_BUY, 2000).toString())
         settingsKmToChangeValue.setText(preferences?.getInt(KM_TO_CHANGE, 1000).toString())

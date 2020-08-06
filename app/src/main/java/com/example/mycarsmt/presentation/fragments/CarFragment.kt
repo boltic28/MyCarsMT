@@ -69,7 +69,7 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         super.onViewCreated(view, savedInstanceState)
 
         initHandler()
-        carService = CarServiceImpl(view.context, handler)
+        carService = CarServiceImpl()
 
         car = arguments?.getSerializable("car") as Car
         carService.readById(car.id)
@@ -151,7 +151,7 @@ class CarFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     @SuppressLint("SetTextI18n")
     private fun initHandler() {
-        handler = Handler(view!!.context.mainLooper, Handler.Callback { msg ->
+        handler = Handler(view?.context?.mainLooper, Handler.Callback { msg ->
             when (msg.what) {
                 RESULT_PARTS_FOR_CAR -> {
                     parts = msg.obj as List<Part>

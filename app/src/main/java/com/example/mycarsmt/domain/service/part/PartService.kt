@@ -1,21 +1,25 @@
 package com.example.mycarsmt.domain.service.part
 
 import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.Repair
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Single
 
 interface PartService{
 
-    fun create(part: Part)
-    fun update(part: Part)
-    fun delete(part: Part)
-    fun readAll()
-    fun readAllForCar(car: Car)
-    fun readById(partId: Long)
+    fun create(part: Part): Single<Part>
+    fun update(part: Part): Single<Part>
+    fun delete(part: Part): Single<Int>
+    fun readAll(): Flowable<List<Part>>
+    fun readAllForCar(car: Car): Flowable<List<Part>>
+    fun readById(partId: Long): Flowable<Part>
 
-    fun getNotesFor(part: Part)
-    fun getRepairsFor(part: Part)
+    fun getNotesFor(part: Part): Flowable<List<Note>>
+    fun getRepairsFor(part: Part): Flowable<List<Repair>>
 
-    fun getCarFor(part: Part)
+    fun getCarFor(part: Part): Maybe<Car>
     fun addRepair(repair: Repair)
 }

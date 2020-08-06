@@ -61,7 +61,7 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
         initFragmentManager()
         initHandler()
-        partService = PartServiceImpl(view.context, handler)
+        partService = PartServiceImpl()
         part = arguments?.getSerializable("part") as Part
         manager.title =
             if (part.id == 0L) "Create new part"

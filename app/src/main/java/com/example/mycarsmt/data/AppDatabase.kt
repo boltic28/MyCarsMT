@@ -15,32 +15,26 @@ import com.example.mycarsmt.data.database.repair.RepairEntity
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-
-@Database(entities = [CarEntity::class, PartEntity::class, NoteEntity::class, RepairEntity::class],
+@Database(
+    entities = [CarEntity::class, PartEntity::class, NoteEntity::class, RepairEntity::class],
     version = 2,
     exportSchema = false
 )
-abstract class AppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
-    private val CORE_NUMBER = Runtime.getRuntime().availableProcessors()
+    private val CORES = Runtime.getRuntime().availableProcessors()
 
     companion object {
 
-        private var INSTANCE: AppDatabase? = null
+        fun getInstance(context: Context): AppDatabase {
 
-        fun getInstance(context: Context): AppDatabase? {
-            if (INSTANCE == null){
-                synchronized(AppDatabase::class){
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "car_app_db")
-                        .fallbackToDestructiveMigration()
-                        .build()
-                }
-            }
-            return INSTANCE
-        }
-
-        fun destroyDataBase(){
-            INSTANCE = null
+            return Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                "car_app_db"
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
 
@@ -49,9 +43,7 @@ abstract class AppDatabase: RoomDatabase() {
     abstract fun noteDao(): NoteDao
     abstract fun repairDao(): RepairDao
 
-    private val databaseExecutorService: ExecutorService = Executors.newFixedThreadPool(CORE_NUMBER)
-
-    open fun getDatabaseExecutorService(): ExecutorService? {
-        return databaseExecutorService
+    open fun getDatabaseExecutorService(): ExecutorService {
+        return Executors.newFixedThreadPool(CORES)
     }
 }

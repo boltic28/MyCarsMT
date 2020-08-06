@@ -37,10 +37,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Log.d(TAG, "MAIN: new start-------------------------------------------")
-        fragmentManager = supportFragmentManager
-        fragmentManager.beginTransaction()
-            .add(R.id.fragmentContainer, MainListFragment.getInstance(), MainListFragment.FRAG_TAG)
-            .commit()
+//        fragmentManager = supportFragmentManager
+//        fragmentManager.beginTransaction()
+//            .add(R.id.fragmentContainer, MainListFragment.getInstance(), MainListFragment.FRAG_TAG)
+//            .commit()
 
         checkPermissions()
     }
@@ -84,209 +84,209 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadSettings() {
-        Log.d(TAG, "FRAG manager: load settings fragment")
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                SettingFragment.getInstance(),
-                SettingFragment.FRAG_TAG
-            )
-            .addToBackStack(SettingFragment.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load settings fragment")
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                SettingFragment.getInstance(),
+//                SettingFragment.FRAG_TAG
+//            )
+//            .addToBackStack(SettingFragment.FRAG_TAG)
+//            .commit()
     }
 
     fun loadMainFragment() {
-        Log.d(TAG, "FRAG manager: create main fragment")
-
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                MainListFragment.getInstance(),
-                MainListFragment.FRAG_TAG
-            )
-            .commit()
-
-        fragmentManager.popBackStack(
-            null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+//        Log.d(TAG, "FRAG manager: create main fragment")
+//
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                MainListFragment.getInstance(),
+//                MainListFragment.FRAG_TAG
+//            )
+//            .commit()
+//
+//        fragmentManager.popBackStack(
+//            null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     fun loadCarFragment(car: Car) {
-        Log.d(TAG, "FRAG manager: create car fragment")
-
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                CarFragment.getInstance(car),
-                CarFragment.FRAG_TAG
-            )
-            .addToBackStack(CarFragment.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: create car fragment")
+//
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                CarFragment.getInstance(car),
+//                CarFragment.FRAG_TAG
+//            )
+//            .addToBackStack(CarFragment.FRAG_TAG)
+//            .commit()
     }
 
     fun loadCarFragmentWithoutBackStack(car: Car) {
-        Log.d(TAG, "FRAG manager: create car fragment")
-
-        if (fragmentManager.backStackEntryCount > 1) {
-            fragmentManager.popBackStack(
-                fragmentManager.getBackStackEntryAt(1).id,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE
-            )
-        }
-
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                CarFragment.getInstance(car),
-                CarFragment.FRAG_TAG
-            )
-            .commit()
+//        Log.d(TAG, "FRAG manager: create car fragment")
+//
+//        if (fragmentManager.backStackEntryCount > 1) {
+//            fragmentManager.popBackStack(
+//                fragmentManager.getBackStackEntryAt(1).id,
+//                FragmentManager.POP_BACK_STACK_INCLUSIVE
+//            )
+//        }
+//
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                CarFragment.getInstance(car),
+//                CarFragment.FRAG_TAG
+//            )
+//            .commit()
     }
 
     fun loadPartFragment(part: Part) {
-        Log.d(TAG, "FRAG manager: create part fragment")
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                PartFragment.getInstance(part),
-                PartFragment.FRAG_TAG
-            )
-            .addToBackStack(PartFragment.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: create part fragment")
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                PartFragment.getInstance(part),
+//                PartFragment.FRAG_TAG
+//            )
+//            .addToBackStack(PartFragment.FRAG_TAG)
+//            .commit()
     }
 
     fun loadPartFragmentWithoutBackStack(part: Part) {
-        Log.d(TAG, "FRAG manager: create part fragment")
-
-        if (fragmentManager.backStackEntryCount > 0) {
-            fragmentManager.popBackStack(PartFragment.FRAG_TAG, 0)
-        }
-
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                PartFragment.getInstance(part),
-                PartFragment.FRAG_TAG
-            )
-            .commit()
+//        Log.d(TAG, "FRAG manager: create part fragment")
+//
+//        if (fragmentManager.backStackEntryCount > 0) {
+//            fragmentManager.popBackStack(PartFragment.FRAG_TAG, 0)
+//        }
+//
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                PartFragment.getInstance(part),
+//                PartFragment.FRAG_TAG
+//            )
+//            .commit()
     }
 
     fun loadCarCreator(car: Car) {
-        Log.d(TAG, "FRAG manager: load carCreator fragment")
-
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                CarCreator.getInstance(car),
-                CarCreator.FRAG_TAG
-            )
-            .addToBackStack(CarCreator.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load carCreator fragment")
+//
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                CarCreator.getInstance(car),
+//                CarCreator.FRAG_TAG
+//            )
+//            .addToBackStack(CarCreator.FRAG_TAG)
+//            .commit()
     }
 
     fun loadPartCreator(part: Part) {
-        Log.d(TAG, "FRAG manager: load partCreator fragment")
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                PartCreator.getInstance(part),
-                PartCreator.FRAG_TAG
-            )
-            .addToBackStack(PartCreator.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load partCreator fragment")
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                PartCreator.getInstance(part),
+//                PartCreator.FRAG_TAG
+//            )
+//            .addToBackStack(PartCreator.FRAG_TAG)
+//            .commit()
     }
 
     fun loadNoteCreator(note: Note) {
-        Log.d(TAG, "FRAG manager: load noteCreator fragment")
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                NoteCreator.getInstance(note),
-                NoteCreator.FRAG_TAG
-            )
-            .addToBackStack(NoteCreator.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load noteCreator fragment")
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                NoteCreator.getInstance(note),
+//                NoteCreator.FRAG_TAG
+//            )
+//            .addToBackStack(NoteCreator.FRAG_TAG)
+//            .commit()
     }
 
     fun loadRepairCreator(repair: Repair) {
-        Log.d(TAG, "FRAG manager: load repairCreator fragment")
-        fragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                RepairCreator.getInstance(repair),
-                RepairCreator.FRAG_TAG
-            )
-            .addToBackStack(RepairCreator.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load repairCreator fragment")
+//        fragmentManager.beginTransaction()
+//            .replace(
+//                R.id.fragmentContainer,
+//                RepairCreator.getInstance(repair),
+//                RepairCreator.FRAG_TAG
+//            )
+//            .addToBackStack(RepairCreator.FRAG_TAG)
+//            .commit()
     }
 
     fun loadMileageCorrector(car: Car, tag: String) {
-        Log.d(TAG, "FRAG manager: load mileage fragment")
-        fragmentManager.beginTransaction()
-            .add(
-                R.id.fragmentContainer,
-                MileageFragmentDialog.getInstance(car, tag),
-                MileageFragmentDialog.FRAG_TAG
-            )
-            .addToBackStack(MileageFragmentDialog.FRAG_TAG)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load mileage fragment")
+//        fragmentManager.beginTransaction()
+//            .add(
+//                R.id.fragmentContainer,
+//                MileageFragmentDialog.getInstance(car, tag),
+//                MileageFragmentDialog.FRAG_TAG
+//            )
+//            .addToBackStack(MileageFragmentDialog.FRAG_TAG)
+//            .commit()
     }
 
     fun loadServiceFragment(part: Part) {
-        Log.d(TAG, "FRAG manager: load mileage fragment")
-        fragmentManager.beginTransaction()
-            .add(
-                R.id.fragmentContainer,
-                ServiceFragmentDialog.getInstance(part),
-                ServiceFragmentDialog.FRAG_TAG
-            )
-            .commit()
+//        Log.d(TAG, "FRAG manager: load mileage fragment")
+//        fragmentManager.beginTransaction()
+//            .add(
+//                R.id.fragmentContainer,
+//                ServiceFragmentDialog.getInstance(part),
+//                ServiceFragmentDialog.FRAG_TAG
+//            )
+//            .commit()
     }
 
     fun loadDeleter(car: Car) {
-        Log.d(TAG, "FRAG manager: load carDeleter fragment")
-        fragmentManager.beginTransaction()
-            .add(
-                R.id.fragmentContainer,
-                CarDeleteDialog.getInstance(car),
-                CarDeleteDialog.FRAG_TAG
-            )
-            .commit()
+//        Log.d(TAG, "FRAG manager: load carDeleter fragment")
+//        fragmentManager.beginTransaction()
+//            .add(
+//                R.id.fragmentContainer,
+//                CarDeleteDialog.getInstance(car),
+//                CarDeleteDialog.FRAG_TAG
+//            )
+//            .commit()
     }
 
     fun loadDeleter(part: Part) {
-        Log.d(TAG, "FRAG manager: load partDeleter fragment")
-        fragmentManager.beginTransaction()
-            .add(
-                R.id.fragmentContainer,
-                PartDeleteDialog.getInstance(part),
-                PartDeleteDialog.FRAG_TAG
-            )
-            .commit()
+//        Log.d(TAG, "FRAG manager: load partDeleter fragment")
+//        fragmentManager.beginTransaction()
+//            .add(
+//                R.id.fragmentContainer,
+//                PartDeleteDialog.getInstance(part),
+//                PartDeleteDialog.FRAG_TAG
+//            )
+//            .commit()
     }
 
     fun loadDeleter(repair: Repair) {
-        Log.d(TAG, "FRAG manager: load repairDeleter fragment")
-        fragmentManager.beginTransaction()
-            .add(
-                R.id.fragmentContainer,
-                RepairDeleteDialog.getInstance(repair),
-                RepairDeleteDialog.FRAG_TAG
-            )
-            .commit()
+//        Log.d(TAG, "FRAG manager: load repairDeleter fragment")
+//        fragmentManager.beginTransaction()
+//            .add(
+//                R.id.fragmentContainer,
+//                RepairDeleteDialog.getInstance(repair),
+//                RepairDeleteDialog.FRAG_TAG
+//            )
+//            .commit()
     }
 
     fun hideFragment(fragment: Fragment) {
-        Log.d(TAG, "FRAG manager: load previous frag: $fragment")
-        fragmentManager.beginTransaction()
-            .hide(fragment)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load previous frag: $fragment")
+//        fragmentManager.beginTransaction()
+//            .hide(fragment)
+//            .commit()
     }
 
     fun removeFragment(fragment: Fragment) {
-        Log.d(TAG, "FRAG manager: load previous frag: $fragment")
-        fragmentManager.beginTransaction()
-            .remove(fragment)
-            .commit()
+//        Log.d(TAG, "FRAG manager: load previous frag: $fragment")
+//        fragmentManager.beginTransaction()
+//            .remove(fragment)
+//            .commit()
     }
 
     fun loadLastInBackStack(){

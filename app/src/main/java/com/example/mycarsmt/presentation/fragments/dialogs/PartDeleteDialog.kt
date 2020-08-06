@@ -48,7 +48,7 @@ class PartDeleteDialog: DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
         val handler = initHandler(container!!.context.mainLooper)
         val part = arguments?.getSerializable("part") as Part
-        val partService = PartServiceImpl(view.context, handler)
+        val partService = PartServiceImpl()
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
             "Do you want to delete ${part.name}"

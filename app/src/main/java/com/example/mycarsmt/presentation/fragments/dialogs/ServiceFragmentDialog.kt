@@ -47,7 +47,7 @@ class ServiceFragmentDialog : DialogFragment() {
 
         val part = arguments?.getSerializable("part") as Part
         val handler = initHandler(container!!.context.mainLooper)
-        val partService = PartServiceImpl(view.context, handler)
+        val partService = PartServiceImpl()
 
         view.findViewById<TextView>(R.id.serviceFragmentQuestion).text =
             "Do you want to make service for: ${part.name}"
