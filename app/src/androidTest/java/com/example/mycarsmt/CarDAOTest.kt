@@ -4,7 +4,7 @@ import androidx.room.Room
 import androidx.test.InstrumentationRegistry.getContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.mycarsmt.data.enums.Condition
-import com.example.mycarsmt.data.AppDatabase
+import com.example.mycarsmt.data.database.AppDatabase
 import com.example.mycarsmt.data.database.car.CarEntity
 import com.example.mycarsmt.data.database.car.CarDao
 import org.junit.After

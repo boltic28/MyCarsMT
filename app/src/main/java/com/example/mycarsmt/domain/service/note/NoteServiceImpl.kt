@@ -1,21 +1,16 @@
 package com.example.mycarsmt.domain.service.note
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
-import android.os.Handler
-import android.os.HandlerThread
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.data.AppDatabase
 import com.example.mycarsmt.data.database.car.CarDao
 import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao
 import com.example.mycarsmt.data.database.repair.RepairDao
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.service.mappers.EntityConverter
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteFrom
@@ -24,15 +19,14 @@ import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.rep
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 import javax.inject.Inject
 
 @SuppressLint("NewApi")
 class NoteServiceImpl @Inject constructor() : NoteService {
-
-    //todo
-    private val TAG = "testmt"
 
     @Inject
     lateinit var carDao: CarDao
@@ -84,11 +78,10 @@ class NoteServiceImpl @Inject constructor() : NoteService {
             .single(note)
     }
 
-    override fun update(note: Note): Single<Note> {
-        executor.execute {
-            Runnable { noteDao.update(noteEntityFrom(note)) }.run()
-        }
-        return Single.just(note)
+    override fun update(note: Note): Single<Int> {
+        return Single.just(noteDao.update(noteEntityFrom(note)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun delete(note: Note): Single<Int> {

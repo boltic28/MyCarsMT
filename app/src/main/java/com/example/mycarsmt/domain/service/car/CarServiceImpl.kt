@@ -1,14 +1,13 @@
 package com.example.mycarsmt.domain.service.car
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import android.os.Handler
-import android.os.HandlerThread
+import android.util.Log
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.database.car.CarDao
 import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao
 import com.example.mycarsmt.data.database.repair.RepairDao
-import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.data.enums.PartControlType
 import com.example.mycarsmt.domain.*
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carEntityFrom
@@ -19,8 +18,9 @@ import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.par
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.time.LocalDate
-import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 import javax.inject.Inject
@@ -62,17 +62,15 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     override fun create(car: Car): Single<Car> {
-        return carDao.getById(
-            carDao.insert(carEntityFrom(car)))
+        return carDao.getById(carDao.insert(carEntityFrom(car)))
             .map { entity -> carFrom(entity) }
             .single(car)
     }
 
-    override fun update(car: Car): Single<Car> {
-        executor.execute {
-            Runnable { carDao.update(carEntityFrom(car)) }.run()
-        }
-        return Single.just(car)
+    override fun update(car: Car): Single<Int> {
+        return Single.just(carDao.update(carEntityFrom(car)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun delete(car: Car): Single<Int> {
@@ -93,7 +91,11 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     override fun getPartsFor(car: Car): Flowable<List<Part>> {
-        return Flowable.empty()//todo
+        return partDao.getAllForCar(car.id).map { value ->
+            value.stream()
+                .map { entity -> partFrom(entity) }
+                .collect(Collectors.toList())
+        }
     }
 
     override fun getNotesFor(car: Car): Flowable<List<Note>> {
@@ -105,120 +107,122 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     override fun getRepairsFor(car: Car): Flowable<List<Repair>> {
-        return Flowable.empty()//todo
-    }
-
-    override fun getToBuyList(): Flowable<List<DiagnosticElement>> {
-
-        return Flowable.empty()
-
-//            carDao.getAll().map {
-//                value -> value.stream()
-//                    .map { entity -> carFrom(entity) }
-//                    .collect(Collectors.toList())
-//                    .forEach { car ->
-//                        car.parts = partDao.getAllForCar(car.id).stream()
-//                            .map { entity -> partFrom(entity) }
-//                            .collect(Collectors.toList())
-//
-//                        val element = DiagnosticElement(
-//                            car,
-//                            car.getListToBuy()
-//                        )
-//
-//                        if (element.list.isNotEmpty()) {
-//                            buyList.add(
-//                                DiagnosticElement(
-//                                    car,
-//                                    car.getListToBuy()
-//                                )
-//                            )
-//                        }
-//                    }
-//            }
-
-//            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_BUY_LIST, buyList))
-//            handlerThread.quit()
-    }
-
-    override fun getToDoList(): Flowable<List<DiagnosticElement>> {
-        return Flowable.empty()
-
-//        val handlerThread = HandlerThread("preparingToDoListThread")
-//        handlerThread.start()
-//        val looper = handlerThread.looper
-//        val handler = Handler(looper)
-//        handler.post {
-            //            val toDoList = mutableListOf<DiagnosticElement>()
-//            carDao.getAll().stream()
-//                .map { entity -> carFrom(entity) }
-//                .collect(Collectors.toList())
-//                .forEach { car ->
-//                    car.parts = partDao.getAllForCar(car.id).stream()
-//                        .map { entity -> partFrom(entity) }
-//                        .collect(Collectors.toList())
-//
-//                    val element = DiagnosticElement(
-//                        car,
-//                        car.getListToBuy()
-//                    )
-//
-//                    if (element.list.isNotEmpty()) {
-//                        toDoList.add(
-//                            DiagnosticElement(
-//                                car,
-//                                car.getListToDo()
-//                            )
-//                        )
-//                    }
-//                }
-
-//            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_TO_DO_LIST, toDoList))
-//            handlerThread.quit()
-//        }
-    }
-
-    override fun doDiagnosticAllCars() {
-        val handlerThread = HandlerThread("diagnosticThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            //            val cars = carDao.getAll().stream()
-//                .map { entity -> carFrom(entity) }
-//                .map { car -> makeDiagnosticAndSave(car) }
-//                .collect(Collectors.toList())
-
-//            mainHandler.sendMessage(handler.obtainMessage(DIAGNOSTIC_IS_READY, cars))
-//            handlerThread.quit()
+        return repairDao.getAllForCar(car.id).map { value ->
+            value.stream()
+                .map { entity -> repairFrom(entity) }
+                .collect(Collectors.toList())
         }
     }
 
-    override fun doDiagnosticForCar(car: Car) {
-        val handlerThread = HandlerThread("diagnosticThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            val carResult = makeDiagnosticAndSave(car)
+    @SuppressLint("CheckResult")
+    override fun getToBuyList(): Flowable<List<DiagnosticElement>> {
+        val buyList: MutableList<DiagnosticElement> = mutableListOf()
 
-//            mainHandler.sendMessage(
-//                handler.obtainMessage(
-//                    DIAGNOSTIC_CAR_IS_READY,
-//                    makeDiagnosticAndSave(carResult)
-//                )
-//            )
-            handlerThread.quit()
+        carDao.getAll()
+            .subscribeOn(Schedulers.computation())
+            .map { entity ->
+                entity.stream()
+                    .map { carFrom(it) }
+                    .collect(Collectors.toList())
+            }.subscribe { list ->
+                list.forEach { car ->
+                    partDao.getAllForCar(car.id)
+                        .map { value ->
+                            value.stream()
+                                .map { partFrom(it) }
+                                .collect(Collectors.toList())
+                        }.subscribe {
+                            car.parts = it
+                            val element = DiagnosticElement(car, car.getListToBuy())
+                            if (element.list.isNotEmpty()) buyList.add(element)
+                        }
+                }
+
+            }
+
+        return Flowable.fromArray(buyList)
+    }
+
+    @SuppressLint("CheckResult")
+    override fun getToDoList(): Flowable<List<DiagnosticElement>> {
+        val todoList: MutableList<DiagnosticElement> = mutableListOf()
+
+        carDao.getAll()
+            .subscribeOn(Schedulers.computation())
+            .map { entity ->
+                entity.stream()
+                    .map { carFrom(it) }
+                    .collect(Collectors.toList())
+            }.subscribe { list ->
+                list.forEach { car ->
+                    partDao.getAllForCar(car.id)
+                        .map { value ->
+                            value.stream()
+                                .map { partFrom(it) }
+                                .collect(Collectors.toList())
+                        }.subscribe {
+                            car.parts = it
+                            val element = DiagnosticElement(car, car.getListToDo())
+                            if (element.list.isNotEmpty()) todoList.add(element)
+                        }
+                }
+
+            }
+
+        return Flowable.fromArray(todoList)
+    }
+
+    @SuppressLint("CheckResult")
+    override fun doDiagnosticAllCars() {
+        carDao.getAll()
+            .subscribeOn(Schedulers.computation())
+            .map { value ->
+                value.stream()
+                    .map { entity -> carFrom(entity) }
+                    .collect(Collectors.toList())
+            }.subscribe(
+                { list -> list.forEach { refresh(it) } },
+                { err -> Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err") }
+            )
+    }
+
+    @SuppressLint("CheckResult")
+    override fun doDiagnosticForCar(car: Car) {
+        carDao.getById(car.id)
+            .subscribeOn(Schedulers.computation())
+            .map { entity -> carFrom(entity) }
+            .subscribe(
+                { refresh(it) },
+                { err -> Log.d(TAG, "ERROR: doDiagnosticForCar -> writing in DB: $err") }
+            )
+    }
+
+    @SuppressLint("CheckResult")
+    override fun refresh(car: Car) {
+        executor.execute {
+            Runnable {
+                partDao.getAllForCar(car.id)
+                    .map { list ->
+                        list.stream()
+                            .map { entity -> partFrom(entity) }
+                            .collect(Collectors.toList())
+                    }.subscribe { list ->
+                        list.forEach { part -> part.checkCondition(preferences) }
+                        car.parts = list
+                        car.checkConditions(preferences)
+                        carDao.update(carEntityFrom(car))
+                    }
+            }
         }
     }
 
     override fun makeDiagnosticForNotification() {
-        val handlerThread = HandlerThread("diagnosticThread")
-        handlerThread.start()
-        val looper = handlerThread.looper
-        val handler = Handler(looper)
-        handler.post {
-            //            val cars = carDao.getAll().stream()
+//        val handlerThread = HandlerThread("diagnosticThread")
+//        handlerThread.start()
+//        val looper = handlerThread.looper
+//        val handler = Handler(looper)
+//        handler.post {
+        //            val cars = carDao.getAll().stream()
 //                .map { entity -> carFrom(entity) }
 //                .map { car -> makeDiagnosticAndSave(car) }
 //                .filter { !it.condition.contains(Condition.OK) }
@@ -228,153 +232,126 @@ class CarServiceImpl @Inject constructor() : CarService {
 
 //            mainHandler.sendMessage(handler.obtainMessage(RESULT_DIAGNOSTIC_FOR_NOTIFICATION, line))
 //            handlerThread.quit()
-        }
+//        }
     }
 
     override fun createCommonPartsFor(car: Car) {
-//        val handlerThread = HandlerThread("createPartsThread")
-//        handlerThread.start()
-//        val looper = handlerThread.looper
-//        val handler = Handler(looper)
-//        handler.post {
-//            val list = mutableListOf<Part>()
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Oil level",
-//                    5000,
-//                    15,
-//                    PartControlType.INSPECTION
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Oil filter",
-//                    15000,
-//                    365,
-//                    PartControlType.CHANGE
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Air filter",
-//                    30000,
-//                    365,
-//                    PartControlType.CHANGE
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Cabin filter",
-//                    30000,
-//                    365,
-//                    PartControlType.CHANGE
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Spark plugs",
-//                    30000,
-//                    0,
-//                    PartControlType.CHANGE
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Front brake",
-//                    40000,
-//                    0,
-//                    PartControlType.INSPECTION
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Rear brake",
-//                    40000,
-//                    0,
-//                    PartControlType.INSPECTION
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Wipers",
-//                    0,
-//                    183,
-//                    PartControlType.INSPECTION
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Insurance",
-//                    0,
-//                    365,
-//                    PartControlType.INSURANCE
-//                )
-//            )
-//            list.add(
-//                Part(
-//                    car.id,
-//                    car.mileage,
-//                    "Tech view",
-//                    0,
-//                    365,
-//                    PartControlType.INSURANCE
-//                )
-//            )
-//
-//            list.forEach { part ->
-//                part.checkCondition(preferences)
-//                partDao.insert(partEntityFrom(part))
-//            }
-//
-//            car.parts = list
-//            car.checkConditions(preferences)
-//            carDao.update(carEntityFrom(car))
-//
-//            val part = partDao.getAllForCar(car.id).stream()
-//                .map { entity -> partFrom(entity) }
-//                .collect(Collectors.toList())
-//
-////            mainHandler.sendMessage(mainHandler.obtainMessage(RESULT_PARTS_FOR_CAR, part))
-////            handlerThread.quit()
-//        }
+        executor.execute {
+            Runnable {
+                val list = mutableListOf<Part>()
+
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Oil level",
+                        5000,
+                        15,
+                        PartControlType.INSPECTION
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Oil filter",
+                        15000,
+                        365,
+                        PartControlType.CHANGE
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Air filter",
+                        30000,
+                        365,
+                        PartControlType.CHANGE
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Cabin filter",
+                        30000,
+                        365,
+                        PartControlType.CHANGE
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Spark plugs",
+                        30000,
+                        0,
+                        PartControlType.CHANGE
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Front brake",
+                        40000,
+                        0,
+                        PartControlType.INSPECTION
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Rear brake",
+                        40000,
+                        0,
+                        PartControlType.INSPECTION
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Wipers",
+                        0,
+                        183,
+                        PartControlType.INSPECTION
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Insurance",
+                        0,
+                        365,
+                        PartControlType.INSURANCE
+                    )
+                )
+                list.add(
+                    Part(
+                        car.id,
+                        car.mileage,
+                        "Tech view",
+                        0,
+                        365,
+                        PartControlType.INSURANCE
+                    )
+                )
+
+                list.forEach { part ->
+                    part.checkCondition(preferences)
+                    partDao.insert(partEntityFrom(part))
+                }
+
+                car.parts = list
+                car.checkConditions(preferences)
+                carDao.update(carEntityFrom(car))
+            }.run()
+        }
     }
-
-    override fun makeDiagnosticAndSave(car: Car): Car {
-//        carDao.update(carEntityFrom(car))
-//
-//        car.parts = partDao.getAllForCar(car.id).stream()
-//            .map { entity -> partFrom(entity) }
-//            .collect(Collectors.toList())
-//
-//        car.parts.forEach { part ->
-//            part.checkCondition(preferences)
-//            partDao.update(partEntityFrom(part))
-//        }
-//
-//        car.checkConditions(preferences)
-//        carDao.update(carEntityFrom(car))
-
-        return car
-    }
-
 
     // for delete(only for test show)
     fun createTestEntityForApp() {
@@ -388,7 +365,6 @@ class CarServiceImpl @Inject constructor() : CarService {
                 car.year = 2013
                 car.mileage = 43000
                 car.whenMileageRefreshed = LocalDate.of(2020, 5, 24)
-//            car = getPartsForTestCar(car)
                 car.mileage = 56500
                 carDao.insert(carEntityFrom(car))
 
@@ -400,224 +376,10 @@ class CarServiceImpl @Inject constructor() : CarService {
                 car1.year = 2016
                 car1.mileage = 23000
                 car1.whenMileageRefreshed = LocalDate.of(2020, 4, 14)
-//            car1 = getPartsForTestCar(car1)
                 car1.mileage = 27600
                 carDao.insert(carEntityFrom(car1))
             }.run()
         }
     }
 }
-
-
-//            val handlerThread = HandlerThread("createThread")
-//        handlerThread.start()
-//        val looper = handlerThread.looper
-//        val handler = Handler(looper)
-//        handler.post {
-//            var car = Car()
-//            car.brand = "Kia"
-//            car.model = "Rio"
-//            car.number = "1452 HA-4"
-//            car.vin = "56718394GHDJY567"
-//            car.year = 2013
-//            car.mileage = 43000
-//            car.whenMileageRefreshed = LocalDate.of(2020, 5, 24)
-////            car = getPartsForTestCar(car)
-//            car.mileage = 56500
-//            carDao.insert(carEntityFrom(car))
-//
-//            var car1 = Car()
-//            car1.brand = "Kia"
-//            car1.model = "Soul"
-//            car1.number = "1342 TA-6"
-//            car1.vin = "5671WER34HDJY567"
-//            car1.year = 2016
-//            car1.mileage = 23000
-//            car1.whenMileageRefreshed = LocalDate.of(2020, 4, 14)
-////            car1 = getPartsForTestCar(car1)
-//            car1.mileage = 27600
-//            carDao.insert(carEntityFrom(car1))
-
-
-//            readAll()
-//            var car2 = Car()
-//            car2.brand = "Chevrolet"
-//            car2.model = "Aveo"
-//            car2.number = "6723 AA-2"
-//            car2.vin = "56718394GHDJY567"
-//            car2.year = 2011
-//            car2.mileage = 113000
-//            car2.whenMileageRefreshed = LocalDate.of(2020, 5, 10)
-//            car2 = getPartsForTestCar(car2)
-//            car2.mileage = 130500
-//            carDao.update(carEntityFrom(car2))
-//
-//            var car3 = Car()
-//            car3.brand = "Chevrolet"
-//            car3.model = "Cruze"
-//            car3.number = "1455 HA-4"
-//            car3.vin = "56718394GHDJY567"
-//            car3.year = 2017
-//            car3.mileage = 23000
-//            car3.whenMileageRefreshed = LocalDate.of(2020, 4, 24)
-//            car3 = getPartsForTestCar(car3)
-//            car3.mileage = 37500
-//            carDao.update(carEntityFrom(car3))
-//
-//            var car4 = Car()
-//            car4.brand = "Ford"
-//            car4.model = "Focus"
-//            car4.number = "6642 CC-7"
-//            car4.vin = "56718394GHDJY567"
-//            car4.year = 2011
-//            car4.mileage = 143000
-//            car4.whenMileageRefreshed = LocalDate.of(2020, 5, 30)
-//            car4 = getPartsForTestCar(car4)
-//            car4.mileage = 152500
-//            carDao.update(carEntityFrom(car4))
-//
-//            var car5 = Car()
-//            car5.brand = "Opel"
-//            car5.model = "Corsa"
-//            car5.number = "1388 EA-3"
-//            car5.vin = "56718394GHDJY567"
-//            car5.year = 2010
-//            car5.mileage = 241000
-//            car5.whenMileageRefreshed = LocalDate.of(2020, 6, 16)
-//            car5 = getPartsForTestCar(car5)
-//            car5.mileage = 254500
-//            carDao.update(carEntityFrom(car5))
-//
-//            var car6 = Car()
-//            car6.brand = "Gelly"
-//            car6.model = "FY11"
-//            car6.number = "7777 AA-7"
-//            car6.vin = "56718394GHDJY567"
-//            car6.year = 2020
-//            car6.mileage = 3000
-//            car6.whenMileageRefreshed = LocalDate.of(2020, 5, 18)
-//            car6 = getPartsForTestCar(car6)
-//            car6.mileage = 8001
-//            carDao.update(carEntityFrom(car6))
-
-//            doDiagnosticAllCars()
-
-
-
-//    private fun getPartsForTestCar(car: Car): Car {
-//
-//        car.id = carDao.insert(carEntityFrom(car))
-//
-//        val list = mutableListOf<Part>()
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Oil level",
-//                5000,
-//                15,
-//                PartControlType.INSPECTION
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Oil filter",
-//                15000,
-//                365,
-//                PartControlType.CHANGE
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Air filter",
-//                30000,
-//                365,
-//                PartControlType.CHANGE
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Cabin filter",
-//                30000,
-//                365,
-//                PartControlType.CHANGE
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Spark plugs",
-//                30000,
-//                0,
-//                PartControlType.CHANGE
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Front brake",
-//                40000,
-//                0,
-//                PartControlType.INSPECTION
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Rear brake",
-//                40000,
-//                0,
-//                PartControlType.INSPECTION
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Wipers",
-//                0,
-//                183,
-//                PartControlType.INSPECTION
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Insurance",
-//                0,
-//                365,
-//                PartControlType.INSURANCE
-//            )
-//        )
-//        list.add(
-//            Part(
-//                car.id,
-//                car.mileage,
-//                "Tech view",
-//                0,
-//                365,
-//                PartControlType.INSURANCE
-//            )
-//        )
-//
-//        list.forEach { part ->
-//            part.checkCondition(preferences)
-//            partDao.insert(partEntityFrom(part))
-//        }
-//
-//        car.parts = list
-//        car.checkConditions(preferences)
-//
-//        return car
-//    }
 

@@ -1,15 +1,10 @@
 package com.example.mycarsmt.domain.service.repair
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
-import android.os.Handler
-import android.os.HandlerThread
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.data.AppDatabase
 import com.example.mycarsmt.data.database.car.CarDao
-import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao
 import com.example.mycarsmt.data.database.repair.RepairDao
 import com.example.mycarsmt.domain.Car
@@ -21,6 +16,8 @@ import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.rep
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 import javax.inject.Inject
@@ -64,11 +61,10 @@ class RepairServiceImpl @Inject constructor(): RepairService {
             .single(repair)
     }
 
-    override fun update(repair: Repair): Single<Repair> {
-        executor.execute {
-            Runnable { repairDao.update(repairEntityFrom(repair)) }.run()
-        }
-        return Single.just(repair)
+    override fun update(repair: Repair): Single<Int> {
+        return Single.just(repairDao.update(repairEntityFrom(repair)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun delete(repair: Repair): Single<Int> {

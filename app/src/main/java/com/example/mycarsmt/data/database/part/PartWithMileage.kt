@@ -41,6 +41,7 @@ class PartWithMileage() {
         this.type = type
         this.condition = condition
     }
+
     var id: Long = 0
 
     @ColumnInfo(name = "car_id")

@@ -16,12 +16,6 @@ interface CarDao {
     @Delete
     fun delete(car: CarEntity): Int
 
-//    @Query("SELECT * FROM car WHERE id = :id")
-//    fun getById0(id: Long): CarEntity
-//
-//    @Query("SELECT * FROM car ORDER BY brand AND model AND number ASC")
-//    fun getAll0(): List<CarEntity>
-
     @Query("SELECT * FROM car WHERE id = :id")
     fun getById(id: Long):Flowable<CarEntity>
 

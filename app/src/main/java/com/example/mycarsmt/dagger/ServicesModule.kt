@@ -1,8 +1,6 @@
 package com.example.mycarsmt.dagger
 
-import android.content.SharedPreferences
-import com.example.mycarsmt.data.AppDatabase
-import com.example.mycarsmt.data.database.car.CarDao
+import com.example.mycarsmt.data.database.AppDatabase
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import dagger.Module
 import dagger.Provides

@@ -1,32 +1,27 @@
 package com.example.mycarsmt.domain.service.part
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
-import android.os.Handler
-import android.os.HandlerThread
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.data.AppDatabase
 import com.example.mycarsmt.data.database.car.CarDao
 import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao
 import com.example.mycarsmt.data.database.repair.RepairDao
-import com.example.mycarsmt.domain.service.mappers.EntityConverter
-import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
-import com.example.mycarsmt.presentation.fragments.SettingFragment
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 import javax.inject.Inject
@@ -72,11 +67,10 @@ class PartServiceImpl @Inject constructor() : PartService {
             .single(part)
     }
 
-    override fun update(part: Part): Single<Part> {
-        executor.execute {
-            Runnable { partDao.update(partEntityFrom(part)) }.run()
-        }
-        return Single.just(part)
+    override fun update(part: Part): Single<Int> {
+        return Single.just(partDao.update(partEntityFrom(part)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun delete(part: Part): Single<Int> {

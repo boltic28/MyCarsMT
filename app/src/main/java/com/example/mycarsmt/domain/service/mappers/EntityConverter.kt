@@ -10,7 +10,7 @@ import com.example.mycarsmt.data.database.note.NoteWithMileage
 import com.example.mycarsmt.data.database.part.PartEntity
 import com.example.mycarsmt.data.database.part.PartWithMileage
 import com.example.mycarsmt.data.database.repair.RepairEntity
-// поделить на мапперы разнести в разные классы
+
 class EntityConverter {
     companion object {
         fun carEntityFrom(car: Car): CarEntity {
@@ -45,53 +45,30 @@ class EntityConverter {
 
         fun partFrom(part: PartWithMileage): Part {
             return Part(
-                part.id,
-                part.carId,
-                part.mileage,
-                part.name,
-                part.codes,
-                part.limitKM,
-                part.limitDays,
-                part.dateLastChange,
-                part.mileageLastChange,
-                part.description,
-                part.photo,
-                part.type,
-                part.condition
+                part.id, part.carId, part.mileage,
+                part.name, part.codes, part.limitKM, part.limitDays, part.dateLastChange,
+                part.mileageLastChange, part.description, part.photo, part.type, part.condition
             )
         }
 
         fun noteEntityFrom(note: Note): NoteEntity {
             return NoteEntity(
-                note.id,
-                note.carId,
-                note.partId,
-                note.description,
-                note.date,
-                note.importantLevel
+                note.id, note.carId, note.partId,
+                note.description, note.date, note.importantLevel
             )
         }
 
         fun noteFrom(note: NoteEntity): Note {
             return Note(
-                note.id,
-                note.carId,
-                note.partId,
-                note.description,
-                note.date,
-                note.importantLevel
+                note.id, note.carId, note.partId,
+                note.description, note.date, note.importantLevel
             )
         }
 
         fun noteFrom(note: NoteWithMileage): Note {
             return Note(
-                note.id,
-                note.carId,
-                note.mileage,
-                note.partId,
-                note.description,
-                note.date,
-                note.importantLevel
+                note.id, note.carId, note.mileage, note.partId,
+                note.description, note.date, note.importantLevel
             )
         }
 
