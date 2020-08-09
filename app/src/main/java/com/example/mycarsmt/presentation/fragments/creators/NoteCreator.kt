@@ -1,57 +1,53 @@
 package com.example.mycarsmt.presentation.fragments.creators
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.R
-import com.example.mycarsmt.domain.Note
+import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.NoteLevel
-import com.example.mycarsmt.domain.service.note.NoteServiceImpl
-import com.example.mycarsmt.presentation.activities.MainActivity
+import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.domain.Note
 import kotlinx.android.synthetic.main.fragment_creator_note.*
 import java.time.LocalDate
+import javax.inject.Inject
 
-class NoteCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
+class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_note) {
 
-    private val TAG = "testmt"
+    private
 
     companion object {
-        val FRAG_TAG = "noteCreator"
-
-        fun getInstance(note: Note): NoteCreator {
-
-            val bundle = Bundle()
-            bundle.putSerializable("note", note)
-
-            val fragment = NoteCreator(R.layout.fragment_creator_note)
-            fragment.arguments = bundle
-
-            return fragment
-        }
+        const val FRAG_TAG = "noteCreator"
+        const val TAG = "testmt"
     }
 
-    private lateinit var manager: MainActivity
-    private lateinit var noteService: NoteServiceImpl
+    @Inject
+    lateinit var model: NoteCreatorModel
+
     private lateinit var note: Note
-    private lateinit var handler: Handler
+    private lateinit var car: Car
+
     private var isExist = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        App.component.injectFragment(this)
+        note = arguments?.getSerializable("note") as Note
+        isExist = note.id > 0
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initFragmentManager()
-        handler = Handler(view.context.mainLooper)
-        noteService = NoteServiceImpl()
-        note = arguments?.getSerializable("note") as Note
-        manager.title =
-            if (note.id == 0L) "Create new car"
-            else "Updating note"
+        // solve how can return back to car or main view.
 
-        isExist = note.id > 0
+        loadCar()
+
+        setTitle()
         noteCreatorButtonDone.isActivated = false
         if (isExist) setCreatorData()
 
@@ -60,23 +56,30 @@ class NoteCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
                 note.description = noteCreatorDescription.text.toString()
 
                 if (isExist) {
-                    noteService.update(note)
+                    model.noteService.update(note)
                 } else {
                     note.date = LocalDate.now()
-                    noteService.create(note)
+                    model.noteService.create(note)
                 }
             }
-            manager.loadPreviousFragment()
+            val bundle = Bundle()
+            bundle.putSerializable("car", car)
+            view.findNavController().navigate(R.id.action_noteCreator_to_carFragment, bundle)
         }
 
         noteCreatorButtonDone.setOnClickListener {
-            noteService.addRepair(note.done())
-            noteService.delete(note)
-            manager.loadPreviousFragment()
+            model.noteService.addRepair(note.done())
+            model.noteService.delete(note)
+
+            val bundle = Bundle()
+            bundle.putSerializable("car", car)
+            view.findNavController().navigate(R.id.action_noteCreator_to_carFragment, bundle)
         }
 
         partPanelButtonCancel.setOnClickListener {
-            manager.loadPreviousFragment()
+            val bundle = Bundle()
+            bundle.putSerializable("car", car)
+            view.findNavController().navigate(R.id.action_noteCreator_to_carFragment, bundle)
         }
 
         noteCreatorLowImp.setOnClickListener {
@@ -98,6 +101,11 @@ class NoteCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
             switchInfoImptOfNote()
             note.importantLevel = NoteLevel.INFO
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadCar(){
+        model.carService.readById(note.carId).subscribe { car = it }
     }
 
     private fun setCreatorData() {
@@ -142,10 +150,9 @@ class NoteCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
         noteCreatorInfoImpt.isChecked = true
     }
 
-    private fun initFragmentManager() {
-        val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity) {
-            manager = mainActivity
-        }
+    private fun setTitle(){
+        activity?.title =
+            if (note.id == 0L) "Create new car"
+            else "Updating note"
     }
 }

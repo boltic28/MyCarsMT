@@ -2,6 +2,9 @@ package com.example.mycarsmt.dagger
 
 import com.example.mycarsmt.data.database.AppDatabase
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
+import com.example.mycarsmt.domain.service.note.NoteServiceImpl
+import com.example.mycarsmt.domain.service.part.PartServiceImpl
+import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -13,7 +16,17 @@ class ServicesModule(private val appDatabase: AppDatabase) {
     @Provides
     fun provideCarService(): CarServiceImpl = CarServiceImpl()
 
-    //todo other services for parts, repairs, notes
+    @Singleton
+    @Provides
+    fun providePartService(): PartServiceImpl = PartServiceImpl()
+
+    @Singleton
+    @Provides
+    fun provideNoteService(): NoteServiceImpl = NoteServiceImpl()
+
+    @Singleton
+    @Provides
+    fun provideRepairService(): RepairServiceImpl = RepairServiceImpl()
 
     @Singleton
     @Provides

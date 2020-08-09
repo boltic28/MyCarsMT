@@ -1,31 +1,22 @@
 package com.example.mycarsmt.presentation.fragments
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.R
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.DIAGNOSTIC_IS_READY
-import com.example.mycarsmt.presentation.activities.MainActivity
+import com.example.mycarsmt.dagger.App
 import kotlinx.android.synthetic.main.fragment_settings.*
+import javax.inject.Inject
 
-class SettingFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
-
-    private val TAG = "testmt"
+class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_settings) {
 
     companion object {
         const val FRAG_TAG = "settingsFragment"
-
-        fun getInstance(): SettingFragment {
-            return SettingFragment(R.layout.fragment_settings)
-        }
+        const val TAG = "testmt"
 
         const val APP_PREFERENCES = "myCarPref"
-
         const val KM_TO_BUY = "kmToBuy"
         const val DAY_TO_BUY = "dayToBuy"
         const val KM_TO_CHANGE = "kmToChange"
@@ -35,47 +26,45 @@ class SettingFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         const val DAY_BETWEEN_ODO_CORRECTING = "odoPeriod"
     }
 
-    private lateinit var handler: Handler
-    private lateinit var carService: CarServiceImpl
+    @Inject
+    lateinit var model: SettingModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        App.component.injectFragment(this)
+    }
 
     @SuppressLint("CommitPrefEdits")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val preferences = context?.getSharedPreferences(
-            APP_PREFERENCES,
-            Context.MODE_PRIVATE
-        )
-
-        initHandler(view.context)
-        carService = CarServiceImpl()
-
-        settingsKmToBuyValue.setText(preferences?.getInt(KM_TO_BUY, 2000).toString())
-        settingsKmToChangeValue.setText(preferences?.getInt(KM_TO_CHANGE, 1000).toString())
-        settingsDayToBuyValue.setText(preferences?.getInt(DAY_TO_BUY, 20).toString())
-        settingsDayToChangeValue.setText(preferences?.getInt(DAY_TO_CHANGE, 10).toString())
+        settingsKmToBuyValue.setText(model.preferences.getInt(KM_TO_BUY, 2000).toString())
+        settingsKmToChangeValue.setText(model.preferences.getInt(KM_TO_CHANGE, 1000).toString())
+        settingsDayToBuyValue.setText(model.preferences.getInt(DAY_TO_BUY, 20).toString())
+        settingsDayToChangeValue.setText(model.preferences.getInt(DAY_TO_CHANGE, 10).toString())
         settingsDaysBetweenOdoCorrectingValue.setText(
-            preferences?.getInt(
+            model.preferences.getInt(
                 DAY_BETWEEN_ODO_CORRECTING,
                 15
             ).toString()
         )
 
         settingsInsurancePeriodValue.setText(
-            preferences?.getInt(
+            model.preferences.getInt(
                 DAY_TO_REFRESH_INSURANCE,
                 365
             ).toString()
         )
         settingsTechViewPeriodValue.setText(
-            preferences?.getInt(
+            model.preferences.getInt(
                 DAY_TO_REFRESH_VIEW,
                 730
             ).toString()
         )
 
         settingsButtonSave.setOnClickListener {
-            val editor = preferences?.edit()
+            val editor = model.preferences.edit()
             editor?.putInt(KM_TO_BUY, Integer.valueOf(settingsKmToBuyValue.text.toString()))
             editor?.putInt(KM_TO_CHANGE, Integer.valueOf(settingsKmToChangeValue.text.toString()))
             editor?.putInt(DAY_TO_BUY, Integer.valueOf(settingsDayToBuyValue.text.toString()))
@@ -95,25 +84,21 @@ class SettingFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
             editor?.apply()
 
-            carService.doDiagnosticAllCars()
-            showLoader()
+            showProgressBar()
+            model.carService.doDiagnosticAllCars()
+            hideProgressBar()
+            view.findNavController().navigate(R.id.action_settingFragment_to_mainListFragment)
         }
     }
 
-    private fun initHandler(context: Context){
-        handler = Handler(context.mainLooper, Handler.Callback { msg ->
-            if(msg.what == DIAGNOSTIC_IS_READY){
-                val mainActivity: Activity? = activity
-                if (mainActivity is MainActivity)
-                    mainActivity.loadPreviousFragment(this)
-            }
-                true
-        })
-    }
-
-    private fun showLoader(){
+    private fun showProgressBar(){
         settingsButtonSave.visibility = View.GONE
         settingsLoaderBar.visibility = View.VISIBLE
         settingsLoaderText.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar(){
+        settingsLoaderBar.visibility = View.INVISIBLE
+        settingsLoaderText.visibility = View.INVISIBLE
     }
 }

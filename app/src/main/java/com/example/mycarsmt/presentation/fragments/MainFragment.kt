@@ -62,21 +62,21 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 setAdapter()
             }
 
-//        model.noteService.readAll()
-//            .observeOn(mainThread())
-//            .subscribe {value ->
-//                notes = value
-//            }
+        model.noteService.readAll()
+            .observeOn(mainThread())
+            .subscribe { value ->
+                notes = value
+            }
 
         model.carService.getToBuyList()
             .observeOn(mainThread())
-            .subscribe{value ->
+            .subscribe { value ->
                 listToBuy = value
             }
 
         model.carService.getToDoList()
             .observeOn(mainThread())
-            .subscribe{value ->
+            .subscribe { value ->
                 listToBuy = value
             }
 
@@ -134,17 +134,11 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         }
 
         carsAddCar.setOnClickListener {
-            //            manager.loadCarCreator(Car())
             view?.findNavController()?.navigate(R.id.action_mainListFragment_to_carCreator)
-        }
-
-        carsCreateTestPark.setOnClickListener {
-            carsCreateTestPark.visibility = View.GONE
-            model.carService.createTestEntityForApp()
         }
     }
 
-    private fun setContentType(type: ContentType){
+    private fun setContentType(type: ContentType) {
         showProgressBar()
         contentType = type
         setAdapter()
@@ -163,18 +157,23 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         firstRecycler.adapter = CarItemAdapter(list, object :
             CarItemAdapter.OnItemClickListener {
             override fun onClick(car: Car) {
-//                activity.loadCarFragment(car)
+                val bundle = Bundle()
+                bundle.putSerializable("car", car)
+                view?.findNavController()
+                    ?.navigate(R.id.action_mainListFragment_to_carFragment, bundle)
             }
 
             override fun onMileageClick(car: Car) {
-//                activity.loadMileageCorrector(car, FRAG_TAG)
+                val bundle = Bundle()
+                bundle.putSerializable("car", car)
+                view?.findNavController()
+                    ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
             }
         })
     }
 
     private fun setAdapter() {
         carsNoResult.visibility = View.GONE
-        carsCreateTestPark.visibility = View.GONE
         hideProgressBar()
         when (contentType) {
             ContentType.DEFAULT -> {
@@ -184,11 +183,17 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 firstRecycler.adapter = CarItemAdapter(cars, object :
                     CarItemAdapter.OnItemClickListener {
                     override fun onClick(car: Car) {
-//                        activity.loadCarFragment(car)
+                        val bundle = Bundle()
+                        bundle.putSerializable("car", car)
+                        view?.findNavController()
+                            ?.navigate(R.id.action_mainListFragment_to_carFragment, bundle)
                     }
 
                     override fun onMileageClick(car: Car) {
-//                        activity.loadMileageCorrector(car, FRAG_TAG)
+                        val bundle = Bundle()
+                        bundle.putSerializable("car", car)
+                        view?.findNavController()
+                            ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
                     }
                 })
             }
@@ -198,7 +203,10 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 firstRecycler.adapter = NoteItemAdapter(notes, object :
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
-//                        activity.loadNoteCreator(note)
+                        val bundle = Bundle()
+                        bundle.putSerializable("note", note)
+                        view?.findNavController()
+                            ?.navigate(R.id.action_carFragment_to_noteCreator, bundle)
                     }
                 })
             }
@@ -208,7 +216,10 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 firstRecycler.adapter = DiagnosticElementAdapter(listToBuy, object :
                     DiagnosticElementAdapter.OnItemClickListener {
                     override fun onClick(element: DiagnosticElement) {
-//                        activity.loadCarFragment(element.car)
+                        val bundle = Bundle()
+                        bundle.putSerializable("car", element.car)
+                        view?.findNavController()
+                            ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
                     }
                 })
             }
@@ -218,12 +229,14 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 firstRecycler.adapter = DiagnosticElementAdapter(listToDo, object :
                     DiagnosticElementAdapter.OnItemClickListener {
                     override fun onClick(element: DiagnosticElement) {
-//                        activity.loadCarFragment(element.car)
+                        val bundle = Bundle()
+                        bundle.putSerializable("car", element.car)
+                        view?.findNavController()
+                            ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
                     }
                 })
             }
             else -> {
-
             }
         }
     }
@@ -236,16 +249,16 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private fun setTitle(title: String){
+    private fun setTitle(title: String) {
         activity?.title = title
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         carsProgress.visibility = View.VISIBLE
         carsProgressText.visibility = View.VISIBLE
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         carsProgress.visibility = View.INVISIBLE
         carsProgressText.visibility = View.INVISIBLE
     }

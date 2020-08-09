@@ -1,24 +1,21 @@
 package com.example.mycarsmt.presentation.fragments.creators
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords
-import com.example.mycarsmt.domain.Part
+import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.PartControlType
-import com.example.mycarsmt.domain.service.part.PartServiceImpl
-import com.example.mycarsmt.domain.service.part.PartServiceImpl.Companion.RESULT_PART_CREATED
-import com.example.mycarsmt.domain.service.part.PartServiceImpl.Companion.RESULT_PART_UPDATED
-import com.example.mycarsmt.presentation.activities.MainActivity
+import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.domain.Part
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_creator_part.*
 import java.io.ByteArrayOutputStream
@@ -28,46 +25,42 @@ import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
-class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
+class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_part) {
 
     companion object {
         const val TAG = "testmt"
         const val FRAG_TAG = "partCreator"
         const val CAMERA = 2
-
-        fun getInstance(part: Part): PartCreator {
-            val bundle = Bundle()
-            bundle.putSerializable("part", part)
-
-            val fragment = PartCreator(R.layout.fragment_creator_part)
-            fragment.arguments = bundle
-
-            return fragment
-        }
     }
+
+    @Inject
+    lateinit var model: PartCreatorModel
+
+    private lateinit var part: Part
+    private lateinit var car: Car
 
     private var photo = SpecialWords.NO_PHOTO.value
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)
-    private lateinit var manager: MainActivity
-    private lateinit var partService: PartServiceImpl
-    private lateinit var part: Part
-    private lateinit var handler: Handler
     private var isExist = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        App.component.injectFragment(this)
+        part = arguments?.getSerializable("part") as Part
+        car = arguments?.getSerializable("car") as Car
+        isExist = part.id > 0
+    }
+
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initFragmentManager()
-        initHandler()
-        partService = PartServiceImpl()
-        part = arguments?.getSerializable("part") as Part
-        manager.title =
-            if (part.id == 0L) "Create new part"
-            else "Updating ${part.name}"
         isExist = part.id > 0
-
+        setTitle()
         partCreatorButtonDelete.isActivated = false
 
         if (isExist) {
@@ -110,10 +103,10 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     part.type = PartControlType.INSPECTION
 
                 if (isExist) {
-                    partService.update(part)
+                    model.partService.update(part)
                     showProgressBar()
                 } else {
-                    partService.create(part)
+                    model.partService.create(part)
                     showProgressBar()
                 }
             } else {
@@ -121,47 +114,27 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
             }
         }
         partCreatorButtonDelete.setOnClickListener {
-            manager.loadDeleter(part)
+            model.partService.delete(part)
+
+            val bundle = Bundle()
+            bundle.putSerializable("car", car)
+            view.findNavController().navigate(R.id.action_partCreator_to_carFragment, bundle)
         }
         repairCreatorButtonCancel.setOnClickListener {
-            manager.loadPreviousFragment()
+            if(isExist) {
+                val bundle = Bundle()
+                bundle.putSerializable("part", part)
+                view.findNavController().navigate(R.id.action_partCreator_to_partFragment, bundle)
+            }else{
+                val bundle = Bundle()
+                bundle.putSerializable("car", car)
+                view.findNavController().navigate(R.id.action_partCreator_to_carFragment, bundle)
+            }
         }
         partCreatorFABCreatePhoto.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, CAMERA)
         }
-    }
-
-    private fun initHandler() {
-        handler = Handler(view!!.context.mainLooper, Handler.Callback { msg ->
-            Log.d(TAG, "Handler: took data from database...")
-
-            when (msg.what) {
-                RESULT_PART_CREATED -> {
-                    val part = msg.obj as Part
-                    manager.loadPartFragmentWithoutBackStack(part)
-                    Log.d(
-                        TAG,
-                        "Handler: ${part.name} was created"
-                    )
-
-                    true
-                }
-                RESULT_PART_UPDATED -> {
-                    val part = msg.obj as Part
-                    manager.loadPartFragmentWithoutBackStack(part)
-                    Log.d(
-                        TAG,
-                        "Handler: ${part.name} was updated"
-                    )
-
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        })
     }
 
     private fun showProgressBar() {
@@ -237,11 +210,9 @@ class PartCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private fun initFragmentManager() {
-        val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity) {
-            manager = mainActivity
-        }
-
+    private fun setTitle(){
+        activity?.title =
+            if (part.id == 0L) "Create new part"
+            else "Updating ${part.name}"
     }
 }

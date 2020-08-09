@@ -1,23 +1,19 @@
 package com.example.mycarsmt.presentation.fragments.creators
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_CAR_CREATED
-import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_CAR_UPDATED
-import com.example.mycarsmt.presentation.activities.MainActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_creator_car.*
 import java.io.ByteArrayOutputStream
@@ -26,53 +22,40 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.time.LocalDate
 import java.util.*
+import javax.inject.Inject
 
-class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
-
-    private val TAG = "testmt"
+class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car) {
 
     companion object {
-        val FRAG_TAG = "carCreator"
-
-        fun getInstance(car: Car): CarCreator {
-
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-
-            val fragment = CarCreator(R.layout.fragment_creator_car)
-            fragment.arguments = bundle
-
-            return fragment
-        }
+        const val FRAG_TAG = "carCreator"
+        const val TAG = "testmt"
+        const val CAMERA = 2
     }
 
-    private val CAMERA = 2
-    private var photo = SpecialWords.NO_PHOTO.value
-    private lateinit var manager: MainActivity
-    private lateinit var carService: CarServiceImpl
+    @Inject
+    lateinit var model: CarCreatorModel
+
     private lateinit var car: Car
-    private lateinit var handler: Handler
+    private var photo = SpecialWords.NO_PHOTO.value
     private var isExist = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        App.component.injectFragment(this)
+        car = arguments?.getSerializable("car") as Car
+        isExist = car.id > 0
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initFragmentManager()
-
-        initHandler()
-        carService = CarServiceImpl()
-        car = arguments?.getSerializable("car") as Car
-        isExist = car.id > 0
-        manager.title =
-            if (car.id == 0L) "Create new car"
-            else "Updating ${car.brand} ${car.model}"
-
+        setTitle()
+        loadPhoto()
         carCreatorButtonDelete.isClickable = false
 
         if (isExist) setCreatorData()
-
-        loadPhoto()
 
         carCreatorButtonCreate.setOnClickListener {
             if (carCreatorBrand.text.isNotEmpty() && carCreatorModel.text.isNotEmpty()) {
@@ -89,20 +72,28 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
                     Integer.valueOf(carCreatorMileage.text.toString())
 
                 if (isExist) {
-                    carService.update(car)
+                    model.carService.update(car)
                     showProgressBar()
                 } else {
                     car.whenMileageRefreshed = LocalDate.now()
-                    carService.create(car)
+                    model.carService.create(car)
                     showProgressBar()
                 }
             }
         }
         carCreatorButtonDelete.setOnClickListener {
-            manager.loadDeleter(car)
+            val bundle = Bundle()
+            bundle.putSerializable("car", car)
+            view.findNavController().navigate(R.id.action_carCreator_to_carDeleteDialog, bundle)
         }
         carCreatorButtonCancel.setOnClickListener {
-            manager.loadPreviousFragment()
+            if(isExist) {
+                val bundle = Bundle()
+                bundle.putSerializable("car", car)
+                view.findNavController().navigate(R.id.action_carCreator_to_carFragment, bundle)
+            }else{
+                view.findNavController().navigate(R.id.action_carCreator_to_mainListFragment)
+            }
         }
         carCreatorFABCreatePhoto.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -136,38 +127,6 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         carCreatorProgress.visibility = View.VISIBLE
     }
 
-    private fun initHandler() {
-        handler = Handler(view!!.context.mainLooper, Handler.Callback { msg ->
-            Log.d(TAG, "Handler: took data from database...")
-
-            when (msg.what) {
-                RESULT_CAR_CREATED -> {
-                    val car = msg.obj as Car
-                    manager.loadCarFragmentWithoutBackStack(car)
-                    Log.d(
-                        TAG,
-                        "Handler: ${car.brand} ${car.model} was created"
-                    )
-
-                    true
-                }
-                RESULT_CAR_UPDATED -> {
-                    val car = msg.obj as Car
-                    manager.loadPreviousFragment()
-                    Log.d(
-                        TAG,
-                        "Handler: ${car.brand} ${car.model} was updated"
-                    )
-
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        })
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -198,10 +157,9 @@ class CarCreator(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private fun initFragmentManager() {
-        val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity) {
-            manager = mainActivity
-        }
+    private fun setTitle(){
+        activity?.title =
+            if (car.id == 0L) "Create new car"
+            else "Updating ${car.brand} ${car.model}"
     }
 }

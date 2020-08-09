@@ -34,22 +34,7 @@ class CarDAOTest {
 
     @Test
     fun insertCarAndReadIt() {
-        val car = CarEntity()
-        car.year = 2015
-        car.brand = "MB"
-        car.model = "e300"
-        car.mileage = 25000
-        car.number = "5555 AA-7"
-        car.vin = "RUIWYTEG34567788"
-        car.whenMileageRefreshed = LocalDate.now()
-        car.condition = listOf(Condition.OK)
 
-        carDao?.insert(car)
-        val list = carDao?.getAll()
-        val car1 = list?.get(0)
-
-        assert(list?.size == 1)
-        assert(carHelper.compareCars(car, car1!!))
     }
 
     @After

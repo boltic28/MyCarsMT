@@ -175,12 +175,14 @@ class CarServiceImpl @Inject constructor() : CarService {
     @SuppressLint("CheckResult")
     override fun doDiagnosticAllCars() {
         carDao.getAll()
-            .subscribeOn(Schedulers.computation())
+//            .subscribeOn(Schedulers.computation())
             .map { value ->
                 value.stream()
                     .map { entity -> carFrom(entity) }
                     .collect(Collectors.toList())
-            }.subscribe(
+            }
+//            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
                 { list -> list.forEach { refresh(it) } },
                 { err -> Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err") }
             )
@@ -354,32 +356,32 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     // for delete(only for test show)
-    fun createTestEntityForApp() {
-        executor.execute {
-            Runnable {
-                val car = Car()
-                car.brand = "Kia"
-                car.model = "Rio"
-                car.number = "1452 HA-4"
-                car.vin = "56718394GHDJY567"
-                car.year = 2013
-                car.mileage = 43000
-                car.whenMileageRefreshed = LocalDate.of(2020, 5, 24)
-                car.mileage = 56500
-                carDao.insert(carEntityFrom(car))
-
-                val car1 = Car()
-                car1.brand = "Kia"
-                car1.model = "Soul"
-                car1.number = "1342 TA-6"
-                car1.vin = "5671WER34HDJY567"
-                car1.year = 2016
-                car1.mileage = 23000
-                car1.whenMileageRefreshed = LocalDate.of(2020, 4, 14)
-                car1.mileage = 27600
-                carDao.insert(carEntityFrom(car1))
-            }.run()
-        }
-    }
+//    fun createTestEntityForApp() {
+//        executor.execute {
+//            Runnable {
+//                val car = Car()
+//                car.brand = "Kia"
+//                car.model = "Rio"
+//                car.number = "1452 HA-4"
+//                car.vin = "56718394GHDJY567"
+//                car.year = 2013
+//                car.mileage = 43000
+//                car.whenMileageRefreshed = LocalDate.of(2020, 5, 24)
+//                car.mileage = 56500
+//                carDao.insert(carEntityFrom(car))
+//
+//                val car1 = Car()
+//                car1.brand = "Kia"
+//                car1.model = "Soul"
+//                car1.number = "1342 TA-6"
+//                car1.vin = "5671WER34HDJY567"
+//                car1.year = 2016
+//                car1.mileage = 23000
+//                car1.whenMileageRefreshed = LocalDate.of(2020, 4, 14)
+//                car1.mileage = 27600
+//                carDao.insert(carEntityFrom(car1))
+//            }.run()
+//        }
+//    }
 }
 

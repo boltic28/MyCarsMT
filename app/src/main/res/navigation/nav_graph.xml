@@ -39,11 +39,21 @@
         <action
             android:id="@+id/action_carFragment_to_mileageFragmentDialog"
             app:destination="@id/mileageFragmentDialog" />
+        <action
+            android:id="@+id/action_carFragment_to_mainListFragment"
+            app:destination="@id/mainListFragment" />
+        <action
+            android:id="@+id/action_carFragment_to_carCreator"
+            app:destination="@id/carCreator" />
     </fragment>
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.example.mycarsmt.presentation.fragments.SettingFragment"
-        android:label="SettingFragment" />
+        android:label="SettingFragment" >
+        <action
+            android:id="@+id/action_settingFragment_to_mainListFragment"
+            app:destination="@id/mainListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/carCreator"
         android:name="com.example.mycarsmt.presentation.fragments.creators.CarCreator"
@@ -54,6 +64,9 @@
         <action
             android:id="@+id/action_carCreator_to_carDeleteDialog"
             app:destination="@id/carDeleteDialog" />
+        <action
+            android:id="@+id/action_carCreator_to_mainListFragment"
+            app:destination="@id/mainListFragment" />
     </fragment>
     <fragment
         android:id="@+id/noteCreator"
@@ -73,6 +86,9 @@
         <action
             android:id="@+id/action_partCreator_to_partDeleteDialog"
             app:destination="@id/partDeleteDialog" />
+        <action
+            android:id="@+id/action_partCreator_to_carFragment"
+            app:destination="@id/carFragment" />
     </fragment>
     <fragment
         android:id="@+id/repairCreator"
@@ -95,6 +111,15 @@
         <action
             android:id="@+id/action_partFragment_to_serviceFragmentDialog"
             app:destination="@id/serviceFragmentDialog" />
+        <action
+            android:id="@+id/action_partFragment_to_noteCreator"
+            app:destination="@id/noteCreator" />
+        <action
+            android:id="@+id/action_partFragment_to_repairCreator"
+            app:destination="@id/repairCreator" />
+        <action
+            android:id="@+id/action_partFragment_to_partCreator"
+            app:destination="@id/partCreator" />
     </fragment>
     <fragment
         android:id="@+id/carDeleteDialog"

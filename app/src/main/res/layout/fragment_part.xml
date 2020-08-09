@@ -191,9 +191,30 @@
         android:id="@+id/partPanelRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@+id/partPanelMainImage"
         app:layout_constraintBottom_toTopOf="@id/partPanelButtonNotes" />
+
+    <ProgressBar
+        android:id="@+id/partProgress"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/partPanelRecycler"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/partPanelRecycler" />
+
+    <TextView
+        android:id="@+id/partProgressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partProgress" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/partPanelRecyclerAddButton"

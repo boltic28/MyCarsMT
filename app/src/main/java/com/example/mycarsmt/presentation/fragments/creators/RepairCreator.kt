@@ -1,58 +1,50 @@
 package com.example.mycarsmt.presentation.fragments.creators
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.R
+import com.example.mycarsmt.dagger.App
+import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
-import com.example.mycarsmt.presentation.activities.MainActivity
 import kotlinx.android.synthetic.main.fragment_creator_repair.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
-class RepairCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
+class RepairCreator @Inject constructor () : Fragment(R.layout.fragment_creator_repair) {
 
     private val TAG = "testmt"
 
     companion object {
-        val FRAG_TAG = "repairCreator"
-
-        fun getInstance(repair: Repair): RepairCreator {
-
-            val bundle = Bundle()
-            bundle.putSerializable("repair", repair)
-
-            val fragment = RepairCreator(R.layout.fragment_creator_repair)
-            fragment.arguments = bundle
-
-            return fragment
-        }
+        const val FRAG_TAG = "repairCreator"
+        const val TAG = "testmt"
     }
 
+    @Inject
+    lateinit var model: RepairCreatorModel
+
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)
-    private lateinit var manager: MainActivity
-    private lateinit var repairService: RepairServiceImpl
     private lateinit var repair: Repair
-    private lateinit var handler: Handler
+    private lateinit var car: Car
     private var isExist = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        App.component.injectFragment(this)
+        repair = arguments?.getSerializable("repair") as Repair
+        isExist = repair.id > 0
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initFragmentManager()
-        handler = Handler(view.context.mainLooper)
-        repairService = RepairServiceImpl()
-        repair = arguments?.getSerializable("repair") as Repair
-        manager.title =
-            if (repair.id == 0L) "Create new repair"
-            else "Updating repair"
-        isExist = repair.id > 0
+        setTitle()
         repairCreatorButtonDelete.isActivated = false
 
         if (isExist) {
@@ -72,22 +64,35 @@ class RepairCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
                 if(repairCreatorDescription.text.isNotEmpty())repair.description = repairCreatorDescription.text.toString()
 
                 if (isExist) {
-                    repairService.update(repair)
-                    manager.loadPreviousFragment()
+                    model.repairService.update(repair)
+                    val bundle = Bundle()
+                    bundle.putSerializable("car", car)
+                    view.findNavController().navigate(R.id.action_repairCreator_to_carFragment, bundle)
                 } else {
-                    repairService.create(repair)
-                    manager.loadPreviousFragment()
+                    model.repairService.create(repair)
+                    val bundle = Bundle()
+                    bundle.putSerializable("car", car)
+                    view.findNavController().navigate(R.id.action_repairCreator_to_carFragment, bundle)
                 }
             }else{
                 //snack input name and check date
             }
         }
         repairCreatorButtonDelete.setOnClickListener {
-            manager.loadDeleter(repair)
+            val bundle = Bundle()
+            bundle.putSerializable("repair", repair)
+            view.findNavController().navigate(R.id.action_repairCreator_to_repairDeleteDialog, bundle)
         }
         repairCreatorButtonCancel.setOnClickListener {
-            manager.loadPreviousFragment()
+            val bundle = Bundle()
+            bundle.putSerializable("car", car)
+            view.findNavController().navigate(R.id.action_repairCreator_to_carFragment, bundle)
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadCar(){
+        model.carService.readById(repair.carId).subscribe { car = it }
     }
 
     private fun setCreatorData() {
@@ -112,10 +117,9 @@ class RepairCreator (contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
-    private fun initFragmentManager() {
-        val mainActivity: Activity? = activity
-        if (mainActivity is MainActivity) {
-            manager = mainActivity
-        }
+    private fun setTitle(){
+        activity?.title =
+            if (repair.id == 0L) "Create new repair"
+            else "Updating repair"
     }
 }
