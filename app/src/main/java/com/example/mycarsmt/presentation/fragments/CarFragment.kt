@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.SpecialWords.Companion.NOTE
+import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
+import com.example.mycarsmt.SpecialWords.Companion.PART
+import com.example.mycarsmt.SpecialWords.Companion.REPAIR
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.data.enums.ContentType
@@ -140,7 +144,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
     }
 
     private fun loadPhoto() {
-        if (car.photo == SpecialWords.NO_PHOTO.value || car.photo.isEmpty()) {
+        if (car.photo == NO_PHOTO || car.photo.isEmpty()) {
             Picasso.get().load(R.drawable.nophoto).into(carPanelMainImage)
         } else {
             Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
@@ -164,7 +168,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
                         val bundle = Bundle()
-                        bundle.putSerializable("note", note)
+                        bundle.putSerializable(NOTE, note)
                         view?.findNavController()?.navigate(R.id.action_carFragment_to_noteCreator, bundle)
                     }
                 })
@@ -177,7 +181,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                     PartItemAdapter.OnItemClickListener {
                     override fun onClick(part: Part) {
                         val bundle = Bundle()
-                        bundle.putSerializable("part", part)
+                        bundle.putSerializable(PART, part)
                         view?.findNavController()?.navigate(R.id.action_carFragment_to_partFragment, bundle)
                     }
                 })
@@ -189,7 +193,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                     RepairItemAdapter.OnItemClickListener {
                     override fun onClick(repair: Repair) {
                         val bundle = Bundle()
-                        bundle.putSerializable("repair", repair)
+                        bundle.putSerializable(REPAIR, repair)
                         view?.findNavController()?.navigate(R.id.action_carFragment_to_repairCreator, bundle)
                     }
                 })

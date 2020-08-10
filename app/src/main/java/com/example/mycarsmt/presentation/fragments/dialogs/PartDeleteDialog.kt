@@ -1,10 +1,7 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,31 +9,37 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.PART
+import com.example.mycarsmt.dagger.App
+import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.service.part.PartServiceImpl
-import com.example.mycarsmt.domain.service.part.PartServiceImpl.Companion.RESULT_PART_CAR
-import com.example.mycarsmt.presentation.activities.MainActivity
-import com.example.mycarsmt.presentation.fragments.CarFragment
+import com.example.mycarsmt.domain.service.car.CarService
+import com.example.mycarsmt.domain.service.part.PartService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class PartDeleteDialog: DialogFragment() {
+class PartDeleteDialog @Inject constructor(): DialogFragment() {
 
-    private val TAG = "testmt"
+   companion object {
+        const val FRAG_TAG = "deleter"
+        const val TAG = "testmt"
+    }
 
-    companion object {
-        val FRAG_TAG = "deleter"
+    @Inject
+    lateinit var carService: CarService
+    @Inject
+    lateinit var partService: PartService
+    lateinit var car: Car
+    lateinit var part: Part
 
-        fun getInstance(part: Part): PartDeleteDialog {
-
-            val bundle = Bundle()
-            bundle.putSerializable("part", part)
-
-            val fragment =
-                PartDeleteDialog()
-            fragment.arguments = bundle
-
-            return fragment
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component.injectDialog(this)
+        car = arguments?.getSerializable(CAR) as Car
+        part = arguments?.getSerializable(PART) as Part
     }
 
     @SuppressLint("SetTextI18n")
@@ -46,9 +49,6 @@ class PartDeleteDialog: DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
-        val handler = initHandler(container!!.context.mainLooper)
-        val part = arguments?.getSerializable("part") as Part
-        val partService = PartServiceImpl()
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
             "Do you want to delete ${part.name}"
@@ -58,25 +58,20 @@ class PartDeleteDialog: DialogFragment() {
         }
 
         view.findViewById<Button>(R.id.deleteFragmentButtonDelete).setOnClickListener {
-            partService.delete(part)
+            partService.delete(part).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                { resUpd ->
+                    Log.d(TAG, "UPDATE: $resUpd car(s) was update successful")
+                    val bundle = Bundle()
+                    bundle.putSerializable(CAR, car)
+                    view?.findNavController()?.navigate(R.id.action_partDeleteDialog_to_carFragment, bundle)
+                },
+                { err ->
+                    Log.d(TAG, "ERROR: car deleting is fail: $err")
+                    dismiss()
+                }
+            )
         }
 
         return view
-    }
-
-    private fun initHandler(looper: Looper): Handler {
-        return Handler(looper, Handler.Callback { msg ->
-            Log.d(TAG, "Handler: took data from database: result " + msg.what)
-            if (msg.what == RESULT_PART_CAR ){
-                val mainActivity: Activity? = activity
-                if (mainActivity is MainActivity) {
-                    mainActivity.loadPreviousFragmentWithStack(CarFragment.FRAG_TAG)
-                }
-                dismiss()
-                true
-            }else{
-                false
-            }
-        })
     }
 }

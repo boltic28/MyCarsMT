@@ -1,10 +1,7 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,32 +10,37 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.MAIN
+import com.example.mycarsmt.SpecialWords.Companion.TARGET
+import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_CAR_UPDATED
-import com.example.mycarsmt.presentation.activities.MainActivity
+import com.example.mycarsmt.domain.service.car.CarService
 import com.example.mycarsmt.presentation.fragments.CarFragment
+import com.example.mycarsmt.presentation.fragments.MainFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.time.LocalDate
+import javax.inject.Inject
 
-class MileageFragmentDialog: DialogFragment() {
+class MileageFragmentDialog @Inject constructor() : DialogFragment() {
 
     companion object {
         const val TAG = "testmt"
         const val FRAG_TAG = "mileage"
+    }
 
-        fun getInstance(car: Car, tag: String): MileageFragmentDialog {
+    @Inject
+    lateinit var carService: CarService
+    lateinit var car: Car
+    lateinit var target: String
 
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-            bundle.putSerializable("tag", tag)
-
-            val fragment =
-                MileageFragmentDialog()
-            fragment.arguments = bundle
-
-            return fragment
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component.injectDialog(this)
+        car = arguments?.getSerializable(CAR) as Car
+        target = arguments?.getString(TARGET, MAIN).toString()
     }
 
     @SuppressLint("SetTextI18n")
@@ -49,9 +51,6 @@ class MileageFragmentDialog: DialogFragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_dialog_mileage, container, false)
 
-        val car = arguments?.getSerializable("car") as Car
-        val handler = initHandler(container!!.context.mainLooper)
-        val carService = CarServiceImpl()
         val editMileage = view.findViewById<EditText>(R.id.mileageTMPOdo)
 
         view.findViewById<TextView>(R.id.mileageCarName).text = car.getFullName()
@@ -74,33 +73,32 @@ class MileageFragmentDialog: DialogFragment() {
             dismiss()
         }
         view.findViewById<Button>(R.id.mileageButtonOk).setOnClickListener {
-            // check it on parsable
             car.mileage = editMileage.text.toString().toInt()
             car.whenMileageRefreshed = LocalDate.now()
-            carService.update(car)
+            carService.update(car).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                { resUpd ->
+                    Log.d(TAG, "UPDATE: $resUpd car(s) was update successful")
+                    loadPreviousPage()
+                },
+                { err ->
+                    Log.d(TAG, "ERROR: car deleting is fail: $err")
+                    dismiss()
+                }
+            )
         }
         return view
     }
 
-    private fun initHandler(looper: Looper): Handler {
-        return Handler(looper, Handler.Callback { msg ->
-            Log.d(TAG, "HandlerML: took data from database: result " + msg.what)
-            val tag = arguments?.getString("tag")
-            if (msg.what == RESULT_CAR_UPDATED){
-                val car = msg.obj as Car
-                val mainActivity: Activity? = activity
-                if (mainActivity is MainActivity) {
-                    if(tag.equals(CarFragment.FRAG_TAG)){
-                        mainActivity.loadCarFragmentWithoutBackStack(car)
-                    }else {
-                        mainActivity.loadMainFragment()
-                    }
-                }
-                dismiss()
-                true
-            }else{
-                false
+    private fun loadPreviousPage(){
+        when(target){
+            MainFragment.FRAG_TAG ->{
+                view?.findNavController()?.navigate(R.id.action_mileageFragmentDialog_to_mainListFragment)
             }
-        })
+            CarFragment.FRAG_TAG -> {
+                val bundle = Bundle()
+                bundle.putSerializable(CAR, car)
+                view?.findNavController()?.navigate(R.id.action_mileageFragmentDialog_to_carFragment)
+            }
+        }
     }
 }

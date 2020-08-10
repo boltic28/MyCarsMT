@@ -155,6 +155,9 @@
         <action
             android:id="@+id/action_repairDeleteDialog_to_carFragment"
             app:destination="@id/carFragment" />
+        <action
+            android:id="@+id/action_repairDeleteDialog_to_partFragment"
+            app:destination="@id/partFragment" />
     </fragment>
     <fragment
         android:id="@+id/serviceFragmentDialog"

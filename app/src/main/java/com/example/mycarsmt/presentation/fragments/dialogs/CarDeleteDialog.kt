@@ -1,10 +1,7 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,29 +9,30 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.findNavController
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_CAR_DELETED
-import com.example.mycarsmt.presentation.activities.MainActivity
+import com.example.mycarsmt.domain.service.car.CarService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class CarDeleteDialog : DialogFragment() {
+class CarDeleteDialog @Inject constructor()  : DialogFragment() {
 
     companion object {
         const val TAG = "testmt"
         const val FRAG_TAG = "deleter"
+    }
 
-        fun getInstance(car: Car): CarDeleteDialog {
+    @Inject
+    lateinit var carService: CarService
+    lateinit var car: Car
 
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-
-            val fragment =
-                CarDeleteDialog()
-            fragment.arguments = bundle
-
-            return fragment
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component.injectDialog(this)
+        car = arguments?.getSerializable(CAR) as Car
     }
 
     @SuppressLint("SetTextI18n")
@@ -45,34 +43,24 @@ class CarDeleteDialog : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
 
-        val car = arguments?.getSerializable("car") as Car
-        val handler = initHandler(container!!.context.mainLooper)
-        val carService = CarServiceImpl()
-
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
             "Do you want to delete ${car.brand} ${car.model}"
         view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
             dismiss()
         }
         view.findViewById<Button>(R.id.deleteFragmentButtonDelete).setOnClickListener {
-            carService.delete(car)
+            carService.delete(car).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                { isDeleted ->
+                    Log.d(TAG, "DELETE: $isDeleted car(s) was deleted")
+                    view.findNavController().navigate(R.id.action_carDeleteDialog_to_mainListFragment)
+//                    dismiss()
+                },
+                { err ->
+                    Log.d(TAG, "ERROR: car deleting is fail: $err")
+                    dismiss()
+                }
+            )
         }
         return view
-    }
-
-    private fun initHandler(looper: Looper): Handler {
-        return Handler(looper, Handler.Callback { msg ->
-            Log.d(TAG, "Handler: took data from database: result " + msg.what)
-            if (msg.what == RESULT_CAR_DELETED ){
-                val mainActivity: Activity? = activity
-                if (mainActivity is MainActivity) {
-                    mainActivity.loadMainFragment()
-                }
-                dismiss()
-                true
-            }else{
-                false
-            }
-        })
     }
 }

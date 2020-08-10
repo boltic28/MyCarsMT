@@ -6,6 +6,7 @@ import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import com.example.mycarsmt.presentation.fragments.*
 import com.example.mycarsmt.presentation.fragments.creators.*
+import com.example.mycarsmt.presentation.fragments.dialogs.*
 import dagger.Component
 import javax.inject.Singleton
 
@@ -30,6 +31,12 @@ interface AppComponent {
     fun injectFragment(fragment: PartCreator)
     fun injectFragment(fragment: NoteCreator)
     fun injectFragment(fragment: RepairCreator)
+
+    fun injectDialog(dialog: CarDeleteDialog)
+    fun injectDialog(dialog: PartDeleteDialog)
+    fun injectDialog(dialog: RepairDeleteDialog)
+    fun injectDialog(dialog: ServiceFragmentDialog)
+    fun injectDialog(dialog: MileageFragmentDialog)
 
     fun injectService(service: CarServiceImpl)
     fun injectService(service: PartServiceImpl)
