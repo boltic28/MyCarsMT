@@ -2,21 +2,22 @@ package com.example.mycarsmt.data.database.repair
 
 import androidx.room.*
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 @Dao
 interface RepairDao {
 
     @Insert
-    fun insert(repairEntity: RepairEntity): Long
+    fun insert(repairEntity: RepairEntity): Single<Long>
 
     @Update
-    fun update(repairEntity: RepairEntity): Int
+    fun update(repairEntity: RepairEntity): Single<Int>
 
     @Delete
-    fun delete(repairEntity: RepairEntity): Int
+    fun delete(repairEntity: RepairEntity): Single<Int>
 
     @Query("SELECT * FROM repair WHERE id = :id")
-    fun getById(id: Long): Flowable<RepairEntity>
+    fun getById(id: Long): Single<RepairEntity>
 
     @Query("SELECT * FROM repair")
     fun getAll(): Flowable<List<RepairEntity>>

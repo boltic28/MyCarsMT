@@ -2,6 +2,7 @@ package com.example.mycarsmt.domain
 
 import android.content.SharedPreferences
 import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.presentation.fragments.SettingFragment
 import java.io.Serializable
@@ -46,7 +47,7 @@ class Car() : Serializable {
     var mileage: Int = 0
     var whenMileageRefreshed: LocalDate = LocalDate.now()
     var condition: List<Condition> = listOf(Condition.OK)
-    var photo: String = SpecialWords.NO_PHOTO.value
+    var photo: String = NO_PHOTO
 
     lateinit var parts: List<Part>
     lateinit var notes: List<Note>

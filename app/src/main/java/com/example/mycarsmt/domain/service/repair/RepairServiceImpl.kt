@@ -23,19 +23,7 @@ import java.util.stream.Collectors
 import javax.inject.Inject
 
 @SuppressLint("NewApi")
-class RepairServiceImpl @Inject constructor(): RepairService {
-
-    companion object {
-        const val RESULT_REPAIRS_READED = 401
-        const val RESULT_REPAIR_READED = 402
-        const val RESULT_REPAIR_CREATED = 403
-        const val RESULT_REPAIR_UPDATED = 404
-        const val RESULT_REPAIR_DELETED = 405
-        const val RESULT_REPAIRS_FOR_CAR = 411
-        const val RESULT_REPAIRS_FOR_PART = 413
-        const val RESULT_REPAIR_CAR = 406
-        const val RESULT_REPAIR_PART = 407
-    }
+class RepairServiceImpl @Inject constructor() : RepairService {
 
     private val TAG = "testmt"
 
@@ -54,56 +42,51 @@ class RepairServiceImpl @Inject constructor(): RepairService {
         App.component.injectService(this)
     }
 
-    override fun create(repair: Repair): Single<Repair> {
-        return repairDao.getById(
-            repairDao.insert(repairEntityFrom(repair)))
-            .map { entity -> repairFrom(entity) }
-            .single(repair)
+    override fun create(repair: Repair): Single<Long> {
+        return repairDao.insert(repairEntityFrom(repair))
+    }
+
+    override fun readById(id: Long): Single<Repair> {
+        return repairDao.getById(id).map { repairFrom(it) }
     }
 
     override fun update(repair: Repair): Single<Int> {
-        return Single.just(repairDao.update(repairEntityFrom(repair)))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        return repairDao.update(repairEntityFrom(repair))
     }
 
     override fun delete(repair: Repair): Single<Int> {
-        return Single.just(repairDao.delete(repairEntityFrom(repair)))
+        return repairDao.delete(repairEntityFrom(repair))
     }
 
     override fun readAll(): Flowable<List<Repair>> {
-        return repairDao.getAll().map { value ->
-            value.stream()
+        return repairDao.getAll().map { entitiesList ->
+            entitiesList.stream()
                 .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())
         }
     }
 
-    override fun readById(id: Long): Flowable<Repair> {
-        return repairDao.getById(id).map { value -> repairFrom(value) }
-    }
-
     override fun readAllForCar(car: Car): Flowable<List<Repair>> {
-        return repairDao.getAllForCar(car.id).map { value ->
-            value.stream()
+        return repairDao.getAllForCar(car.id).map { entitiesList ->
+            entitiesList.stream()
                 .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())
         }
     }
 
     override fun readAllForPart(part: Part): Flowable<List<Repair>> {
-        return repairDao.getAllForCar(part.id).map { value ->
-            value.stream()
+        return repairDao.getAllForCar(part.id).map { entitiesList ->
+            entitiesList.stream()
                 .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())
         }
     }
 
     override fun getCarFor(repair: Repair): Maybe<Car> {
-        return carDao.getById(repair.carId).map { value -> carFrom(value) }.singleElement()
+        return carDao.getById(repair.carId).map { value -> carFrom(value) }.toMaybe()
     }
 
     override fun getPartFor(repair: Repair): Maybe<Part> {
-        return partDao.getById(repair.partId).map { value -> partFrom(value) }.singleElement()
+        return partDao.getById(repair.partId).map { value -> partFrom(value) }.toMaybe()
     }
 }

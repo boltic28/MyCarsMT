@@ -10,12 +10,12 @@ import io.reactivex.Single
 
 interface PartService{
 
-    fun create(part: Part): Single<Part>
+    fun create(part: Part): Single<Long>
     fun update(part: Part): Single<Int>
     fun delete(part: Part): Single<Int>
     fun readAll(): Flowable<List<Part>>
     fun readAllForCar(car: Car): Flowable<List<Part>>
-    fun readById(partId: Long): Flowable<Part>
+    fun readById(partId: Long): Single<Part>
 
     fun getNotesFor(part: Part): Flowable<List<Note>>
     fun getRepairsFor(part: Part): Flowable<List<Repair>>

@@ -29,19 +29,7 @@ import javax.inject.Inject
 @SuppressLint("NewApi")
 class PartServiceImpl @Inject constructor() : PartService {
 
-    companion object {
-        const val TAG = "testmt"
-
-        const val RESULT_PARTS_READ = 201
-        const val RESULT_PART_READ = 202
-        const val RESULT_PART_CREATED = 203
-        const val RESULT_PART_UPDATED = 204
-        const val RESULT_PART_DELETED = 205
-        const val RESULT_PART_CAR = 206
-        const val RESULT_PARTS_FOR_CAR = 211
-        const val RESULT_NOTES_FOR_PART = 212
-        const val RESULT_REPAIRS_FOR_PART = 213
-    }
+    private val TAG = "testmt"
 
     @Inject
     lateinit var carDao: CarDao
@@ -60,26 +48,26 @@ class PartServiceImpl @Inject constructor() : PartService {
         App.component.injectService(this)
     }
 
-    override fun create(part: Part): Single<Part> {
-        return partDao.getById(
-            partDao.insert(partEntityFrom(part)))
-            .map { entity -> partFrom(entity) }
-            .single(part)
+    override fun create(part: Part): Single<Long> {
+        return partDao.insert(partEntityFrom(part))
+    }
+
+    override fun readById(partId: Long): Single<Part> {
+        return partDao.getById(partId).map { partFrom(it) }
     }
 
     override fun update(part: Part): Single<Int> {
-        return Single.just(partDao.update(partEntityFrom(part)))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        return partDao.update(partEntityFrom(part))
+
     }
 
     override fun delete(part: Part): Single<Int> {
-        return Single.just(partDao.delete(partEntityFrom(part)))
+        return partDao.delete(partEntityFrom(part))
     }
 
     override fun readAll(): Flowable<List<Part>> {
-        return partDao.getAll().map { value ->
-            value.stream()
+        return partDao.getAll().map { entitiesList ->
+            entitiesList.stream()
                 .map { entity -> partFrom(entity) }
                 .collect(Collectors.toList())
         }
@@ -91,10 +79,6 @@ class PartServiceImpl @Inject constructor() : PartService {
                 .map { entity -> partFrom(entity) }
                 .collect(Collectors.toList())
         }
-    }
-
-    override fun readById(partId: Long): Flowable<Part> {
-        return partDao.getById(partId).map { value -> partFrom(value) }
     }
 
     override fun getNotesFor(part: Part): Flowable<List<Note>> {
@@ -114,7 +98,7 @@ class PartServiceImpl @Inject constructor() : PartService {
     }
 
     override fun getCarFor(part: Part): Maybe<Car> {
-        return carDao.getById(part.carId).map { value -> carFrom(value) }.singleElement()
+        return carDao.getById(part.carId).map { value -> carFrom(value) }.toMaybe()
     }
 
     override fun addRepair(repair: Repair) {

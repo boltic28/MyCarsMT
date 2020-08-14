@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.DiagnosticElement
@@ -20,6 +21,7 @@ import com.example.mycarsmt.presentation.adapters.CarItemAdapter
 import com.example.mycarsmt.presentation.adapters.DiagnosticElementAdapter
 import com.example.mycarsmt.presentation.adapters.NoteItemAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
 import java.util.stream.Collectors
@@ -53,13 +55,14 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated")
 
+        carsNoResult.visibility = View.GONE
         showProgressBar()
 
         model.carService.readAll()
             .observeOn(mainThread())
             .subscribe { value ->
                 cars = value
-                setAdapter()
+                if(this.isVisible) setAdapter()
             }
 
         model.noteService.readAll()
@@ -69,12 +72,14 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
             }
 
         model.carService.getToBuyList()
+            .subscribeOn(Schedulers.io())
             .observeOn(mainThread())
             .subscribe { value ->
                 listToBuy = value
             }
 
         model.carService.getToDoList()
+            .subscribeOn(Schedulers.io())
             .observeOn(mainThread())
             .subscribe { value ->
                 listToBuy = value
@@ -134,7 +139,9 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         }
 
         carsAddCar.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_mainListFragment_to_carCreator)
+            val bundle = Bundle()
+            bundle.putSerializable(CAR, Car())
+            view?.findNavController()?.navigate(R.id.action_mainListFragment_to_carCreator, bundle)
         }
     }
 
@@ -158,14 +165,14 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
             CarItemAdapter.OnItemClickListener {
             override fun onClick(car: Car) {
                 val bundle = Bundle()
-                bundle.putSerializable("car", car)
+                bundle.putSerializable(CAR, car)
                 view?.findNavController()
                     ?.navigate(R.id.action_mainListFragment_to_carFragment, bundle)
             }
 
             override fun onMileageClick(car: Car) {
                 val bundle = Bundle()
-                bundle.putSerializable("car", car)
+                bundle.putSerializable(CAR, car)
                 view?.findNavController()
                     ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
             }
@@ -173,7 +180,6 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
     }
 
     private fun setAdapter() {
-        carsNoResult.visibility = View.GONE
         hideProgressBar()
         when (contentType) {
             ContentType.DEFAULT -> {

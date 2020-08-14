@@ -9,11 +9,11 @@ import io.reactivex.Single
 
 interface RepairService{
 
-    fun create(repair: Repair): Single<Repair>
+    fun create(repair: Repair): Single<Long>
     fun update(repair: Repair): Single<Int>
     fun delete(repair: Repair): Single<Int>
     fun readAll(): Flowable<List<Repair>>
-    fun readById(id: Long): Flowable<Repair>
+    fun readById(id: Long): Single<Repair>
     fun readAllForCar(car: Car): Flowable<List<Repair>>
     fun readAllForPart(part: Part): Flowable<List<Repair>>
 

@@ -8,13 +8,17 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
-import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_creator_car.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -28,7 +32,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
 
     companion object {
         const val FRAG_TAG = "carCreator"
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
         const val CAMERA = 2
     }
 
@@ -36,14 +40,15 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
     lateinit var model: CarCreatorModel
 
     private lateinit var car: Car
-    private var photo = SpecialWords.NO_PHOTO.value
+    private var photo = NO_PHOTO
     private var isExist = true
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         App.component.injectFragment(this)
-        car = arguments?.getSerializable("car") as Car
+        car = arguments?.getSerializable(CAR) as Car
         isExist = car.id > 0
     }
 
@@ -51,6 +56,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        navController = view.findNavController()
         setTitle()
         loadPhoto()
         carCreatorButtonDelete.isClickable = false
@@ -58,47 +64,101 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
         if (isExist) setCreatorData()
 
         carCreatorButtonCreate.setOnClickListener {
-            if (carCreatorBrand.text.isNotEmpty() && carCreatorModel.text.isNotEmpty()) {
-                car.brand = carCreatorBrand.text.toString()
-                car.model = carCreatorModel.text.toString()
-                car.photo = photo
-                if (carCreatorPlateNumber.text.isNotEmpty()) car.number =
-                    carCreatorPlateNumber.text.toString()
-                if (carCreatorVincd.text.isNotEmpty()) car.vin =
-                    carCreatorVincd.text.toString()
-                if (carCreatorYear.text.isNotEmpty()) car.year =
-                    Integer.valueOf(carCreatorYear.text.toString())
-                if (carCreatorMileage.text.isNotEmpty()) car.mileage =
-                    Integer.valueOf(carCreatorMileage.text.toString())
-
+            isFieldsFilled().let {
+                showProgressBar()
                 if (isExist) {
-                    model.carService.update(car)
-                    showProgressBar()
+                    updateCar()
                 } else {
-                    car.whenMileageRefreshed = LocalDate.now()
-                    model.carService.create(car)
-                    showProgressBar()
+                    createCar()
                 }
             }
         }
+
         carCreatorButtonDelete.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-            view.findNavController().navigate(R.id.action_carCreator_to_carDeleteDialog, bundle)
+            loadDeleteDialog()
         }
+
         carCreatorButtonCancel.setOnClickListener {
-            if(isExist) {
-                val bundle = Bundle()
-                bundle.putSerializable("car", car)
-                view.findNavController().navigate(R.id.action_carCreator_to_carFragment, bundle)
-            }else{
-                view.findNavController().navigate(R.id.action_carCreator_to_mainListFragment)
-            }
+            loadPreviousFragment()
         }
+
         carCreatorFABCreatePhoto.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, CAMERA)
         }
+    }
+
+    private fun isFieldsFilled(): Boolean{
+        if (carCreatorBrand.text.isNotEmpty() && carCreatorModel.text.isNotEmpty()) {
+            car.brand = carCreatorBrand.text.toString()
+            car.model = carCreatorModel.text.toString()
+            car.photo = photo
+            if (carCreatorPlateNumber.text.isNotEmpty()) car.number =
+                carCreatorPlateNumber.text.toString()
+            if (carCreatorVincd.text.isNotEmpty()) car.vin =
+                carCreatorVincd.text.toString()
+            if (carCreatorYear.text.isNotEmpty()) car.year =
+                Integer.valueOf(carCreatorYear.text.toString())
+            if (carCreatorMileage.text.isNotEmpty()) car.mileage =
+                Integer.valueOf(carCreatorMileage.text.toString())
+            return true
+        }else{
+            //todo show message - fill field
+            return false
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun createCar() {
+        car.whenMileageRefreshed = LocalDate.now()
+        model.carService.create(car)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { id ->
+                    car.id = id
+                    loadCarFragment()
+                },
+                { err ->
+                    Log.d(TAG, "CAR CREATOR: $err")
+                }
+            )
+    }
+
+    @SuppressLint("CheckResult")
+    private fun updateCar() {
+        model.carService.update(car)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { number ->
+                    if (number > 0)
+                        loadCarFragment()
+                },
+                { err ->
+                    Log.d(TAG, "CAR UPDATER: $err")
+                }
+            )
+    }
+
+    private fun loadDeleteDialog(){
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_carCreator_to_carDeleteDialog, bundle)
+    }
+
+    private fun loadPreviousFragment(){
+        if (isExist) {
+            navController.navigateUp()
+        } else {
+            navController.navigate(R.id.action_carCreator_to_mainListFragment)
+        }
+    }
+
+    private fun loadCarFragment() {
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_carCreator_to_carFragment, bundle)
     }
 
     private fun setCreatorData() {
@@ -115,7 +175,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
     }
 
     private fun loadPhoto() {
-        if (photo == SpecialWords.NO_PHOTO.value || photo.isEmpty()) {
+        if (photo == NO_PHOTO || photo.isEmpty()) {
             Picasso.get().load(R.drawable.nophoto).into(carCreatorImageOfCar)
         } else {
             Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "$photo.jpg"))
@@ -143,7 +203,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
 
         val imagesDirectory = File(Directories.CAR_IMAGE_DIRECTORY.value)
         if (!imagesDirectory.exists()) imagesDirectory.mkdirs()
-        if (photo != SpecialWords.NO_PHOTO.value) File(imagesDirectory, ("$photo.jpg")).delete()
+        if (photo != NO_PHOTO) File(imagesDirectory, ("$photo.jpg")).delete()
         photo = "${car.model}_${Calendar.getInstance().timeInMillis}"
 
         try {
@@ -157,7 +217,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
         }
     }
 
-    private fun setTitle(){
+    private fun setTitle() {
         activity?.title =
             if (car.id == 0L) "Create new car"
             else "Updating ${car.brand} ${car.model}"

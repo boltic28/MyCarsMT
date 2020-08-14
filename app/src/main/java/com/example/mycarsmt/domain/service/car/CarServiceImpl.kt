@@ -18,9 +18,7 @@ import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.par
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.time.LocalDate
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 import javax.inject.Inject
@@ -28,20 +26,7 @@ import javax.inject.Inject
 class CarServiceImpl @Inject constructor() : CarService {
 
     companion object {
-        const val TAG = "testmt"
-        const val RESULT_CARS_READED = 101
-        const val RESULT_CAR_READED = 102
-        const val RESULT_CAR_CREATED = 103
-        const val RESULT_CAR_UPDATED = 104
-        const val RESULT_CAR_DELETED = 105
-        const val RESULT_PARTS_FOR_CAR = 111
-        const val RESULT_NOTES_FOR_CAR = 112
-        const val RESULT_REPAIRS_FOR_CAR = 113
-        const val RESULT_BUY_LIST = 114
-        const val RESULT_TO_DO_LIST = 115
-        const val DIAGNOSTIC_IS_READY = 120
-        const val DIAGNOSTIC_CAR_IS_READY = 121
-        const val RESULT_DIAGNOSTIC_FOR_NOTIFICATION = 122
+        const val TAG = "test_mt"
     }
 
     @Inject
@@ -61,33 +46,29 @@ class CarServiceImpl @Inject constructor() : CarService {
         App.component.injectService(this)
     }
 
-    override fun create(car: Car): Single<Car> {
-        return carDao.getById(carDao.insert(carEntityFrom(car)))
-            .map { entity -> carFrom(entity) }
-            .single(car)
+    override fun create(car: Car): Single<Long> {
+        return carDao.insert(carEntityFrom(car))
+    }
+
+    override fun readById(id: Long): Single<Car> {
+        return carDao.getById(id).map { carFrom(it) }
     }
 
     override fun update(car: Car): Single<Int> {
-        return Single.just(carDao.update(carEntityFrom(car)))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        return carDao.update(carEntityFrom(car))
     }
 
     override fun delete(car: Car): Single<Int> {
-        return Single.just(carDao.delete(carEntityFrom(car)))
+        return carDao.delete(carEntityFrom(car))
     }
 
     override fun readAll(): Flowable<List<Car>> {
         return carDao.getAll()
-            .map { entity ->
-                entity.stream()
+            .map { entitiesList ->
+                entitiesList.stream()
                     .map { carEntity -> carFrom(carEntity) }
                     .collect(Collectors.toList())
             }
-    }
-
-    override fun readById(id: Long): Flowable<Car> {
-        return carDao.getById(id).map { entity -> carFrom(entity) }
     }
 
     override fun getPartsFor(car: Car): Flowable<List<Part>> {
@@ -115,7 +96,7 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     @SuppressLint("CheckResult")
-    override fun getToBuyList(): Flowable<List<DiagnosticElement>> {
+    override fun getToBuyList(): Single<List<DiagnosticElement>> {
         val buyList: MutableList<DiagnosticElement> = mutableListOf()
 
         carDao.getAll()
@@ -140,11 +121,11 @@ class CarServiceImpl @Inject constructor() : CarService {
 
             }
 
-        return Flowable.fromArray(buyList)
+        return Single.just(buyList)
     }
 
     @SuppressLint("CheckResult")
-    override fun getToDoList(): Flowable<List<DiagnosticElement>> {
+    override fun getToDoList(): Single<List<DiagnosticElement>> {
         val todoList: MutableList<DiagnosticElement> = mutableListOf()
 
         carDao.getAll()
@@ -169,19 +150,17 @@ class CarServiceImpl @Inject constructor() : CarService {
 
             }
 
-        return Flowable.fromArray(todoList)
+        return Single.just(todoList)
     }
 
     @SuppressLint("CheckResult")
     override fun doDiagnosticAllCars() {
         carDao.getAll()
-//            .subscribeOn(Schedulers.computation())
             .map { value ->
                 value.stream()
                     .map { entity -> carFrom(entity) }
                     .collect(Collectors.toList())
             }
-//            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { list -> list.forEach { refresh(it) } },
                 { err -> Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err") }
@@ -354,34 +333,5 @@ class CarServiceImpl @Inject constructor() : CarService {
             }.run()
         }
     }
-
-    // for delete(only for test show)
-//    fun createTestEntityForApp() {
-//        executor.execute {
-//            Runnable {
-//                val car = Car()
-//                car.brand = "Kia"
-//                car.model = "Rio"
-//                car.number = "1452 HA-4"
-//                car.vin = "56718394GHDJY567"
-//                car.year = 2013
-//                car.mileage = 43000
-//                car.whenMileageRefreshed = LocalDate.of(2020, 5, 24)
-//                car.mileage = 56500
-//                carDao.insert(carEntityFrom(car))
-//
-//                val car1 = Car()
-//                car1.brand = "Kia"
-//                car1.model = "Soul"
-//                car1.number = "1342 TA-6"
-//                car1.vin = "5671WER34HDJY567"
-//                car1.year = 2016
-//                car1.mileage = 23000
-//                car1.whenMileageRefreshed = LocalDate.of(2020, 4, 14)
-//                car1.mileage = 27600
-//                carDao.insert(carEntityFrom(car1))
-//            }.run()
-//        }
-//    }
 }
 

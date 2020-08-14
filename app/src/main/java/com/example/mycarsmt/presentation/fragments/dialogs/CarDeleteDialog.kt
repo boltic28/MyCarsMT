@@ -14,19 +14,20 @@ import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.service.car.CarService
+import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class CarDeleteDialog @Inject constructor()  : DialogFragment() {
 
     companion object {
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
         const val FRAG_TAG = "deleter"
     }
 
     @Inject
-    lateinit var carService: CarService
+    lateinit var carService: CarServiceImpl
     lateinit var car: Car
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,18 +47,20 @@ class CarDeleteDialog @Inject constructor()  : DialogFragment() {
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
             "Do you want to delete ${car.brand} ${car.model}"
         view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
-            dismiss()
+            view.findNavController().navigateUp()
         }
         view.findViewById<Button>(R.id.deleteFragmentButtonDelete).setOnClickListener {
-            carService.delete(car).observeOn(AndroidSchedulers.mainThread()).subscribe(
+            carService.delete(car)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
                 { isDeleted ->
                     Log.d(TAG, "DELETE: $isDeleted car(s) was deleted")
                     view.findNavController().navigate(R.id.action_carDeleteDialog_to_mainListFragment)
-//                    dismiss()
                 },
                 { err ->
                     Log.d(TAG, "ERROR: car deleting is fail: $err")
-                    dismiss()
+                    view.findNavController().navigateUp()
                 }
             )
         }

@@ -8,15 +8,20 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
-import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
+import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.PartControlType
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_creator_part.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -30,7 +35,7 @@ import javax.inject.Inject
 class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_part) {
 
     companion object {
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
         const val FRAG_TAG = "partCreator"
         const val CAMERA = 2
     }
@@ -40,8 +45,9 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
     private lateinit var part: Part
     private lateinit var car: Car
+    private lateinit var navController: NavController
 
-    private var photo = SpecialWords.NO_PHOTO.value
+    private var photo = NO_PHOTO
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)
     private var isExist = true
 
@@ -49,9 +55,8 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
         super.onCreate(savedInstanceState)
 
         App.component.injectFragment(this)
-        part = arguments?.getSerializable("part") as Part
-        car = arguments?.getSerializable("car") as Car
-        isExist = part.id > 0
+        part = arguments?.getSerializable(PART) as Part
+        car = arguments?.getSerializable(CAR) as Car
     }
 
 
@@ -59,81 +64,125 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        isExist = part.id > 0
-        setTitle()
+        navController = view.findNavController()
         partCreatorButtonDelete.isActivated = false
+
+        setTitle()
+        checkExisting()
+        loadPhoto()
+
+        partCreatorButtonCreate.setOnClickListener {
+            isFieldsFilled().let {
+                showProgressBar()
+                if (isExist) {
+                    updatePart()
+                } else {
+                    createPart()
+                }
+            }
+        }
+        partCreatorButtonDelete.setOnClickListener {
+            loadDeleteDialog()
+        }
+        repairCreatorButtonCancel.setOnClickListener {
+            navController.navigateUp()
+        }
+        partCreatorFABCreatePhoto.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, CAMERA)
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun createPart() {
+        car.whenMileageRefreshed = LocalDate.now()
+        model.partService.create(part)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { id ->
+                    car.id = id
+                    loadPartFragment()
+                },
+                { err ->
+                    Log.d(TAG, "PART CREATOR: $err")
+                }
+            )
+    }
+
+    @SuppressLint("CheckResult")
+    private fun updatePart() {
+        model.partService.update(part)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { number ->
+                    if (number > 0)
+                        loadPartFragment()
+                },
+                { err ->
+                    Log.d(TAG, "PART UPDATER: $err")
+                }
+            )
+    }
+
+    private fun loadDeleteDialog() {
+        val bundle = Bundle()
+        bundle.putSerializable(PART, part)
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_partCreator_to_partDeleteDialog, bundle)
+    }
+
+    private fun loadPartFragment() {
+        val bundle = Bundle()
+        bundle.putSerializable(PART, part)
+        navController.navigate(R.id.action_partCreator_to_partFragment, bundle)
+    }
+
+    private fun isFieldsFilled(): Boolean {
+        if (partCreatorName.text.isNotEmpty() &&
+            checkDataFormat(partCreatorLastChangeDay.text.toString())) {
+
+            part.name = partCreatorName.text.toString()
+            part.photo = photo
+
+            if (partCreatorCodes.text.isNotEmpty()) part.codes =
+                partCreatorCodes.text.toString()
+            if (partCreatorLimitKm.text.isNotEmpty()) part.limitKM =
+                Integer.valueOf(partCreatorLimitKm.text.toString())
+            if (partCreatorLimitDAY.text.isNotEmpty()) part.limitDays =
+                Integer.valueOf(partCreatorLimitDAY.text.toString())
+            if (partCreatorLastChangeMileage.text.isNotEmpty()) part.mileageLastChange =
+                Integer.valueOf(partCreatorLastChangeMileage.text.toString())
+            if (partCreatorLastChangeDay.text.isNotEmpty()) part.dateLastChange =
+                LocalDate.parse(partCreatorLastChangeDay.text.toString(), dateFormatter)
+            if (partCreatorDescription.text.isNotEmpty()) part.description =
+                partCreatorDescription.text.toString()
+
+            if (partCreatorInsuranceBox.isChecked) {
+                part.type = PartControlType.INSURANCE
+                part.limitDays = 365
+                part.limitKM = 0
+            }
+
+            if (partCreatorInspectionOnlyBox.isChecked)
+                part.type = PartControlType.INSPECTION
+
+            return true
+        } else {
+            //todo show message - fill field
+            return false
+        }
+    }
+
+    private fun checkExisting() {
+        isExist = part.id > 0
 
         if (isExist) {
             setCreatorData()
         } else {
             partCreatorLastChangeDay.setText(dateFormatter.format(LocalDate.now()))
             partCreatorLastChangeMileage.setText(part.mileage.toString())
-        }
-
-        loadPhoto()
-
-        partCreatorButtonCreate.setOnClickListener {
-            if (partCreatorName.text.isNotEmpty() &&
-                checkDataFormat(partCreatorLastChangeDay.text.toString())
-            ) {
-
-                part.name = partCreatorName.text.toString()
-                part.photo = photo
-
-                if (partCreatorCodes.text.isNotEmpty()) part.codes =
-                    partCreatorCodes.text.toString()
-                if (partCreatorLimitKm.text.isNotEmpty()) part.limitKM =
-                    Integer.valueOf(partCreatorLimitKm.text.toString())
-                if (partCreatorLimitDAY.text.isNotEmpty()) part.limitDays =
-                    Integer.valueOf(partCreatorLimitDAY.text.toString())
-                if (partCreatorLastChangeMileage.text.isNotEmpty()) part.mileageLastChange =
-                    Integer.valueOf(partCreatorLastChangeMileage.text.toString())
-                if (partCreatorLastChangeDay.text.isNotEmpty()) part.dateLastChange =
-                    LocalDate.parse(partCreatorLastChangeDay.text.toString(), dateFormatter)
-                if (partCreatorDescription.text.isNotEmpty()) part.description =
-                    partCreatorDescription.text.toString()
-
-                if (partCreatorInsuranceBox.isChecked) {
-                    part.type = PartControlType.INSURANCE
-                    part.limitDays = 365
-                    part.limitKM = 0
-                }
-
-                if (partCreatorInspectionOnlyBox.isChecked)
-                    part.type = PartControlType.INSPECTION
-
-                if (isExist) {
-                    model.partService.update(part)
-                    showProgressBar()
-                } else {
-                    model.partService.create(part)
-                    showProgressBar()
-                }
-            } else {
-                //show snack input name or correct data 14.05.2020
-            }
-        }
-        partCreatorButtonDelete.setOnClickListener {
-            model.partService.delete(part)
-
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-            view.findNavController().navigate(R.id.action_partCreator_to_carFragment, bundle)
-        }
-        repairCreatorButtonCancel.setOnClickListener {
-            if(isExist) {
-                val bundle = Bundle()
-                bundle.putSerializable("part", part)
-                view.findNavController().navigate(R.id.action_partCreator_to_partFragment, bundle)
-            }else{
-                val bundle = Bundle()
-                bundle.putSerializable("car", car)
-                view.findNavController().navigate(R.id.action_partCreator_to_carFragment, bundle)
-            }
-        }
-        partCreatorFABCreatePhoto.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, CAMERA)
         }
     }
 
@@ -152,8 +201,8 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
         partCreatorButtonCreate.setText(R.string.update)
         partCreatorButtonDelete.isActivated = true
-        if(part.type == PartControlType.INSURANCE) partCreatorInsuranceBox.isChecked = true
-        if(part.type == PartControlType.INSPECTION) partCreatorInspectionOnlyBox.isChecked = true
+        if (part.type == PartControlType.INSURANCE) partCreatorInsuranceBox.isChecked = true
+        if (part.type == PartControlType.INSPECTION) partCreatorInspectionOnlyBox.isChecked = true
         photo = part.photo
     }
 
@@ -169,7 +218,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
     }
 
     private fun loadPhoto() {
-        if (photo == SpecialWords.NO_PHOTO.value) {
+        if (photo == NO_PHOTO) {
             Picasso.get().load(R.drawable.nophoto).into(partCreatorImageOfPart)
         } else {
             Picasso.get().load(File(Directories.PART_IMAGE_DIRECTORY.value, "$photo.jpg"))
@@ -195,7 +244,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
         if (!imagesDirectory.exists()) imagesDirectory.mkdirs()
 
-        if (photo != SpecialWords.NO_PHOTO.value) File(imagesDirectory, ("$photo.jpg")).delete()
+        if (photo != NO_PHOTO) File(imagesDirectory, ("$photo.jpg")).delete()
 
         photo = "${part.name}${(Calendar.getInstance().timeInMillis)}"
         val f = File(imagesDirectory, ("$photo.jpg"))
@@ -210,7 +259,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
         }
     }
 
-    private fun setTitle(){
+    private fun setTitle() {
         activity?.title =
             if (part.id == 0L) "Create new part"
             else "Updating ${part.name}"

@@ -75,6 +75,12 @@
         <action
             android:id="@+id/action_noteCreator_to_carFragment"
             app:destination="@id/carFragment" />
+        <action
+            android:id="@+id/action_noteCreator_to_partFragment"
+            app:destination="@id/partFragment" />
+        <action
+            android:id="@+id/action_noteCreator_to_mainListFragment"
+            app:destination="@id/mainListFragment" />
     </fragment>
     <fragment
         android:id="@+id/partCreator"

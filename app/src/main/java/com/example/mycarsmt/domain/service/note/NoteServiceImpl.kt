@@ -28,6 +28,8 @@ import javax.inject.Inject
 @SuppressLint("NewApi")
 class NoteServiceImpl @Inject constructor() : NoteService {
 
+    private val TAG = "testmt"
+
     @Inject
     lateinit var carDao: CarDao
     @Inject
@@ -45,15 +47,29 @@ class NoteServiceImpl @Inject constructor() : NoteService {
         App.component.injectService(this)
     }
 
-    override fun readAll(): Flowable<List<Note>> {
-        return noteDao.getAll().map { value ->
-            value.stream()
-                .map { entity -> noteFrom(entity) }
-                .collect(Collectors.toList()) }
+    override fun create(note: Note): Single<Long> {
+        return noteDao.insert(noteEntityFrom(note))
+
     }
 
-    override fun readById(id: Long): Flowable<Note> {
-        return noteDao.getById(id).map { value -> noteFrom(value) }
+    override fun readById(id: Long): Single<Note> {
+        return noteDao.getById(id).map { noteFrom(it) }
+    }
+
+    override fun update(note: Note): Single<Int> {
+        return noteDao.update(noteEntityFrom(note))
+
+    }
+
+    override fun delete(note: Note): Single<Int> {
+        return noteDao.delete(noteEntityFrom(note))
+    }
+
+    override fun readAll(): Flowable<List<Note>> {
+        return noteDao.getAll().map { entitiesList ->
+            entitiesList.stream()
+                .map { entity -> noteFrom(entity) }
+                .collect(Collectors.toList()) }
     }
 
     override fun readAllForCar(car: Car): Flowable<List<Note>> {
@@ -71,33 +87,15 @@ class NoteServiceImpl @Inject constructor() : NoteService {
         }
     }
 
-    override fun create(note: Note): Single<Note> {
-        return noteDao.getById(
-            noteDao.insert(noteEntityFrom(note)))
-            .map { entity -> noteFrom(entity) }
-            .single(note)
-    }
-
-    override fun update(note: Note): Single<Int> {
-        return Single.just(noteDao.update(noteEntityFrom(note)))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    override fun delete(note: Note): Single<Int> {
-        return Single.just(noteDao.delete(noteEntityFrom(note)))
-    }
-
     override fun getCarFor(note: Note): Maybe<Car> {
         return carDao.getById(note.carId)
-            .map { entity -> carFrom(entity) }
-            .singleElement()
+            .map { entity -> carFrom(entity) }.toMaybe()
     }
 
     override fun getPartFor(note: Note): Maybe<Part> {
         return partDao.getById(note.partId)
             .map { value -> partFrom(value) }
-            .singleElement()
+            .toMaybe()
     }
 
     override fun addRepair(repair: Repair) {

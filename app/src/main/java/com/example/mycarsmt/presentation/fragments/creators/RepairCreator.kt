@@ -2,13 +2,20 @@ package com.example.mycarsmt.presentation.fragments.creators
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.PART
+import com.example.mycarsmt.SpecialWords.Companion.REPAIR
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.Repair
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_creator_repair.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -16,8 +23,6 @@ import java.util.*
 import javax.inject.Inject
 
 class RepairCreator @Inject constructor () : Fragment(R.layout.fragment_creator_repair) {
-
-    private val TAG = "testmt"
 
     companion object {
         const val FRAG_TAG = "repairCreator"
@@ -29,14 +34,18 @@ class RepairCreator @Inject constructor () : Fragment(R.layout.fragment_creator_
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)
     private lateinit var repair: Repair
-    private lateinit var car: Car
+    private var car: Car? = null
+    private var part: Part? = null
     private var isExist = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         App.component.injectFragment(this)
-        repair = arguments?.getSerializable("repair") as Repair
+        repair = arguments?.getSerializable(REPAIR) as Repair
+
+        arguments?.containsKey(CAR)?.let { car = arguments?.getSerializable(CAR) as Car }
+        arguments?.containsKey(PART)?.let { part = arguments?.getSerializable(PART) as Part }
         isExist = repair.id > 0
     }
 
@@ -66,33 +75,56 @@ class RepairCreator @Inject constructor () : Fragment(R.layout.fragment_creator_
                 if (isExist) {
                     model.repairService.update(repair)
                     val bundle = Bundle()
-                    bundle.putSerializable("car", car)
+                    bundle.putSerializable(CAR, car)
                     view.findNavController().navigate(R.id.action_repairCreator_to_carFragment, bundle)
                 } else {
                     model.repairService.create(repair)
                     val bundle = Bundle()
-                    bundle.putSerializable("car", car)
+                    bundle.putSerializable(CAR, car)
                     view.findNavController().navigate(R.id.action_repairCreator_to_carFragment, bundle)
                 }
+                loadPreviousFragment()
             }else{
                 //snack input name and check date
             }
         }
         repairCreatorButtonDelete.setOnClickListener {
             val bundle = Bundle()
-            bundle.putSerializable("repair", repair)
+            bundle.putSerializable(REPAIR, repair)
             view.findNavController().navigate(R.id.action_repairCreator_to_repairDeleteDialog, bundle)
         }
         repairCreatorButtonCancel.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-            view.findNavController().navigate(R.id.action_repairCreator_to_carFragment, bundle)
+            view.findNavController().navigateUp()
+//            val bundle = Bundle()
+//            bundle.putSerializable(CAR, car)
+//            view.findNavController().navigate(R.id.action_repairCreator_to_carFragment, bundle)
+        }
+    }
+
+    private fun loadPreviousFragment(){
+        val bundle = Bundle()
+        if (car != null){
+            bundle.putSerializable(CAR, car)
+            view?.findNavController()?.navigate(R.id.action_noteCreator_to_carFragment, bundle)
+        }
+        if (part != null){
+            bundle.putSerializable(PART, part)
+            view?.findNavController()?.navigate(R.id.action_noteCreator_to_partFragment, bundle)
         }
     }
 
     @SuppressLint("CheckResult")
     private fun loadCar(){
-        model.carService.readById(repair.carId).subscribe { car = it }
+        model.carService.readById(repair.carId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    car = it
+                },{
+                    Log.d(TAG, "REPAIR CREATOR: $it")
+                }
+            )
     }
 
     private fun setCreatorData() {

@@ -10,10 +10,10 @@ import io.reactivex.Single
 
 interface NoteService{
 
-    fun create(note: Note): Single<Note>
+    fun create(note: Note): Single<Long>
     fun update(note: Note): Single<Int>
     fun delete(note: Note): Single<Int>
-    fun readById(id: Long): Flowable<Note>
+    fun readById(id: Long): Single<Note>
     fun readAll(): Flowable<List<Note>>
     fun readAllForCar(car: Car): Flowable<List<Note>>
     fun readAllForPart(part: Part): Flowable<List<Note>>

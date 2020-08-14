@@ -20,8 +20,11 @@ import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.Repair
 import com.example.mycarsmt.domain.service.car.CarService
+import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.domain.service.part.PartService
+import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import com.example.mycarsmt.domain.service.repair.RepairService
+import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import com.example.mycarsmt.presentation.fragments.CarFragment
 import com.example.mycarsmt.presentation.fragments.PartFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,11 +38,11 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
     }
 
     @Inject
-    lateinit var carService: CarService
+    lateinit var carService: CarServiceImpl
     @Inject
-    lateinit var partService: PartService
+    lateinit var partService: PartServiceImpl
     @Inject
-    lateinit var repairService: RepairService
+    lateinit var repairService: RepairServiceImpl
 
     lateinit var repair: Repair
     lateinit var car: Car

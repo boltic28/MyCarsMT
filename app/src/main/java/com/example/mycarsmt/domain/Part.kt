@@ -2,6 +2,7 @@ package com.example.mycarsmt.domain
 
 import android.content.SharedPreferences
 import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.data.enums.PartControlType
 import com.example.mycarsmt.presentation.fragments.SettingFragment
@@ -104,7 +105,7 @@ class Part(): Serializable {
     var dateLastChange: LocalDate = LocalDate.now()
     var mileageLastChange: Int = 0
     var description: String = "description"
-    var photo = SpecialWords.NO_PHOTO.value
+    var photo = NO_PHOTO
     var type: PartControlType = PartControlType.CHANGE
     var condition: List<Condition> = listOf(Condition.OK)
 

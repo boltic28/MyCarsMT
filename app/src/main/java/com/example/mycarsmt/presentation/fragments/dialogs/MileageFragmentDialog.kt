@@ -18,6 +18,7 @@ import com.example.mycarsmt.SpecialWords.Companion.TARGET
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.service.car.CarService
+import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.presentation.fragments.CarFragment
 import com.example.mycarsmt.presentation.fragments.MainFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,7 +33,7 @@ class MileageFragmentDialog @Inject constructor() : DialogFragment() {
     }
 
     @Inject
-    lateinit var carService: CarService
+    lateinit var carService: CarServiceImpl
     lateinit var car: Car
     lateinit var target: String
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.data.enums.Condition
 import com.squareup.picasso.Picasso
@@ -42,7 +43,7 @@ class PartItemAdapter(
             name.text = part.name
             serviceData.text = part.getInfoToChange()
 
-            if (part.photo == SpecialWords.NO_PHOTO.value || part.photo.isEmpty()) {
+            if (part.photo == NO_PHOTO || part.photo.isEmpty()) {
                 Picasso.get().load(R.drawable.nophoto).into(image)
             } else {
                 Picasso.get()

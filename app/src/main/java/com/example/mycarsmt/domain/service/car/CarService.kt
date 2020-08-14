@@ -7,18 +7,18 @@ import io.reactivex.Single
 
 interface CarService {
 
-    fun create(car: Car): Single<Car>
+    fun create(car: Car): Single<Long>
+    fun readById(id: Long): Single<Car>
     fun update(car: Car): Single<Int>
     fun delete(car: Car): Single<Int>
     fun readAll(): Flowable<List<Car>>
-    fun readById(id: Long): Flowable<Car>
 
     fun getPartsFor(car: Car): Flowable<List<Part>>
     fun getNotesFor(car: Car): Flowable<List<Note>>
     fun getRepairsFor(car: Car): Flowable<List<Repair>>
 
-    fun getToBuyList(): Flowable<List<DiagnosticElement>>
-    fun getToDoList(): Flowable<List<DiagnosticElement>>
+    fun getToBuyList(): Single<List<DiagnosticElement>>
+    fun getToDoList(): Single<List<DiagnosticElement>>
 
     fun doDiagnosticAllCars()
     fun doDiagnosticForCar(car: Car)

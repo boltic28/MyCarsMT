@@ -8,7 +8,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
-import com.example.mycarsmt.SpecialWords
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.NOTE
+import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
+import com.example.mycarsmt.SpecialWords.Companion.PART
+import com.example.mycarsmt.SpecialWords.Companion.REPAIR
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.ContentType
 import com.example.mycarsmt.domain.Car
@@ -43,8 +47,8 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         super.onCreate(savedInstanceState)
 
         App.component.injectFragment(this)
-        car = arguments?.getSerializable("car") as Car
-        part = arguments?.getSerializable("part") as Part
+        arguments?.containsKey(CAR)?.let { car = arguments?.getSerializable(CAR) as Car }
+        part = arguments?.getSerializable(PART) as Part
     }
 
     @SuppressLint("SetTextI18n")
@@ -94,20 +98,20 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         }
         partPanelButtonService.setOnClickListener {
             val bundle = Bundle()
-            bundle.putSerializable("part", part)
+            bundle.putSerializable(PART, part)
             view?.findNavController()?.navigate(R.id.action_partFragment_to_serviceFragmentDialog, bundle)
             // snack about service
         }
         partPanelFABSet.setOnClickListener {
             setContentType(ContentType.DEFAULT)
             val bundle = Bundle()
-            bundle.putSerializable("part", part)
+            bundle.putSerializable(PART, part)
             view?.findNavController()?.navigate(R.id.action_partFragment_to_partCreator, bundle)
         }
         partPanelButtonCancel.setOnClickListener {
             if (contentType == ContentType.DEFAULT) {
                 val bundle = Bundle()
-                bundle.putSerializable("car", car)
+                bundle.putSerializable(CAR, car)
                 view?.findNavController()?.navigate(R.id.action_partFragment_to_carFragment, bundle)
             } else {
                 hideRecycler()
@@ -122,8 +126,8 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
                     note.mileage = part.mileage
 
                     val bundle = Bundle()
-                    bundle.putSerializable("note", note)
-                    bundle.putSerializable("part", part)
+                    bundle.putSerializable(NOTE, note)
+                    bundle.putSerializable(PART, part)
                     view?.findNavController()?.navigate(R.id.action_partFragment_to_repairCreator, bundle)
 
                 }
@@ -134,8 +138,8 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
                     repair.mileage = part.mileage
 
                     val bundle = Bundle()
-                    bundle.putSerializable("repair", repair)
-                    bundle.putSerializable("part", part)
+                    bundle.putSerializable(REPAIR, repair)
+                    bundle.putSerializable(PART, part)
                     view?.findNavController()?.navigate(R.id.action_partFragment_to_repairCreator, bundle)
                 }
                 else -> {
@@ -153,7 +157,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
 
     @SuppressLint("SetTextI18n")
     private fun loadPartData() {
-        setTitle(part.name)
+        setTitle("${part.name} (${car.model} ${car.number})")
 
         partCreatorTextName.text = part.name
         partPanelTextToChangeDKM.text = part.getInfoToChange()
@@ -174,30 +178,30 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         hideProgressBar()
         when (contentType) {
             ContentType.DEFAULT -> {
-                if (partPanelRecycler.visibility == View.VISIBLE) hideRecycler()
+                hideRecycler()
             }
             ContentType.NOTES -> {
-                if (partPanelRecycler.visibility == View.GONE) showRecycler()
+                showRecycler()
                 checkOnEmpty(notes)
                 partPanelRecycler.adapter = NoteItemAdapter(notes, object :
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
                         val bundle = Bundle()
-                        bundle.putSerializable("note", note)
-                        bundle.putSerializable("part", part)
+                        bundle.putSerializable(NOTE, note)
+                        bundle.putSerializable(PART, part)
                         view?.findNavController()?.navigate(R.id.action_partFragment_to_noteCreator, bundle)
                     }
                 })
             }
             ContentType.REPAIRS -> {
-                if (partPanelRecycler.visibility == View.GONE) showRecycler()
+                showRecycler()
                 checkOnEmpty(repairs)
                 partPanelRecycler.adapter = RepairItemAdapter(repairs, object :
                     RepairItemAdapter.OnItemClickListener {
                     override fun onClick(repair: Repair) {
                         val bundle = Bundle()
-                        bundle.putSerializable("repair", repair)
-                        bundle.putSerializable("part", part)
+                        bundle.putSerializable(REPAIR, repair)
+                        bundle.putSerializable(PART, part)
                         view?.findNavController()?.navigate(R.id.action_partFragment_to_repairCreator, bundle)
                     }
                 })
@@ -209,7 +213,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
     }
 
     private fun loadPhoto() {
-        if (part.photo == SpecialWords.NO_PHOTO.value || part.photo.isEmpty()) {
+        if (part.photo == NO_PHOTO || part.photo.isEmpty()) {
             Picasso.get().load(R.drawable.nophoto).into(partPanelMainImage)
         } else {
             Picasso.get().load(File(Directories.PART_IMAGE_DIRECTORY.value, "${part.photo}.jpg"))

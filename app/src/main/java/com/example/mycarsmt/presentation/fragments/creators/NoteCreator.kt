@@ -2,14 +2,22 @@ package com.example.mycarsmt.presentation.fragments.creators
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.NOTE
+import com.example.mycarsmt.SpecialWords.Companion.PART
+import com.example.mycarsmt.SpecialWords.Companion.TARGET
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.NoteLevel
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
+import com.example.mycarsmt.domain.Part
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_creator_note.*
 import java.time.LocalDate
 import javax.inject.Inject
@@ -27,7 +35,8 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
     lateinit var model: NoteCreatorModel
 
     private lateinit var note: Note
-    private lateinit var car: Car
+    private var car: Car? = null
+    private var part: Part? = null
 
     private var isExist = true
 
@@ -35,7 +44,10 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
         super.onCreate(savedInstanceState)
 
         App.component.injectFragment(this)
-        note = arguments?.getSerializable("note") as Note
+        note = arguments?.getSerializable(NOTE) as Note
+
+        arguments?.containsKey(CAR)?.let { car = arguments?.getSerializable(CAR) as Car }
+        arguments?.containsKey(PART)?.let { part = arguments?.getSerializable(PART) as Part }
         isExist = note.id > 0
     }
 
@@ -43,10 +55,7 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // solve how can return back to car or main view.
-
         loadCar()
-
         setTitle()
         noteCreatorButtonDone.isActivated = false
         if (isExist) setCreatorData()
@@ -56,30 +65,26 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
                 note.description = noteCreatorDescription.text.toString()
 
                 if (isExist) {
-                    model.noteService.update(note)
+                    createNote()
                 } else {
-                    note.date = LocalDate.now()
-                    model.noteService.create(note)
+                    updateNote()
                 }
+                loadPreviousFragment()
             }
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-            view.findNavController().navigate(R.id.action_noteCreator_to_carFragment, bundle)
         }
 
         noteCreatorButtonDone.setOnClickListener {
             model.noteService.addRepair(note.done())
             model.noteService.delete(note)
 
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-            view.findNavController().navigate(R.id.action_noteCreator_to_carFragment, bundle)
+            loadFragmentAfterDone()
         }
 
         partPanelButtonCancel.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable("car", car)
-            view.findNavController().navigate(R.id.action_noteCreator_to_carFragment, bundle)
+            view.findNavController().navigateUp()
+//            val bundle = Bundle()
+//            bundle.putSerializable(CAR, car)
+//            view.findNavController().navigate(R.id.action_noteCreator_to_carFragment, bundle)
         }
 
         noteCreatorLowImp.setOnClickListener {
@@ -104,8 +109,49 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
     }
 
     @SuppressLint("CheckResult")
+    private fun createNote(){
+        model.noteService.create(note)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { id ->
+                    note.id = id
+                    loadPreviousFragment()
+                },
+                { err ->
+                    Log.d(TAG, "NOTE CREATOR: $err")
+                }
+            )
+    }
+
+    @SuppressLint("CheckResult")
+    private fun updateNote(){
+        note.date = LocalDate.now()
+        model.noteService.update(note)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { number ->
+                    if(number > 0)
+                    loadPreviousFragment()
+                }, {
+                    Log.d(TAG, "NOTE CREATOR: $it")
+                }
+            )
+    }
+
+    @SuppressLint("CheckResult")
     private fun loadCar(){
-        model.carService.readById(note.carId).subscribe { car = it }
+        model.carService.readById(note.carId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    car = it
+                },{
+                    Log.d(TAG, "NOTE CREATOR: $it")
+                }
+            )
     }
 
     private fun setCreatorData() {
@@ -120,6 +166,29 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
 
         noteCreatorButtonCreate.setText(R.string.update)
         noteCreatorButtonDone.isActivated = true
+    }
+
+    private fun loadFragmentAfterDone(){
+        val bundle = Bundle()
+        if (car != null) {
+            bundle.putSerializable(CAR, car)
+            view?.findNavController()?.navigate(R.id.action_noteCreator_to_carFragment, bundle)
+        }else {
+            bundle.putString(TARGET, NOTE)
+            view?.findNavController()?.navigate(R.id.action_noteCreator_to_mainListFragment, bundle)
+        }
+    }
+
+    private fun loadPreviousFragment(){
+        val bundle = Bundle()
+        if (car != null){
+            bundle.putSerializable(CAR, car)
+            view?.findNavController()?.navigate(R.id.action_noteCreator_to_carFragment, bundle)
+        }
+        if (part != null){
+            bundle.putSerializable(PART, part)
+            view?.findNavController()?.navigate(R.id.action_noteCreator_to_partFragment, bundle)
+        }
     }
 
     private fun switchLowImptOfNote(){
