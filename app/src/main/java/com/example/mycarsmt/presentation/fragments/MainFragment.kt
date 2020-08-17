@@ -7,10 +7,12 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.SpecialWords.Companion.NOTE
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.DiagnosticElement
@@ -31,17 +33,20 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
 
     companion object {
         const val FRAG_TAG = "main_Fragment"
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
     }
 
     @Inject
     lateinit var model: MainModel
 
+    private lateinit var navController: NavController
+    private var contentType = ContentType.DEFAULT
+
     private var cars: List<Car> = emptyList()
     private var notes: List<Note> = emptyList()
     private var listToDo: List<DiagnosticElement> = emptyList()
     private var listToBuy: List<DiagnosticElement> = emptyList()
-    private var contentType = ContentType.DEFAULT
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +60,8 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated")
 
-        carsNoResult.visibility = View.GONE
         showProgressBar()
+        navController = view.findNavController()
 
         model.carService.readAll()
             .observeOn(mainThread())
@@ -82,7 +87,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
             .subscribeOn(Schedulers.io())
             .observeOn(mainThread())
             .subscribe { value ->
-                listToBuy = value
+                listToDo = value
             }
 
         setRecycler()
@@ -127,11 +132,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         }
 
         mainSearchingButtonAttention.setOnClickListener {
-            carsNoResult.visibility = View.GONE
-            val list = cars.stream()
-                .filter { car -> !car.condition.contains(Condition.OK) }
-                .collect(Collectors.toList())
-            setAdapter(list)
+            findCarsWithProblem()
         }
 
         mainSearchingButtonClearFilter.setOnClickListener {
@@ -139,9 +140,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         }
 
         carsAddCar.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable(CAR, Car())
-            view?.findNavController()?.navigate(R.id.action_mainListFragment_to_carCreator, bundle)
+            toCarCreator()
         }
     }
 
@@ -158,23 +157,17 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
 
     private fun setAdapter(list: MutableList<Car>) {
         setTitle("My cars output for ${list.size} cars")
-        if (list.isEmpty()) carsNoResult.visibility = View.VISIBLE
-        else carsNoResult.visibility = View.GONE
+        isListEmpty(list)
         contentType = ContentType.DEFAULT
+
         firstRecycler.adapter = CarItemAdapter(list, object :
             CarItemAdapter.OnItemClickListener {
             override fun onClick(car: Car) {
-                val bundle = Bundle()
-                bundle.putSerializable(CAR, car)
-                view?.findNavController()
-                    ?.navigate(R.id.action_mainListFragment_to_carFragment, bundle)
+                toCarFragment(car)
             }
 
             override fun onMileageClick(car: Car) {
-                val bundle = Bundle()
-                bundle.putSerializable(CAR, car)
-                view?.findNavController()
-                    ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
+                toMileageDialog(car)
             }
         })
     }
@@ -184,70 +177,84 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         when (contentType) {
             ContentType.DEFAULT -> {
                 setTitle("My cars output for ${cars.size} cars")
-                listIsEmpty(cars)
-                if (cars.isEmpty()) carsNoResult.visibility = View.VISIBLE
+                isListEmpty(cars)
                 firstRecycler.adapter = CarItemAdapter(cars, object :
                     CarItemAdapter.OnItemClickListener {
                     override fun onClick(car: Car) {
-                        val bundle = Bundle()
-                        bundle.putSerializable("car", car)
-                        view?.findNavController()
-                            ?.navigate(R.id.action_mainListFragment_to_carFragment, bundle)
+                        toCarFragment(car)
                     }
 
                     override fun onMileageClick(car: Car) {
-                        val bundle = Bundle()
-                        bundle.putSerializable("car", car)
-                        view?.findNavController()
-                            ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
+                        toMileageDialog(car)
                     }
                 })
             }
             ContentType.NOTES -> {
                 setTitle("My notes")
-                listIsEmpty(notes)
+                isListEmpty(notes)
                 firstRecycler.adapter = NoteItemAdapter(notes, object :
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
-                        val bundle = Bundle()
-                        bundle.putSerializable("note", note)
-                        view?.findNavController()
-                            ?.navigate(R.id.action_carFragment_to_noteCreator, bundle)
+                        toNoteFragment(note)
                     }
                 })
             }
             ContentType.TO_BUY_LIST -> {
                 setTitle("Have to buy")
-                listIsEmpty(listToBuy)
+                isListEmpty(listToBuy)
                 firstRecycler.adapter = DiagnosticElementAdapter(listToBuy, object :
                     DiagnosticElementAdapter.OnItemClickListener {
                     override fun onClick(element: DiagnosticElement) {
-                        val bundle = Bundle()
-                        bundle.putSerializable("car", element.car)
-                        view?.findNavController()
-                            ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
+                        toCarFragment(element.car)
                     }
                 })
             }
             ContentType.TO_DO_LIST -> {
                 setTitle("Have to do")
-                listIsEmpty(listToDo)
+                isListEmpty(listToDo)
                 firstRecycler.adapter = DiagnosticElementAdapter(listToDo, object :
                     DiagnosticElementAdapter.OnItemClickListener {
                     override fun onClick(element: DiagnosticElement) {
-                        val bundle = Bundle()
-                        bundle.putSerializable("car", element.car)
-                        view?.findNavController()
-                            ?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
+                        toCarFragment(element.car)
                     }
                 })
             }
-            else -> {
-            }
+            else -> { }
         }
     }
 
-    private fun listIsEmpty(list: List<*>) {
+    private fun findCarsWithProblem(){
+        val list = cars.stream()
+            .filter { car -> !car.condition.contains(Condition.OK) }
+            .collect(Collectors.toList())
+        setAdapter(list)
+    }
+
+    private fun toCarFragment(car: Car){
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_mainListFragment_to_carFragment, bundle)
+    }
+
+    private fun toNoteFragment(note: Note){
+        val bundle = Bundle()
+        bundle.putSerializable(NOTE, note)
+        navController.navigate(R.id.action_mainListFragment_to_noteCreator, bundle)
+    }
+
+    private fun toMileageDialog(car: Car){
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_mainListFragment_to_mileageFragmentDialog, bundle)
+    }
+
+    private fun toCarCreator(){
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, Car())
+        navController.navigate(R.id.action_mainListFragment_to_carCreator, bundle)
+    }
+
+    private fun isListEmpty(list: List<*>) {
         if (list.isEmpty()) {
             carsEmptyList.visibility = View.VISIBLE
         } else {

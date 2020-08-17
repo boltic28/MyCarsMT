@@ -54,7 +54,7 @@ class Note(): Serializable {
         repair.mileage = mileage
         repair.carId = carId
         repair.partId = partId
-        repair.description = "${description} has been fixed"
+        repair.description = "$description has been fixed"
         return repair
     }
 }

@@ -14,7 +14,7 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
 
     companion object {
         const val FRAG_TAG = "settingsFragment"
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
 
         const val APP_PREFERENCES = "myCarPref"
         const val KM_TO_BUY = "kmToBuy"

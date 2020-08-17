@@ -16,6 +16,7 @@ import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -75,11 +76,11 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
         }
 
         carCreatorButtonDelete.setOnClickListener {
-            loadDeleteDialog()
+            toDeleteDialog()
         }
 
         carCreatorButtonCancel.setOnClickListener {
-            loadPreviousFragment()
+            toPreviousFragment()
         }
 
         carCreatorFABCreatePhoto.setOnClickListener {
@@ -103,7 +104,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
                 Integer.valueOf(carCreatorMileage.text.toString())
             return true
         }else{
-            //todo show message - fill field
+            showMessage("model & brand can't be empty!!!")
             return false
         }
     }
@@ -117,7 +118,8 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
             .subscribe(
                 { id ->
                     car.id = id
-                    loadCarFragment()
+                    toCarFragment()
+                    showMessage("car is created")
                 },
                 { err ->
                     Log.d(TAG, "CAR CREATOR: $err")
@@ -133,7 +135,8 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
             .subscribe(
                 { number ->
                     if (number > 0)
-                        loadCarFragment()
+                        toCarFragment()
+                    showMessage("car is updated")
                 },
                 { err ->
                     Log.d(TAG, "CAR UPDATER: $err")
@@ -141,13 +144,13 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
             )
     }
 
-    private fun loadDeleteDialog(){
+    private fun toDeleteDialog(){
         val bundle = Bundle()
         bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_carCreator_to_carDeleteDialog, bundle)
     }
 
-    private fun loadPreviousFragment(){
+    private fun toPreviousFragment(){
         if (isExist) {
             navController.navigateUp()
         } else {
@@ -155,7 +158,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
         }
     }
 
-    private fun loadCarFragment() {
+    private fun toCarFragment() {
         val bundle = Bundle()
         bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_carCreator_to_carFragment, bundle)
@@ -212,8 +215,16 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
             fo.write(bytes.toByteArray())
             fo.close()
             Log.d(TAG, "CAR CREATOR: Image saved::--->" + f.absolutePath)
+            showMessage("image is saved")
         } catch (e1: IOException) {
+            showMessage("image doesn't saved")
             e1.printStackTrace()
+        }
+    }
+
+    private fun showMessage(msg: String){
+        view?.let {
+            Snackbar.make(it,msg, Snackbar.LENGTH_SHORT).show()
         }
     }
 

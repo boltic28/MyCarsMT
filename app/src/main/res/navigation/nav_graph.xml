@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_mainListFragment_to_mileageFragmentDialog"
             app:destination="@id/mileageFragmentDialog" />
+        <action
+            android:id="@+id/action_mainListFragment_to_noteCreator"
+            app:destination="@id/noteCreator" />
     </fragment>
     <fragment
         android:id="@+id/carFragment"
@@ -45,6 +48,9 @@
         <action
             android:id="@+id/action_carFragment_to_carCreator"
             app:destination="@id/carCreator" />
+        <action
+            android:id="@+id/action_carFragment_to_noteCreator2"
+            app:destination="@id/noteCreator" />
     </fragment>
     <fragment
         android:id="@+id/settingFragment"

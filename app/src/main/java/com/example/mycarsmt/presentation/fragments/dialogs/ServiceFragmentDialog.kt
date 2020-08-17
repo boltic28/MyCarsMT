@@ -20,13 +20,15 @@ import com.example.mycarsmt.domain.service.car.CarService
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.domain.service.part.PartService
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
+import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ServiceFragmentDialog @Inject constructor(): DialogFragment() {
 
     companion object {
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
         const val FRAG_TAG = "service"
     }
 
@@ -34,6 +36,9 @@ class ServiceFragmentDialog @Inject constructor(): DialogFragment() {
     lateinit var carService: CarServiceImpl
     @Inject
     lateinit var partService: PartServiceImpl
+    @Inject
+    lateinit var repairService: RepairServiceImpl
+
     lateinit var car: Car
     lateinit var part: Part
 
@@ -56,21 +61,27 @@ class ServiceFragmentDialog @Inject constructor(): DialogFragment() {
             "Do you want to make service for: ${part.name}"
 
         view.findViewById<Button>(R.id.serviceFragmentButtonCancel).setOnClickListener {
-            dismiss()
+            view?.findNavController()?.navigateUp()
         }
 
         view.findViewById<Button>(R.id.serviceFragmentButtonMakeService).setOnClickListener {
-            partService.addRepair(part.makeService())
-            partService.update(part).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                { resUpd ->
-                    Log.d(PartDeleteDialog.TAG, "DELETE: $resUpd repair(s) was delete successful")
+            repairService.create(part.makeService())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+            partService.update(part)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                { result ->
+                    Log.d(TAG, "SERVICE: done successful: $result")
                     val bundle = Bundle()
                     bundle.putSerializable(CAR, car)
-                    view?.findNavController()?.navigate(R.id.action_serviceFragmentDialog_to_carFragment)
+                    view?.findNavController()?.navigate(R.id.action_serviceFragmentDialog_to_carFragment, bundle)
                 },
                 { err ->
-                    Log.d(TAG, "ERROR: repair deleting is fail: $err")
-                    dismiss()
+                    Log.d(TAG, "ERROR: service is fail: $err")
+                    view?.findNavController()?.navigateUp()
                 }
             )
         }

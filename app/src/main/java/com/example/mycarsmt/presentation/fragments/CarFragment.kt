@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.Directories
@@ -30,6 +31,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_car.*
 import java.io.File
+import java.time.LocalDate
 import javax.inject.Inject
 
 class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
@@ -43,6 +45,8 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
     lateinit var model: CarModel
 
     private lateinit var car: Car
+    private lateinit var navController: NavController
+
     private var notes: List<Note> = emptyList()
     private var parts: List<Part> = emptyList()
     private var repairs: List<Repair> = emptyList()
@@ -61,9 +65,12 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         super.onViewCreated(view, savedInstanceState)
 
         showProgressBar()
+        navController = view.findNavController()
+
         loadModel()
         setRecycler()
         setButtons()
+        setAdapter()
     }
 
     @SuppressLint("CheckResult")
@@ -86,6 +93,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{value ->
                 parts = value
+                if(this.isVisible) setAdapter()
             }
 
         model.repairService.readAllForCar(car)
@@ -106,17 +114,13 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
             setContentType(ContentType.REPAIRS)
         }
         carPanelMileage.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable(CAR, car)
-            view?.findNavController()?.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
+            toMileageDialog()
         }
         carPanelButtonCancel.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_carFragment_to_mainListFragment)
+            toMainFragment()
         }
         carPanelFABSettings.setOnClickListener{
-            val bundle = Bundle()
-            bundle.putSerializable(CAR, car)
-            view?.findNavController()?.navigate(R.id.action_carFragment_to_carCreator, bundle)
+            toCarCreator()
         }
         carPanelFABNew.setOnClickListener {
             createNew()
@@ -130,28 +134,6 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         showProgressBar()
         contentType = type
         setAdapter()
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun loadCarDataIntoView(){
-        setTitle(car.getFullName())
-
-        carPanelNumber.text = car.number
-        carPanelVin.text = car.vin
-        carPanelMileage.text = "${car.mileage} km"
-
-        loadPhoto()
-        refreshCondition()
-        hideProgressBar()
-    }
-
-    private fun loadPhoto() {
-        if (car.photo == NO_PHOTO || car.photo.isEmpty()) {
-            Picasso.get().load(R.drawable.nophoto).into(carPanelMainImage)
-        } else {
-            Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
-                .into(carPanelMainImage)
-        }
     }
 
     private fun setRecycler() {
@@ -169,10 +151,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 carRecycler.adapter = NoteItemAdapter(notes, object :
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
-                        val bundle = Bundle()
-                        bundle.putSerializable(CAR, car)
-                        bundle.putSerializable(NOTE, note)
-                        view?.findNavController()?.navigate(R.id.action_carFragment_to_noteCreator, bundle)
+                        toNoteFragment(note)
                     }
                 })
             }
@@ -183,10 +162,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 carRecycler.adapter = PartItemAdapter(parts, object :
                     PartItemAdapter.OnItemClickListener {
                     override fun onClick(part: Part) {
-                        val bundle = Bundle()
-                        bundle.putSerializable(CAR, car)
-                        bundle.putSerializable(PART, part)
-                        view?.findNavController()?.navigate(R.id.action_carFragment_to_partFragment, bundle)
+                        toPartFragment(part)
                     }
                 })
             }
@@ -196,10 +172,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 carRecycler.adapter = RepairItemAdapter(repairs, object :
                     RepairItemAdapter.OnItemClickListener {
                     override fun onClick(repair: Repair) {
-                        val bundle = Bundle()
-                        bundle.putSerializable(CAR, car)
-                        bundle.putSerializable(REPAIR, repair)
-                        view?.findNavController()?.navigate(R.id.action_carFragment_to_repairCreator, bundle)
+                        toRepairFragment(repair)
                     }
                 })
             }
@@ -221,24 +194,18 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 val note = Note()
                 note.carId = car.id
                 note.mileage = car.mileage
+                note.partId = 0
+                note.date = LocalDate.now()
 
-                val bundle = Bundle()
-                bundle.putSerializable(NOTE, note)
-                bundle.putSerializable(CAR, car)
-                view?.findNavController()?.navigate(R.id.action_carFragment_to_noteCreator, bundle)
-
-                Log.d(TAG, "pushed button - Create note")
+                toNoteFragment(note)
+                Log.d(TAG, "pushed button - Create note for car")
             }
             ContentType.PARTS -> {
                 val part = Part()
                 part.carId = car.id
                 part.mileage = car.mileage
 
-                val bundle = Bundle()
-                bundle.putSerializable(PART, part)
-                bundle.putSerializable(CAR, car)
-                view?.findNavController()?.navigate(R.id.action_carFragment_to_partCreator, bundle)
-
+                toPartCreator(part)
                 Log.d(TAG, "pushed button - Create part")
             }
             ContentType.REPAIRS -> {
@@ -246,16 +213,35 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 repair.carId = car.id
                 repair.mileage = car.mileage
 
-                val bundle = Bundle()
-                bundle.putSerializable(REPAIR, repair)
-                bundle.putSerializable(CAR, car)
-                view?.findNavController()?.navigate(R.id.action_carFragment_to_repairCreator, bundle)
-
+                toRepairFragment(repair)
                 Log.d(TAG, "pushed button - Create repair")
             }
             else ->{
 
             }
+        }
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    private fun loadCarDataIntoView(){
+        setTitle(car.getFullName())
+
+        carPanelNumber.text = car.number
+        carPanelVin.text = car.vin
+        carPanelMileage.text = "${car.mileage} km"
+
+        loadPhoto()
+        refreshCondition()
+        hideProgressBar()
+    }
+
+    private fun loadPhoto() {
+        if (car.photo == NO_PHOTO || car.photo.isEmpty()) {
+            Picasso.get().load(R.drawable.nophoto).into(carPanelMainImage)
+        } else {
+            Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
+                .into(carPanelMainImage)
         }
     }
 
@@ -282,6 +268,46 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         carPanelIconService.setColorFilter(Color.argb(255, 208, 208, 208))
         carPanelIconBuy.setColorFilter(Color.argb(255, 208, 208, 208))
         carPanelIconInfo.setColorFilter(Color.argb(255, 208, 208, 208))
+    }
+
+    private fun toNoteFragment(note: Note){
+        val bundle = Bundle()
+        bundle.putSerializable(NOTE, note)
+        navController.navigate(R.id.action_carFragment_to_noteCreator, bundle)
+    }
+
+    private fun toRepairFragment(repair: Repair){
+        val bundle = Bundle()
+        bundle.putSerializable(REPAIR, repair)
+        navController.navigate(R.id.action_carFragment_to_repairCreator, bundle)
+    }
+
+    private fun toPartFragment(part: Part){
+        val bundle = Bundle()
+        bundle.putSerializable(PART, part)
+        navController.navigate(R.id.action_carFragment_to_partFragment, bundle)
+    }
+
+    private fun toPartCreator(part: Part){
+        val bundle = Bundle()
+        bundle.putSerializable(PART, part)
+        navController.navigate(R.id.action_carFragment_to_partCreator, bundle)
+    }
+
+    private fun toMileageDialog(){
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
+    }
+
+    private fun toCarCreator(){
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, Car())
+        navController.navigate(R.id.action_carFragment_to_carCreator, bundle)
+    }
+
+    private fun toMainFragment(){
+        navController.navigate(R.id.action_carFragment_to_mainListFragment)
     }
 
     private fun setTitle(title: String){

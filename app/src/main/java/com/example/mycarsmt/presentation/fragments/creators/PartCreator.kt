@@ -19,6 +19,7 @@ import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.PartControlType
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,7 +57,6 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
         App.component.injectFragment(this)
         part = arguments?.getSerializable(PART) as Part
-        car = arguments?.getSerializable(CAR) as Car
     }
 
 
@@ -68,9 +68,27 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
         partCreatorButtonDelete.isActivated = false
 
         setTitle()
+        loadOwner()
         checkExisting()
         loadPhoto()
+        setButtons()
+    }
 
+    @SuppressLint("CheckResult")
+    private fun loadOwner(){
+        model.carService.readById(part.carId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    car = it
+                },{
+                    Log.d(TAG, "NOTE CREATOR: $it")
+                }
+            )
+    }
+
+    private fun setButtons(){
         partCreatorButtonCreate.setOnClickListener {
             isFieldsFilled().let {
                 showProgressBar()
@@ -82,7 +100,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             }
         }
         partCreatorButtonDelete.setOnClickListener {
-            loadDeleteDialog()
+            toDeleteDialog()
         }
         repairCreatorButtonCancel.setOnClickListener {
             navController.navigateUp()
@@ -93,6 +111,22 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
         }
     }
 
+    private fun setCreatorData() {
+        partCreatorName.setText(part.name)
+        partCreatorCodes.setText(part.codes)
+        partCreatorLimitDAY.setText(part.limitDays.toString())
+        partCreatorLimitKm.setText(part.limitKM.toString())
+        partCreatorLastChangeDay.setText(dateFormatter.format(part.dateLastChange))
+        partCreatorLastChangeMileage.setText(part.mileageLastChange.toString())
+        partCreatorDescription.setText(part.description)
+
+        partCreatorButtonCreate.setText(R.string.update)
+        partCreatorButtonDelete.isActivated = true
+        if (part.type == PartControlType.INSURANCE) partCreatorInsuranceBox.isChecked = true
+        if (part.type == PartControlType.INSPECTION) partCreatorInspectionOnlyBox.isChecked = true
+        photo = part.photo
+    }
+
     @SuppressLint("CheckResult")
     private fun createPart() {
         car.whenMileageRefreshed = LocalDate.now()
@@ -101,8 +135,9 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { id ->
-                    car.id = id
-                    loadPartFragment()
+                    part.id = id
+                    showMessage("part is created")
+                    toPartFragment()
                 },
                 { err ->
                     Log.d(TAG, "PART CREATOR: $err")
@@ -118,7 +153,8 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             .subscribe(
                 { number ->
                     if (number > 0)
-                        loadPartFragment()
+                        showMessage("part is updated")
+                        toPartFragment()
                 },
                 { err ->
                     Log.d(TAG, "PART UPDATER: $err")
@@ -126,14 +162,14 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             )
     }
 
-    private fun loadDeleteDialog() {
+    private fun toDeleteDialog() {
         val bundle = Bundle()
         bundle.putSerializable(PART, part)
         bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_partCreator_to_partDeleteDialog, bundle)
     }
 
-    private fun loadPartFragment() {
+    private fun toPartFragment() {
         val bundle = Bundle()
         bundle.putSerializable(PART, part)
         navController.navigate(R.id.action_partCreator_to_partFragment, bundle)
@@ -170,7 +206,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
             return true
         } else {
-            //todo show message - fill field
+            showMessage("name can't be empty!!!")
             return false
         }
     }
@@ -190,29 +226,12 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
         partCreatorProgress.visibility = View.VISIBLE
     }
 
-    private fun setCreatorData() {
-        partCreatorName.setText(part.name)
-        partCreatorCodes.setText(part.codes)
-        partCreatorLimitDAY.setText(part.limitDays.toString())
-        partCreatorLimitKm.setText(part.limitKM.toString())
-        partCreatorLastChangeDay.setText(dateFormatter.format(part.dateLastChange))
-        partCreatorLastChangeMileage.setText(part.mileageLastChange.toString())
-        partCreatorDescription.setText(part.description)
-
-        partCreatorButtonCreate.setText(R.string.update)
-        partCreatorButtonDelete.isActivated = true
-        if (part.type == PartControlType.INSURANCE) partCreatorInsuranceBox.isChecked = true
-        if (part.type == PartControlType.INSPECTION) partCreatorInspectionOnlyBox.isChecked = true
-        photo = part.photo
-    }
-
     private fun checkDataFormat(string: String): Boolean {
         return try {
             LocalDate.parse(string, DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH))
             true
         } catch (e: Exception) {
-//            Toast.makeText(this@MainActivity,"date format must be dd.MM.yyyy - 01.06.2019"
-//                , Toast.LENGTH_LONG).show()   snack!!!
+            showMessage("date format must be dd.MM.yyyy - 01.06.2019")
             false
         }
     }
@@ -253,9 +272,17 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             val fo = FileOutputStream(f)
             fo.write(bytes.toByteArray())
             fo.close()
+            showMessage("image is saved")
             Log.d("TAG", "File Saved::--->" + f.absolutePath)
         } catch (e1: IOException) {
+            showMessage("image doesn't saved")
             e1.printStackTrace()
+        }
+    }
+
+    private fun showMessage(msg: String){
+        view?.let {
+            Snackbar.make(it,msg, Snackbar.LENGTH_SHORT).show()
         }
     }
 

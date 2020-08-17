@@ -2,8 +2,10 @@ package com.example.mycarsmt.presentation.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycarsmt.Directories
@@ -23,15 +25,17 @@ import com.example.mycarsmt.presentation.adapters.NoteItemAdapter
 import com.example.mycarsmt.presentation.adapters.RepairItemAdapter
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_part.*
 import java.io.File
+import java.time.LocalDate
 import javax.inject.Inject
 
 class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
 
     companion object {
         const val FRAG_TAG = "partFragment"
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
     }
 
     @Inject
@@ -39,6 +43,8 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
 
     private lateinit var part: Part
     private lateinit var car: Car
+    private lateinit var navController: NavController
+
     private var notes: List<Note> = emptyList()
     private var repairs: List<Repair> = emptyList()
     private var contentType = ContentType.DEFAULT
@@ -47,7 +53,6 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         super.onCreate(savedInstanceState)
 
         App.component.injectFragment(this)
-        arguments?.containsKey(CAR)?.let { car = arguments?.getSerializable(CAR) as Car }
         part = arguments?.getSerializable(PART) as Part
     }
 
@@ -55,6 +60,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        navController = view.findNavController()
         setContentType(ContentType.DEFAULT)
         loadModel()
         setRecycler()
@@ -63,13 +69,16 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
 
     @SuppressLint("CheckResult")
     private fun loadModel() {
-        model.carService.readById(car.id)
+        model.carService.readById(part.carId)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { value ->
                 car = value
+                setTitle("${part.name} (${car.model} ${car.number})")
             }
 
         model.partService.readById(part.id)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {value ->
                 part = value
@@ -97,22 +106,14 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
             setContentType(ContentType.REPAIRS)
         }
         partPanelButtonService.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable(PART, part)
-            view?.findNavController()?.navigate(R.id.action_partFragment_to_serviceFragmentDialog, bundle)
-            // snack about service
+            toServiceDialog(part, car)
         }
         partPanelFABSet.setOnClickListener {
-            setContentType(ContentType.DEFAULT)
-            val bundle = Bundle()
-            bundle.putSerializable(PART, part)
-            view?.findNavController()?.navigate(R.id.action_partFragment_to_partCreator, bundle)
+            toPartCreator()
         }
         partPanelButtonCancel.setOnClickListener {
             if (contentType == ContentType.DEFAULT) {
-                val bundle = Bundle()
-                bundle.putSerializable(CAR, car)
-                view?.findNavController()?.navigate(R.id.action_partFragment_to_carFragment, bundle)
+                toCarFragment()
             } else {
                 hideRecycler()
             }
@@ -124,12 +125,10 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
                     note.carId = part.carId
                     note.partId = part.id
                     note.mileage = part.mileage
+                    note.date = LocalDate.now()
 
-                    val bundle = Bundle()
-                    bundle.putSerializable(NOTE, note)
-                    bundle.putSerializable(PART, part)
-                    view?.findNavController()?.navigate(R.id.action_partFragment_to_repairCreator, bundle)
-
+                    toNoteFragment(note)
+                    Log.d(CarFragment.TAG, "pushed button - Create note for part")
                 }
                 ContentType.REPAIRS -> {
                     val repair = Repair()
@@ -137,10 +136,8 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
                     repair.partId = part.id
                     repair.mileage = part.mileage
 
-                    val bundle = Bundle()
-                    bundle.putSerializable(REPAIR, repair)
-                    bundle.putSerializable(PART, part)
-                    view?.findNavController()?.navigate(R.id.action_partFragment_to_repairCreator, bundle)
+                    toRepairFragment(repair)
+                    Log.d(CarFragment.TAG, "pushed button - Create repair for part")
                 }
                 else -> {
 
@@ -157,8 +154,6 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
 
     @SuppressLint("SetTextI18n")
     private fun loadPartData() {
-        setTitle("${part.name} (${car.model} ${car.number})")
-
         partCreatorTextName.text = part.name
         partPanelTextToChangeDKM.text = part.getInfoToChange()
         partPanelTextInstallAtKM.text = "${part.mileageLastChange} km"
@@ -186,10 +181,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
                 partPanelRecycler.adapter = NoteItemAdapter(notes, object :
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
-                        val bundle = Bundle()
-                        bundle.putSerializable(NOTE, note)
-                        bundle.putSerializable(PART, part)
-                        view?.findNavController()?.navigate(R.id.action_partFragment_to_noteCreator, bundle)
+                        toNoteFragment(note)
                     }
                 })
             }
@@ -199,10 +191,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
                 partPanelRecycler.adapter = RepairItemAdapter(repairs, object :
                     RepairItemAdapter.OnItemClickListener {
                     override fun onClick(repair: Repair) {
-                        val bundle = Bundle()
-                        bundle.putSerializable(REPAIR, repair)
-                        bundle.putSerializable(PART, part)
-                        view?.findNavController()?.navigate(R.id.action_partFragment_to_repairCreator, bundle)
+                        toRepairFragment(repair)
                     }
                 })
             }
@@ -267,5 +256,36 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
     private fun hideProgressBar(){
         partProgress.visibility = View.INVISIBLE
         partProgressText.visibility = View.INVISIBLE
+    }
+
+    private fun toNoteFragment(note: Note){
+        val bundle = Bundle()
+        bundle.putSerializable(NOTE, note)
+        navController.navigate(R.id.action_partFragment_to_noteCreator, bundle)
+    }
+
+    private fun toRepairFragment(repair: Repair){
+        val bundle = Bundle()
+        bundle.putSerializable(REPAIR, repair)
+        navController.navigate(R.id.action_partFragment_to_repairCreator, bundle)
+    }
+
+    private fun toCarFragment(){
+        val bundle = Bundle()
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_partFragment_to_carFragment, bundle)
+    }
+
+    private fun toPartCreator(){
+        val bundle = Bundle()
+        bundle.putSerializable(PART, part)
+        navController.navigate(R.id.action_partFragment_to_partCreator, bundle)
+    }
+
+    private fun toServiceDialog(part: Part, car: Car){
+        val bundle = Bundle()
+        bundle.putSerializable(PART, part)
+        bundle.putSerializable(CAR, car)
+        navController.navigate(R.id.action_partFragment_to_serviceFragmentDialog, bundle)
     }
 }

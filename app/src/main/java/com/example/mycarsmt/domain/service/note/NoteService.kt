@@ -20,10 +20,4 @@ interface NoteService{
 
     fun getCarFor(note: Note): Maybe<Car>
     fun getPartFor(note: Note): Maybe<Part>
-
-    fun addRepair(repair: Repair)
-
-//    fun checkImportantLevel(imageView: ImageView)
-//    fun isHighImportant(): Boolean
-//    fun done()
 }

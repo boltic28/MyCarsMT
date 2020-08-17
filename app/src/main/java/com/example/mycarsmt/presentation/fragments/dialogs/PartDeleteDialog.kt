@@ -19,6 +19,7 @@ import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class PartDeleteDialog @Inject constructor(): DialogFragment() {
@@ -59,9 +60,12 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
         }
 
         view.findViewById<Button>(R.id.deleteFragmentButtonDelete).setOnClickListener {
-            partService.delete(part).observeOn(AndroidSchedulers.mainThread()).subscribe(
+            partService.delete(part)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
                 { resUpd ->
-                    Log.d(TAG, "UPDATE: $resUpd part(s) was update successful")
+                    Log.d(TAG, "DELETE: $resUpd part(s) was delete successful")
                     val bundle = Bundle()
                     bundle.putSerializable(CAR, car)
                     it.findNavController().navigate(R.id.action_partDeleteDialog_to_carFragment, bundle)

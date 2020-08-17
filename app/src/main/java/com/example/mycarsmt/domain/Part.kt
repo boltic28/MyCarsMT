@@ -174,10 +174,10 @@ class Part(): Serializable {
         repair.mileage = mileage
         repair.carId = carId
         repair.partId = id
-        repair.description = "changed during technical works: $codes"
+        repair.description = "$name is changed during technical works: $codes"
         repair.date = LocalDate.now()
         if (type == PartControlType.INSURANCE)
-            repair.description = "auto increase insurance for: ${dateLastChange.plusDays(
+            repair.description = "auto prolonged insurance for: ${dateLastChange.plusDays(
                 insurancePeriod.toLong()//? check it on preference correct working
             )}"
         condition = refreshCondition()

@@ -22,26 +22,25 @@ import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.presentation.fragments.CarFragment
 import com.example.mycarsmt.presentation.fragments.MainFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.time.LocalDate
 import javax.inject.Inject
 
 class MileageFragmentDialog @Inject constructor() : DialogFragment() {
 
     companion object {
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
         const val FRAG_TAG = "mileage"
     }
 
     @Inject
     lateinit var carService: CarServiceImpl
     lateinit var car: Car
-    lateinit var target: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.component.injectDialog(this)
         car = arguments?.getSerializable(CAR) as Car
-        target = arguments?.getString(TARGET, MAIN).toString()
     }
 
     @SuppressLint("SetTextI18n")
@@ -71,35 +70,25 @@ class MileageFragmentDialog @Inject constructor() : DialogFragment() {
         }
 
         view.findViewById<Button>(R.id.mileageButtonCancel).setOnClickListener {
-            dismiss()
+            view?.findNavController()?.navigateUp()
         }
         view.findViewById<Button>(R.id.mileageButtonOk).setOnClickListener {
             car.mileage = editMileage.text.toString().toInt()
             car.whenMileageRefreshed = LocalDate.now()
-            carService.update(car).observeOn(AndroidSchedulers.mainThread()).subscribe(
+            carService.update(car)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
                 { resUpd ->
-                    Log.d(TAG, "UPDATE: $resUpd car(s) was update successful")
-                    loadPreviousPage()
+                    Log.d(TAG, "MILEAGE: $resUpd car(s) was update successful")
+                    view?.findNavController()?.navigateUp()
                 },
                 { err ->
-                    Log.d(TAG, "ERROR: car deleting is fail: $err")
-                    dismiss()
+                    Log.d(TAG, "ERROR: updating mileage is fail: $err")
+                    view?.findNavController()?.navigateUp()
                 }
             )
         }
         return view
-    }
-
-    private fun loadPreviousPage(){
-        when(target){
-            MainFragment.FRAG_TAG ->{
-                view?.findNavController()?.navigate(R.id.action_mileageFragmentDialog_to_mainListFragment)
-            }
-            CarFragment.FRAG_TAG -> {
-                val bundle = Bundle()
-                bundle.putSerializable(CAR, car)
-                view?.findNavController()?.navigate(R.id.action_mileageFragmentDialog_to_carFragment)
-            }
-        }
     }
 }

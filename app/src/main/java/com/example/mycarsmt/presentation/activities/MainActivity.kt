@@ -15,7 +15,7 @@ import com.example.mycarsmt.R
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
         const val PERMISSION_REQUEST_CODE = 7777
     }
 
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         if (item.itemId == R.id.action_settings)
 
         //todo navigate to setting fragment
-            findNavController(R.id.fragment).navigate(R.id.action_mainListFragment_to_settingFragment)
+            findNavController(R.id.fragment).navigate(R.id.action_settings)
 
         return super.onOptionsItemSelected(item)
     }
