@@ -49,9 +49,9 @@ class Car() : Serializable {
     var condition: List<Condition> = listOf(Condition.OK)
     var photo: String = NO_PHOTO
 
-    lateinit var parts: List<Part>
-    lateinit var notes: List<Note>
-    lateinit var repairs: List<Repair>
+    var parts: List<Part> = emptyList()
+    var notes: List<Note> = emptyList()
+    var repairs: List<Repair> = emptyList()
 
     fun checkConditions(sharedPreferences: SharedPreferences) {
         daysBetweenOdoCorrecting =
@@ -63,7 +63,7 @@ class Car() : Serializable {
         if (isNeedToBuy()) list.add(Condition.BUY_PARTS)
         if (isNeedService()) list.add(Condition.MAKE_SERVICE)
         if (isOverRide()) list.add(Condition.ATTENTION)
-        println(ChronoUnit.DAYS.between(whenMileageRefreshed, LocalDate.now()).toInt())
+        println("!!!!!!!!!!!!!!!" + ChronoUnit.DAYS.between(whenMileageRefreshed, LocalDate.now()).toInt())// to delete it
         if (isNeedCorrectOdometer()) list.addAll(listOf(Condition.CHECK_MILEAGE))
         if (list.isEmpty()) list.add(Condition.OK)
         condition = list

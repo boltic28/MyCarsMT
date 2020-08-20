@@ -17,13 +17,13 @@ interface NoteDao {
     fun delete(noteEntity: NoteEntity): Single<Int>
 //-----without mileage----
     @Query("SELECT * FROM note")
-    fun getAll(): Flowable<List<NoteEntity>>
+    fun getAll(): Single<List<NoteEntity>>
 
     @Query("SELECT * FROM note WHERE car_id = :carId")
-    fun getAllForCar(carId: Long): Flowable<List<NoteEntity>>
+    fun getAllForCar(carId: Long): Single<List<NoteEntity>>
 
     @Query("SELECT * FROM note WHERE part_id = :partId")
-    fun getAllForPart(partId: Long): Flowable<List<NoteEntity>>
+    fun getAllForPart(partId: Long): Single<List<NoteEntity>>
 
     @Query("SELECT * FROM note WHERE id = :id")
     fun getById(id: Long): Single<NoteEntity>

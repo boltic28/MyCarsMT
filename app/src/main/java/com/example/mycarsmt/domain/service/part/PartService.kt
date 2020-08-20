@@ -13,13 +13,12 @@ interface PartService{
     fun create(part: Part): Single<Long>
     fun update(part: Part): Single<Int>
     fun delete(part: Part): Single<Int>
-    fun readAll(): Flowable<List<Part>>
-    fun readAllForCar(car: Car): Flowable<List<Part>>
-    fun readById(partId: Long): Single<Part>
+    fun getAll(): Single<List<Part>>
+    fun getAllForCar(car: Car): Single<List<Part>>
+    fun getById(partId: Long): Single<Part>
 
-    fun getNotesFor(part: Part): Flowable<List<Note>>
-    fun getRepairsFor(part: Part): Flowable<List<Repair>>
+    fun refresh(part: Part)
 
-    fun getCarFor(part: Part): Maybe<Car>
-    fun addRepair(repair: Repair)
+    fun getNotesFor(part: Part): Single<List<Note>>
+    fun getRepairsFor(part: Part): Single<List<Repair>>
 }

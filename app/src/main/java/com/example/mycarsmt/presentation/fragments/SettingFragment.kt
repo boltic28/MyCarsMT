@@ -85,8 +85,7 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
             editor?.apply()
 
             showProgressBar()
-            model.carService.doDiagnosticAllCars()
-            hideProgressBar()
+            model.carService.refreshAll()
             view.findNavController().navigate(R.id.action_settingFragment_to_mainListFragment)
         }
     }

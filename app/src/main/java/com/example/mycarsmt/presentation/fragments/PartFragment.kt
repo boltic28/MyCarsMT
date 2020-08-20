@@ -62,6 +62,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
 
         navController = view.findNavController()
         setContentType(ContentType.DEFAULT)
+        loadPartData()
         loadModel()
         setRecycler()
         setButtons()
@@ -69,29 +70,40 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
 
     @SuppressLint("CheckResult")
     private fun loadModel() {
-        model.carService.readById(part.carId)
+        model.carService.getById(part.carId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { value ->
                 car = value
+                model.partService.getAllForCar(car)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe( {
+                        car.parts = it
+                        setAdapter()
+                    },{
+                        Log.d(MainFragment.TAG, "PART: error $it")
+                    })
                 setTitle("${part.name} (${car.model} ${car.number})")
             }
 
-        model.partService.readById(part.id)
+        model.partService.getById(part.id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {value ->
                 part = value
-                loadPartData()
+
             }
 
-        model.noteService.readAllForPart(part)
+        model.noteService.getAllForPart(part)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{value ->
                 notes = value
             }
 
-        model.repairService.readAllForPart(part)
+        model.repairService.getAllForPart(part)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{value ->
                 repairs = value

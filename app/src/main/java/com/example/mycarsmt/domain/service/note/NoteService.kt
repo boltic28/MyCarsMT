@@ -13,10 +13,10 @@ interface NoteService{
     fun create(note: Note): Single<Long>
     fun update(note: Note): Single<Int>
     fun delete(note: Note): Single<Int>
-    fun readById(id: Long): Single<Note>
-    fun readAll(): Flowable<List<Note>>
-    fun readAllForCar(car: Car): Flowable<List<Note>>
-    fun readAllForPart(part: Part): Flowable<List<Note>>
+    fun getById(id: Long): Single<Note>
+    fun getAll(): Single<List<Note>>
+    fun getAllForCar(car: Car): Single<List<Note>>
+    fun getAllForPart(part: Part): Single<List<Note>>
 
     fun getCarFor(note: Note): Maybe<Car>
     fun getPartFor(note: Note): Maybe<Part>

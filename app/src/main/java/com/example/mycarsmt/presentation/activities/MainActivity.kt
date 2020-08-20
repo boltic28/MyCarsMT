@@ -62,9 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_settings)
-
-        //todo navigate to setting fragment
-            findNavController(R.id.fragment).navigate(R.id.action_settings)
+            findNavController(R.id.fragment).navigate(R.id.settingFragment)
 
         return super.onOptionsItemSelected(item)
     }

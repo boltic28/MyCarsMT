@@ -1,7 +1,6 @@
 package com.example.mycarsmt.data.database.car
 
 import androidx.room.*
-import com.example.mycarsmt.domain.Car
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -21,5 +20,5 @@ interface CarDao {
     fun getById(id: Long): Single<CarEntity>
 
     @Query("SELECT * FROM car ORDER BY brand AND model AND number ASC")
-    fun getAll(): Flowable<List<CarEntity>>
+    fun getAll(): Single<List<CarEntity>>
 }

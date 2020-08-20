@@ -14,7 +14,6 @@ import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.car
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import java.util.concurrent.ExecutorService
@@ -50,7 +49,7 @@ class NoteServiceImpl @Inject constructor() : NoteService {
 
     }
 
-    override fun readById(id: Long): Single<Note> {
+    override fun getById(id: Long): Single<Note> {
         return noteDao.getById(id).map { noteFrom(it) }
     }
 
@@ -63,21 +62,21 @@ class NoteServiceImpl @Inject constructor() : NoteService {
         return noteDao.delete(noteEntityFrom(note))
     }
 
-    override fun readAll(): Flowable<List<Note>> {
+    override fun getAll(): Single<List<Note>> {
         return noteDao.getAll().map { entitiesList ->
             entitiesList.stream()
                 .map { entity -> noteFrom(entity) }
                 .collect(Collectors.toList()) }
     }
 
-    override fun readAllForCar(car: Car): Flowable<List<Note>> {
+    override fun getAllForCar(car: Car): Single<List<Note>> {
         return noteDao.getAllForCar(car.id).map { value ->
             value.stream()
                 .map { entity -> noteFrom(entity) }
                 .collect(Collectors.toList())}
     }
 
-    override fun readAllForPart(part: Part): Flowable<List<Note>> {
+    override fun getAllForPart(part: Part): Single<List<Note>> {
         return noteDao.getAllForPart(part.id).map { value ->
             value.stream()
                 .map { entity -> noteFrom(entity) }

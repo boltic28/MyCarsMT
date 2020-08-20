@@ -16,16 +16,14 @@ import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.service.car.CarService
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.domain.service.part.PartService
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class ServiceFragmentDialog @Inject constructor(): DialogFragment() {
+class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
 
     companion object {
         const val TAG = "test_mt"
@@ -73,17 +71,31 @@ class ServiceFragmentDialog @Inject constructor(): DialogFragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                { result ->
-                    Log.d(TAG, "SERVICE: done successful: $result")
-                    val bundle = Bundle()
-                    bundle.putSerializable(CAR, car)
-                    view?.findNavController()?.navigate(R.id.action_serviceFragmentDialog_to_carFragment, bundle)
-                },
-                { err ->
-                    Log.d(TAG, "ERROR: service is fail: $err")
-                    view?.findNavController()?.navigateUp()
-                }
-            )
+                    { result ->
+                        carService.refresh(car)
+                        val bundle = Bundle()
+                        bundle.putSerializable(CAR, car)
+                        view?.findNavController()?.navigate(
+                            R.id.action_serviceFragmentDialog_to_carFragment,
+                            bundle)
+                        Log.d(TAG, "PART-SERVICE: done successful: $result")
+//                        carService.update(car)
+//                            .subscribeOn(Schedulers.io())
+//                            .subscribe({
+//                                val bundle = Bundle()
+//                                bundle.putSerializable(CAR, car)
+//                                view?.findNavController()?.navigate(
+//                                    R.id.action_serviceFragmentDialog_to_carFragment,
+//                                    bundle)
+//                            }, { err ->
+//                                Log.d(TAG, "PART-SERVICE: service is fail carUpg: $err")
+//                            })
+                    },
+                    { err ->
+                        Log.d(TAG, "PART-SERVICE: service is fail: $err")
+                        view?.findNavController()?.navigateUp()
+                    }
+                )
         }
 
         return view

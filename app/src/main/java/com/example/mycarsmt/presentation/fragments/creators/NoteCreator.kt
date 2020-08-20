@@ -152,7 +152,7 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
 
     @SuppressLint("CheckResult")
     private fun loadOwners(){
-        model.carService.readById(note.carId)
+        model.carService.getById(note.carId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -166,7 +166,7 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
             )
 
         if (note.partId != 0L){
-            model.partService.readById(note.partId)
+            model.partService.getById(note.partId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

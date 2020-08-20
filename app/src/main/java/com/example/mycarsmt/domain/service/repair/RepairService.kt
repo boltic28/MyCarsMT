@@ -12,10 +12,10 @@ interface RepairService{
     fun create(repair: Repair): Single<Long>
     fun update(repair: Repair): Single<Int>
     fun delete(repair: Repair): Single<Int>
-    fun readAll(): Flowable<List<Repair>>
-    fun readById(id: Long): Single<Repair>
-    fun readAllForCar(car: Car): Flowable<List<Repair>>
-    fun readAllForPart(part: Part): Flowable<List<Repair>>
+    fun getAll(): Single<List<Repair>>
+    fun getById(id: Long): Single<Repair>
+    fun getAllForCar(car: Car): Single<List<Repair>>
+    fun getAllForPart(part: Part): Single<List<Repair>>
 
     fun getCarFor(repair: Repair): Maybe<Car>
     fun getPartFor(repair: Repair): Maybe<Part>

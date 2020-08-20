@@ -5,18 +5,15 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.database.car.CarDao
-import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao
-import com.example.mycarsmt.data.database.repair.RepairDao
 import com.example.mycarsmt.data.enums.PartControlType
-import com.example.mycarsmt.domain.*
+import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.domain.DiagnosticElement
+import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
-import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
-import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
-import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
@@ -34,10 +31,6 @@ class CarServiceImpl @Inject constructor() : CarService {
     @Inject
     lateinit var partDao: PartDao
     @Inject
-    lateinit var noteDao: NoteDao
-    @Inject
-    lateinit var repairDao: RepairDao
-    @Inject
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var executor: ExecutorService
@@ -47,22 +40,28 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     override fun create(car: Car): Single<Long> {
+        Log.d(TAG, "SERVICE: create car")
         return carDao.insert(carEntityFrom(car))
     }
 
-    override fun readById(id: Long): Single<Car> {
+    override fun getById(id: Long): Single<Car> {
+        Log.d(TAG, "SERVICE: getSingle car")
         return carDao.getById(id).map { carFrom(it) }
     }
 
     override fun update(car: Car): Single<Int> {
+        Log.d(TAG, "SERVICE: update car")
+        car.checkConditions(preferences)
         return carDao.update(carEntityFrom(car))
     }
 
     override fun delete(car: Car): Single<Int> {
+        Log.d(TAG, "SERVICE: delete car")
         return carDao.delete(carEntityFrom(car))
     }
 
-    override fun readAll(): Flowable<List<Car>> {
+    override fun getAll(): Single<List<Car>> {
+        Log.d(TAG, "SERVICE: read all cars")
         return carDao.getAll()
             .map { entitiesList ->
                 entitiesList.stream()
@@ -71,32 +70,9 @@ class CarServiceImpl @Inject constructor() : CarService {
             }
     }
 
-    override fun getPartsFor(car: Car): Flowable<List<Part>> {
-        return partDao.getAllForCar(car.id).map { value ->
-            value.stream()
-                .map { entity -> partFrom(entity) }
-                .collect(Collectors.toList())
-        }
-    }
-
-    override fun getNotesFor(car: Car): Flowable<List<Note>> {
-        return noteDao.getAllForCar(car.id).map { value ->
-            value.stream()
-                .map { entity -> noteFrom(entity) }
-                .collect(Collectors.toList())
-        }
-    }
-
-    override fun getRepairsFor(car: Car): Flowable<List<Repair>> {
-        return repairDao.getAllForCar(car.id).map { value ->
-            value.stream()
-                .map { entity -> repairFrom(entity) }
-                .collect(Collectors.toList())
-        }
-    }
-
     @SuppressLint("CheckResult")
     override fun getToBuyList(): Single<List<DiagnosticElement>> {
+        Log.d(TAG, "SERVICE: get buyList")
         val buyList: MutableList<DiagnosticElement> = mutableListOf()
 
         carDao.getAll()
@@ -112,11 +88,13 @@ class CarServiceImpl @Inject constructor() : CarService {
                             value.stream()
                                 .map { partFrom(it) }
                                 .collect(Collectors.toList())
-                        }.subscribe {
+                        }.subscribe({
                             car.parts = it
                             val element = DiagnosticElement(car, car.getListToBuy())
                             if (element.list.isNotEmpty()) buyList.add(element)
-                        }
+                        }, {
+                            Log.d(TAG, "SERVICE: buyList error")
+                        })
                 }
 
             }
@@ -126,6 +104,7 @@ class CarServiceImpl @Inject constructor() : CarService {
 
     @SuppressLint("CheckResult")
     override fun getToDoList(): Single<List<DiagnosticElement>> {
+        Log.d(TAG, "SERVICE: get toDoList")
         val todoList: MutableList<DiagnosticElement> = mutableListOf()
 
         carDao.getAll()
@@ -141,24 +120,26 @@ class CarServiceImpl @Inject constructor() : CarService {
                             value.stream()
                                 .map { partFrom(it) }
                                 .collect(Collectors.toList())
-                        }.subscribe {
+                        }.subscribe({
                             car.parts = it
                             val element = DiagnosticElement(car, car.getListToDo())
                             if (element.list.isNotEmpty()) todoList.add(element)
-                        }
+                        }, {
+                            Log.d(TAG, "SERVICE: todoList error")
+                        })
                 }
 
             }
-
         return Single.just(todoList)
     }
 
     @SuppressLint("CheckResult")
-    override fun doDiagnosticAllCars() {
+    override fun refreshAll() {
         carDao.getAll()
+            .subscribeOn(Schedulers.io())
             .map { value ->
                 value.stream()
-                    .map { entity -> carFrom(entity) }
+                    .map { carFrom(it) }
                     .collect(Collectors.toList())
             }
             .subscribe(
@@ -168,33 +149,27 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     @SuppressLint("CheckResult")
-    override fun doDiagnosticForCar(car: Car) {
-        carDao.getById(car.id)
-            .subscribeOn(Schedulers.computation())
-            .map { entity -> carFrom(entity) }
-            .subscribe(
-                { refresh(it) },
-                { err -> Log.d(TAG, "ERROR: doDiagnosticForCar -> writing in DB: $err") }
-            )
-    }
-
-    @SuppressLint("CheckResult")
     override fun refresh(car: Car) {
-        executor.execute {
-            Runnable {
-                partDao.getAllForCar(car.id)
-                    .map { list ->
-                        list.stream()
-                            .map { entity -> partFrom(entity) }
-                            .collect(Collectors.toList())
-                    }.subscribe { list ->
-                        list.forEach { part -> part.checkCondition(preferences) }
-                        car.parts = list
-                        car.checkConditions(preferences)
-                        carDao.update(carEntityFrom(car))
-                    }
+        partDao.getAllForCar(car.id)
+            .map { entityPartsList ->
+                entityPartsList.stream()
+                    .map { partFrom(it) }
+                    .collect(Collectors.toList())
             }
-        }
+            .subscribeOn(Schedulers.io())
+            .subscribe( {
+                car.parts = it
+                it.forEach { part ->
+                    part.checkCondition(preferences)
+                    partDao.update(partEntityFrom(part))
+                        .subscribeOn(Schedulers.io())
+                        .subscribe()
+                }
+                car.checkConditions(preferences)
+                carDao.update(carEntityFrom(car)).subscribe()
+            },{
+                    err -> Log.d(TAG, "SERVICE: refresh error: $err")
+            })
     }
 
     override fun makeDiagnosticForNotification() {

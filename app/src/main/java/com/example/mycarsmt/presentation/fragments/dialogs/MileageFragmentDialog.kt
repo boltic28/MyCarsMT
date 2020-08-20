@@ -16,6 +16,7 @@ import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.SpecialWords.Companion.MAIN
 import com.example.mycarsmt.SpecialWords.Companion.TARGET
 import com.example.mycarsmt.dagger.App
+import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.service.car.CarService
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
@@ -80,14 +81,13 @@ class MileageFragmentDialog @Inject constructor() : DialogFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                 { resUpd ->
-                    Log.d(TAG, "MILEAGE: $resUpd car(s) was update successful")
+                    Log.d(TAG, "MILEAGE: $resUpd was update successful")
                     view?.findNavController()?.navigateUp()
                 },
                 { err ->
                     Log.d(TAG, "ERROR: updating mileage is fail: $err")
                     view?.findNavController()?.navigateUp()
-                }
-            )
+                })
         }
         return view
     }

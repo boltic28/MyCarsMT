@@ -20,11 +20,11 @@ interface RepairDao {
     fun getById(id: Long): Single<RepairEntity>
 
     @Query("SELECT * FROM repair")
-    fun getAll(): Flowable<List<RepairEntity>>
+    fun getAll(): Single<List<RepairEntity>>
 
     @Query("SELECT * FROM repair WHERE car_id = :carId")
-    fun getAllForCar(carId: Long): Flowable<List<RepairEntity>>
+    fun getAllForCar(carId: Long): Single<List<RepairEntity>>
 
     @Query("SELECT * FROM repair WHERE part_id = :partId")
-    fun getAllForPart(partId: Long): Flowable<List<RepairEntity>>
+    fun getAllForPart(partId: Long): Single<List<RepairEntity>>
 }

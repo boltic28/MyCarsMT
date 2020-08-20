@@ -14,15 +14,15 @@ import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.SpecialWords.Companion.NOTE
 import com.example.mycarsmt.dagger.App
+import com.example.mycarsmt.data.enums.Condition
+import com.example.mycarsmt.data.enums.ContentType
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.DiagnosticElement
 import com.example.mycarsmt.domain.Note
-import com.example.mycarsmt.data.enums.Condition
-import com.example.mycarsmt.data.enums.ContentType
 import com.example.mycarsmt.presentation.adapters.CarItemAdapter
 import com.example.mycarsmt.presentation.adapters.DiagnosticElementAdapter
 import com.example.mycarsmt.presentation.adapters.NoteItemAdapter
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
@@ -41,57 +41,73 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
 
     private lateinit var navController: NavController
     private var contentType = ContentType.DEFAULT
-
-    private var cars: List<Car> = emptyList()
-    private var notes: List<Note> = emptyList()
     private var listToDo: List<DiagnosticElement> = emptyList()
     private var listToBuy: List<DiagnosticElement> = emptyList()
-
+    private var cars: List<Car> = emptyList()
+    private var notes: List<Note> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         App.component.injectFragment(this)
-        Log.d(TAG, "onCreate")
+        Log.d(TAG, "MAIN: onCreate")
     }
 
     @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated")
-
-        showProgressBar()
+        Log.d(TAG, "MAIN: onViewCreated")
         navController = view.findNavController()
 
-        model.carService.readAll()
-            .observeOn(mainThread())
-            .subscribe { value ->
-                cars = value
-                if(this.isVisible) setAdapter()
+        showProgressBar()
+        setRecycler()
+        setButtons()
+        loadData()
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadData(){
+        model.carService.getAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { list ->
+                cars = list
+                setAdapter()
+                cars.forEach { getPartsForCar(it) }
             }
 
-        model.noteService.readAll()
-            .observeOn(mainThread())
-            .subscribe { value ->
-                notes = value
+        model.noteService.getAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { list ->
+                notes = list
             }
 
         model.carService.getToBuyList()
             .subscribeOn(Schedulers.io())
-            .observeOn(mainThread())
-            .subscribe { value ->
-                listToBuy = value
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { list ->
+                listToBuy = list
             }
 
         model.carService.getToDoList()
             .subscribeOn(Schedulers.io())
-            .observeOn(mainThread())
-            .subscribe { value ->
-                listToDo = value
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { list ->
+                listToDo = list
             }
+    }
 
-        setRecycler()
-        setButtons()
+    @SuppressLint("CheckResult")
+    fun getPartsForCar(car: Car){
+        model.partService.getAllForCar(car)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                car.parts = it
+            }, {
+                Log.d(TAG, "MAIN: Error $it")
+            })
     }
 
     private fun setButtons() {
@@ -219,36 +235,37 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                     }
                 })
             }
-            else -> { }
+            else -> {
+            }
         }
     }
 
-    private fun findCarsWithProblem(){
+    private fun findCarsWithProblem() {
         val list = cars.stream()
             .filter { car -> !car.condition.contains(Condition.OK) }
             .collect(Collectors.toList())
         setAdapter(list)
     }
 
-    private fun toCarFragment(car: Car){
+    private fun toCarFragment(car: Car) {
         val bundle = Bundle()
         bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_mainListFragment_to_carFragment, bundle)
     }
 
-    private fun toNoteFragment(note: Note){
+    private fun toNoteFragment(note: Note) {
         val bundle = Bundle()
         bundle.putSerializable(NOTE, note)
         navController.navigate(R.id.action_mainListFragment_to_noteCreator, bundle)
     }
 
-    private fun toMileageDialog(car: Car){
+    private fun toMileageDialog(car: Car) {
         val bundle = Bundle()
         bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_mainListFragment_to_mileageFragmentDialog, bundle)
     }
 
-    private fun toCarCreator(){
+    private fun toCarCreator() {
         val bundle = Bundle()
         bundle.putSerializable(CAR, Car())
         navController.navigate(R.id.action_mainListFragment_to_carCreator, bundle)

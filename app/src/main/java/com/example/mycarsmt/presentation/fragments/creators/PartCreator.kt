@@ -76,7 +76,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
     @SuppressLint("CheckResult")
     private fun loadOwner(){
-        model.carService.readById(part.carId)
+        model.carService.getById(part.carId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

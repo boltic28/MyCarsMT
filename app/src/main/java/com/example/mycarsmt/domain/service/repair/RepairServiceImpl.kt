@@ -16,8 +16,6 @@ import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.rep
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
 import javax.inject.Inject
@@ -46,7 +44,7 @@ class RepairServiceImpl @Inject constructor() : RepairService {
         return repairDao.insert(repairEntityFrom(repair))
     }
 
-    override fun readById(id: Long): Single<Repair> {
+    override fun getById(id: Long): Single<Repair> {
         return repairDao.getById(id).map { repairFrom(it) }
     }
 
@@ -58,7 +56,7 @@ class RepairServiceImpl @Inject constructor() : RepairService {
         return repairDao.delete(repairEntityFrom(repair))
     }
 
-    override fun readAll(): Flowable<List<Repair>> {
+    override fun getAll(): Single<List<Repair>> {
         return repairDao.getAll().map { entitiesList ->
             entitiesList.stream()
                 .map { entity -> repairFrom(entity) }
@@ -66,7 +64,7 @@ class RepairServiceImpl @Inject constructor() : RepairService {
         }
     }
 
-    override fun readAllForCar(car: Car): Flowable<List<Repair>> {
+    override fun getAllForCar(car: Car): Single<List<Repair>> {
         return repairDao.getAllForCar(car.id).map { entitiesList ->
             entitiesList.stream()
                 .map { entity -> repairFrom(entity) }
@@ -74,8 +72,8 @@ class RepairServiceImpl @Inject constructor() : RepairService {
         }
     }
 
-    override fun readAllForPart(part: Part): Flowable<List<Repair>> {
-        return repairDao.getAllForCar(part.id).map { entitiesList ->
+    override fun getAllForPart(part: Part): Single<List<Repair>> {
+        return repairDao.getAllForPart(part.id).map { entitiesList ->
             entitiesList.stream()
                 .map { entity -> repairFrom(entity) }
                 .collect(Collectors.toList())

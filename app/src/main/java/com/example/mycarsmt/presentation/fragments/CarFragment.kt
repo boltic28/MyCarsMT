@@ -46,10 +46,6 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
 
     private lateinit var car: Car
     private lateinit var navController: NavController
-
-    private var notes: List<Note> = emptyList()
-    private var parts: List<Part> = emptyList()
-    private var repairs: List<Repair> = emptyList()
     private var contentType = ContentType.PARTS
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,11 +54,12 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         App.component.injectFragment(this)
         car = arguments?.getSerializable(CAR) as Car
 
-        Log.d(MainFragment.TAG, "onCreate")
+        Log.d(MainFragment.TAG, "CAR: onCreate")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(MainFragment.TAG, "CAR: onViewCreated")
 
         showProgressBar()
         navController = view.findNavController()
@@ -70,37 +67,48 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         loadModel()
         setRecycler()
         setButtons()
-        setAdapter()
     }
 
     @SuppressLint("CheckResult")
     private fun loadModel(){
-        model.carService.readById(car.id)
+        model.carService.getById(car.id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { value ->
                 car = value
-                loadCarDataIntoView()
+                getPartsForCar(car)
             }
 
-        model.noteService.readAllForCar(car)
+        model.noteService.getAllForCar(car)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {value ->
-                notes = value
+                car.notes = value
             }
 
-        model.partService.readAllForCar(car)
+        model.repairService.getAllForCar(car)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{value ->
-                parts = value
-                if(this.isVisible) setAdapter()
+                car.repairs = value
             }
+    }
 
-        model.repairService.readAllForCar(car)
+    @SuppressLint("CheckResult")
+    fun getPartsForCar(car: Car){
+        model.partService.getAllForCar(car)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{value ->
-                repairs = value
-            }
+            .subscribe({
+                car.parts = it
+                car.parts.forEach { part -> part.checkCondition(model.preferences) }
+                car.checkConditions(model.preferences)
+                loadCarDataIntoView()
+                model.carService.refresh(car)
+                setAdapter()
+            }, {
+                Log.d(TAG, "MAIN: Error $it")
+            })
     }
 
     private fun setButtons(){
@@ -146,9 +154,8 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         hideProgressBar()
         when (contentType) {
             ContentType.NOTES -> {
-                checkOnEmpty(notes)
-                car.notes = notes
-                carRecycler.adapter = NoteItemAdapter(notes, object :
+                checkOnEmpty(car.notes)
+                carRecycler.adapter = NoteItemAdapter(car.notes, object :
                     NoteItemAdapter.OnItemClickListener {
                     override fun onClick(note: Note) {
                         toNoteFragment(note)
@@ -156,10 +163,9 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 })
             }
             ContentType.PARTS -> {
-                car.parts = parts
-                checkOnEmpty(parts)
-                if (parts.isEmpty()) carPanelButtonCreateCommonParts.visibility = View.VISIBLE
-                carRecycler.adapter = PartItemAdapter(parts, object :
+                checkOnEmpty(car.parts)
+                if (car.parts.isEmpty()) carPanelButtonCreateCommonParts.visibility = View.VISIBLE
+                carRecycler.adapter = PartItemAdapter(car.parts, object :
                     PartItemAdapter.OnItemClickListener {
                     override fun onClick(part: Part) {
                         toPartFragment(part)
@@ -167,9 +173,8 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 })
             }
             ContentType.REPAIRS -> {
-                car.repairs = repairs
-                checkOnEmpty(repairs)
-                carRecycler.adapter = RepairItemAdapter(repairs, object :
+                checkOnEmpty(car.repairs)
+                carRecycler.adapter = RepairItemAdapter(car.repairs, object :
                     RepairItemAdapter.OnItemClickListener {
                     override fun onClick(repair: Repair) {
                         toRepairFragment(repair)
@@ -247,7 +252,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
 
     @SuppressLint("SetTextI18n")
     private fun refreshCondition(){
-        Log.d(TAG, "CarFragment: refreshing conditions")
+        Log.d(TAG, "CAR: refreshing conditions")
 
         turnOffIcons()
 
@@ -284,6 +289,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
 
     private fun toPartFragment(part: Part){
         val bundle = Bundle()
+        bundle.putSerializable(CAR, car)
         bundle.putSerializable(PART, part)
         navController.navigate(R.id.action_carFragment_to_partFragment, bundle)
     }
@@ -302,11 +308,12 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
 
     private fun toCarCreator(){
         val bundle = Bundle()
-        bundle.putSerializable(CAR, Car())
+        bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_carFragment_to_carCreator, bundle)
     }
 
     private fun toMainFragment(){
+        model.carService.update(car)
         navController.navigate(R.id.action_carFragment_to_mainListFragment)
     }
 
