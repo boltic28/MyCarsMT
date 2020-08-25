@@ -1,7 +1,6 @@
 package com.example.mycarsmt.domain
 
 import android.content.SharedPreferences
-import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.data.enums.PartControlType
@@ -12,12 +11,12 @@ import java.time.temporal.ChronoUnit
 
 class Part(): Serializable {
 
-    var warnKMToBuy = 2000
-    var warnKMToService = 1000
-    var warnDayToBuy = 30
-    var warnDayToService = 10
-    var insurancePeriod = 365
-    var viewPeriod = 365
+    private var warnKMToBuy = 2000
+    private var warnKMToService = 1000
+    private var warnDayToBuy = 30
+    private var warnDayToService = 10
+    private var insurancePeriod = 365
+    private var viewPeriod = 365
 
     constructor(
         id: Long,
@@ -133,8 +132,6 @@ class Part(): Serializable {
         return "To service: ${getMileageToRepair()} km/${getDaysToRepair()} days"
     }
 
-    fun getUsedMileage() = mileage - mileageLastChange
-
     fun getLineForBuyList(): String {
         return if(isNeedToBuy()){
             " $name: $codes"
@@ -194,6 +191,8 @@ class Part(): Serializable {
         return list
     }
 
+    private fun getUsedMileage() = mileage - mileageLastChange
+
     private fun isNeedToBuy(): Boolean {
         if (type == PartControlType.INSPECTION) return false
         if (getMileageToRepairForDayOrKmIsNull() < warnKMToBuy ||
@@ -202,18 +201,21 @@ class Part(): Serializable {
     }
 
     private fun isNeedToService(): Boolean {
-        if (type == PartControlType.INSPECTION) return isOverRide()
+        if (type == PartControlType.INSPECTION) return false
         if (getDaysToRepairForDayOrKmIsNull() < warnDayToService ||
             getMileageToRepairForDayOrKmIsNull() < warnKMToService) return true
         return false
     }
 
     private fun isNeedToInspection(): Boolean {
-        if (isOverRide() && type == PartControlType.INSPECTION) return true
+        if ((getDaysToRepairForDayOrKmIsNull() < 0 || getMileageToRepairForDayOrKmIsNull() < 0) &&
+            type == PartControlType.INSPECTION)
+            return true
         return false
     }
 
     private fun isOverRide(): Boolean {
+        if (type == PartControlType.INSPECTION) return false
         if (getDaysToRepairForDayOrKmIsNull() < 0 || getMileageToRepairForDayOrKmIsNull() < 0) return true
         return false
     }

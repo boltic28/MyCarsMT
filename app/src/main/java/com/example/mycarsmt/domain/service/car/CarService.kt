@@ -26,5 +26,5 @@ interface CarService {
 //    fun doDiagnosticForCar(car: Car)
     fun makeDiagnosticForNotification()
 
-    fun createCommonPartsFor(car: Car)
+    fun createCommonPartsFor(car: Car): Single<Int>
 }

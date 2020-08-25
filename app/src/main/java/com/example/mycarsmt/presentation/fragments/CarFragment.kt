@@ -70,7 +70,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
     }
 
     @SuppressLint("CheckResult")
-    private fun loadModel(){
+    private fun loadModel() {
         model.carService.getById(car.id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -82,20 +82,20 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         model.noteService.getAllForCar(car)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {value ->
+            .subscribe { value ->
                 car.notes = value
             }
 
         model.repairService.getAllForCar(car)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{value ->
+            .subscribe { value ->
                 car.repairs = value
             }
     }
 
     @SuppressLint("CheckResult")
-    fun getPartsForCar(car: Car){
+    fun getPartsForCar(car: Car) {
         model.partService.getAllForCar(car)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -107,11 +107,11 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 model.carService.refresh(car)
                 setAdapter()
             }, {
-                Log.d(TAG, "MAIN: Error $it")
+                Log.d(TAG, "CAR: Error $it")
             })
     }
 
-    private fun setButtons(){
+    private fun setButtons() {
         carPanelButtonNotes.setOnClickListener {
             setContentType(ContentType.NOTES)
         }
@@ -127,18 +127,27 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         carPanelButtonCancel.setOnClickListener {
             toMainFragment()
         }
-        carPanelFABSettings.setOnClickListener{
+        carPanelFABSettings.setOnClickListener {
             toCarCreator()
         }
         carPanelFABNew.setOnClickListener {
             createNew()
         }
         carPanelButtonCreateCommonParts.setOnClickListener {
+            carPanelButtonCreateCommonParts.visibility = View.INVISIBLE
+            showProgressBar()
             model.carService.createCommonPartsFor(car)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    getPartsForCar(car)
+                }, {
+                    Log.d(TAG, "CAR: Error $it")
+                })
         }
     }
 
-    private fun setContentType(type: ContentType){
+    private fun setContentType(type: ContentType) {
         showProgressBar()
         contentType = type
         setAdapter()
@@ -181,13 +190,13 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                     }
                 })
             }
-            else ->{
+            else -> {
 
             }
         }
     }
 
-    private fun checkOnEmpty(list: List<*>){
+    private fun checkOnEmpty(list: List<*>) {
         carPanelButtonCreateCommonParts.visibility = View.INVISIBLE
         if (list.isEmpty()) carEmptyList.visibility = View.VISIBLE
         else carEmptyList.visibility = View.GONE
@@ -221,7 +230,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
                 toRepairFragment(repair)
                 Log.d(TAG, "pushed button - Create repair")
             }
-            else ->{
+            else -> {
 
             }
         }
@@ -229,7 +238,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
 
 
     @SuppressLint("SetTextI18n")
-    private fun loadCarDataIntoView(){
+    private fun loadCarDataIntoView() {
         setTitle(car.getFullName())
 
         carPanelNumber.text = car.number
@@ -251,7 +260,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun refreshCondition(){
+    private fun refreshCondition() {
         Log.d(TAG, "CAR: refreshing conditions")
 
         turnOffIcons()
@@ -268,65 +277,65 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
             carPanelMileage.text = "!${car.mileage} km"
     }
 
-    private fun turnOffIcons(){
+    private fun turnOffIcons() {
         carPanelIconAttention.setColorFilter(Color.argb(255, 208, 208, 208))
         carPanelIconService.setColorFilter(Color.argb(255, 208, 208, 208))
         carPanelIconBuy.setColorFilter(Color.argb(255, 208, 208, 208))
         carPanelIconInfo.setColorFilter(Color.argb(255, 208, 208, 208))
     }
 
-    private fun toNoteFragment(note: Note){
+    private fun toNoteFragment(note: Note) {
         val bundle = Bundle()
         bundle.putSerializable(NOTE, note)
         navController.navigate(R.id.action_carFragment_to_noteCreator, bundle)
     }
 
-    private fun toRepairFragment(repair: Repair){
+    private fun toRepairFragment(repair: Repair) {
         val bundle = Bundle()
         bundle.putSerializable(REPAIR, repair)
         navController.navigate(R.id.action_carFragment_to_repairCreator, bundle)
     }
 
-    private fun toPartFragment(part: Part){
+    private fun toPartFragment(part: Part) {
         val bundle = Bundle()
         bundle.putSerializable(CAR, car)
         bundle.putSerializable(PART, part)
         navController.navigate(R.id.action_carFragment_to_partFragment, bundle)
     }
 
-    private fun toPartCreator(part: Part){
+    private fun toPartCreator(part: Part) {
         val bundle = Bundle()
         bundle.putSerializable(PART, part)
         navController.navigate(R.id.action_carFragment_to_partCreator, bundle)
     }
 
-    private fun toMileageDialog(){
+    private fun toMileageDialog() {
         val bundle = Bundle()
         bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_carFragment_to_mileageFragmentDialog, bundle)
     }
 
-    private fun toCarCreator(){
+    private fun toCarCreator() {
         val bundle = Bundle()
         bundle.putSerializable(CAR, car)
         navController.navigate(R.id.action_carFragment_to_carCreator, bundle)
     }
 
-    private fun toMainFragment(){
+    private fun toMainFragment() {
         model.carService.update(car)
         navController.navigate(R.id.action_carFragment_to_mainListFragment)
     }
 
-    private fun setTitle(title: String){
+    private fun setTitle(title: String) {
         activity?.title = title
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         carProgress.visibility = View.VISIBLE
         carProgressText.visibility = View.VISIBLE
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         carProgress.visibility = View.INVISIBLE
         carProgressText.visibility = View.INVISIBLE
     }

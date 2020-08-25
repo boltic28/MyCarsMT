@@ -15,6 +15,7 @@ import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.car
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
 import java.util.stream.Collectors
@@ -157,7 +158,7 @@ class CarServiceImpl @Inject constructor() : CarService {
                     .collect(Collectors.toList())
             }
             .subscribeOn(Schedulers.io())
-            .subscribe( {
+            .subscribe({
                 car.parts = it
                 it.forEach { part ->
                     part.checkCondition(preferences)
@@ -167,8 +168,8 @@ class CarServiceImpl @Inject constructor() : CarService {
                 }
                 car.checkConditions(preferences)
                 carDao.update(carEntityFrom(car)).subscribe()
-            },{
-                    err -> Log.d(TAG, "SERVICE: refresh error: $err")
+            }, { err ->
+                Log.d(TAG, "SERVICE: refresh error: $err")
             })
     }
 
@@ -191,122 +192,121 @@ class CarServiceImpl @Inject constructor() : CarService {
 //        }
     }
 
-    override fun createCommonPartsFor(car: Car) {
-        executor.execute {
-            Runnable {
-                val list = mutableListOf<Part>()
+    @SuppressLint("CheckResult")
+    override fun createCommonPartsFor(car: Car): Single<Int> {
+        val list = mutableListOf<Part>()
 
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Oil level",
-                        5000,
-                        15,
-                        PartControlType.INSPECTION
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Oil filter",
-                        15000,
-                        365,
-                        PartControlType.CHANGE
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Air filter",
-                        30000,
-                        365,
-                        PartControlType.CHANGE
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Cabin filter",
-                        30000,
-                        365,
-                        PartControlType.CHANGE
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Spark plugs",
-                        30000,
-                        0,
-                        PartControlType.CHANGE
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Front brake",
-                        40000,
-                        0,
-                        PartControlType.INSPECTION
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Rear brake",
-                        40000,
-                        0,
-                        PartControlType.INSPECTION
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Wipers",
-                        0,
-                        183,
-                        PartControlType.INSPECTION
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Insurance",
-                        0,
-                        365,
-                        PartControlType.INSURANCE
-                    )
-                )
-                list.add(
-                    Part(
-                        car.id,
-                        car.mileage,
-                        "Tech view",
-                        0,
-                        365,
-                        PartControlType.INSURANCE
-                    )
-                )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Oil level",
+                5000,
+                15,
+                PartControlType.INSPECTION
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Oil filter",
+                15000,
+                365,
+                PartControlType.CHANGE
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Air filter",
+                30000,
+                365,
+                PartControlType.CHANGE
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Cabin filter",
+                30000,
+                365,
+                PartControlType.CHANGE
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Spark plugs",
+                30000,
+                0,
+                PartControlType.CHANGE
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Front brake",
+                40000,
+                0,
+                PartControlType.INSPECTION
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Rear brake",
+                40000,
+                0,
+                PartControlType.INSPECTION
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Wipers",
+                0,
+                183,
+                PartControlType.INSPECTION
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Insurance",
+                0,
+                365,
+                PartControlType.INSURANCE
+            )
+        )
+        list.add(
+            Part(
+                car.id,
+                car.mileage,
+                "Tech view",
+                0,
+                365,
+                PartControlType.INSURANCE
+            )
+        )
 
-                list.forEach { part ->
-                    part.checkCondition(preferences)
-                    partDao.insert(partEntityFrom(part))
-                }
-
-                car.parts = list
-                car.checkConditions(preferences)
-                carDao.update(carEntityFrom(car))
-            }.run()
+        list.forEach { part ->
+            partDao.insert(partEntityFrom(part))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
         }
+
+        refresh(car)
+
+        return Single.just(1)
     }
 }
 

@@ -10,10 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
-import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
-import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.data.enums.Condition
+import com.example.mycarsmt.domain.Car
 import com.squareup.picasso.Picasso
 import java.io.File
 
