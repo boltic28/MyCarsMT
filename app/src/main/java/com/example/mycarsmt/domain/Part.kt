@@ -108,6 +108,9 @@ class Part(): Serializable {
     var type: PartControlType = PartControlType.CHANGE
     var condition: List<Condition> = listOf(Condition.OK)
 
+    var notes: List<Note> = emptyList()
+    var repairs: List<Repair> = emptyList()
+
     fun checkCondition(preferences: SharedPreferences){
 
         warnKMToBuy = preferences.getInt(SettingFragment.KM_TO_BUY, 2000)

@@ -63,7 +63,6 @@ class Car() : Serializable {
         if (isNeedToBuy()) list.add(Condition.BUY_PARTS)
         if (isNeedService()) list.add(Condition.MAKE_SERVICE)
         if (isOverRide()) list.add(Condition.ATTENTION)
-        println("!!!!!!!!!!!!!!!" + ChronoUnit.DAYS.between(whenMileageRefreshed, LocalDate.now()).toInt())// to delete it
         if (isNeedCorrectOdometer()) list.addAll(listOf(Condition.CHECK_MILEAGE))
         if (list.isEmpty()) list.add(Condition.OK)
         condition = list
