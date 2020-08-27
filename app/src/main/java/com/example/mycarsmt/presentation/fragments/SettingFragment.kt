@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.mycarsmt.R
+import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.dagger.App
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -97,6 +98,16 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
                 }, { err ->
                     Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err")
                 })
+        }
+
+        saveToFileButton.setOnClickListener {
+            val fileHelper = TXTConverter()
+            fileHelper.writeCarsToFile()
+        }
+
+        readCarsFromFile.setOnClickListener {
+            val fileHelper = TXTConverter()
+            fileHelper.readDataFromFile()
         }
     }
 

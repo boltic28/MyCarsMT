@@ -41,7 +41,7 @@
     <string name="back">back</string>
     <string name="service">service</string>
     <string name="no_elements">you have no one element, please add</string>
-    <string name="save">save</string>
+    <string name="save">save to file</string>
     <string name="attention_before_buy_days">attention before buy, days</string>
     <string name="attention_before_buy_km">attention before buy, km</string>
     <string name="attention_before_change_days">attention before change, days</string>
@@ -67,10 +67,10 @@
     <string name="inspection_only">Inspection only</string>
     <string name="insurance">Insurance</string>
     <string name="create_common_list_of_parts">create common list of parts</string>
-    <string name="park_is_counting">park is counting...</string>
+    <string name="park_is_counting">park is counting</string>
     <string name="days_between_correcting_odo_days">Days between correcting odo, days</string>
     <string name="check_your_cars">check your cars</string>
-    <string name="description_of_repair">description of repair...</string>
+    <string name="description_of_repair">description of repair</string>
     <string name="date_repair">Date repair:</string>
     <string name="mileage_km">Mileage(km):</string>
     <string name="cost">Cost($):</string>
@@ -85,5 +85,7 @@
     <string name="codes">Codes:</string>
     <string name="name">Name:</string>
     <string name="last_service">Last service:</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading</string>
+    <string name="refresh">Refresh cars</string>
+    <string name="load">load from file</string>
 </resources>
