@@ -27,5 +27,5 @@ enum class Directories(val value: String) {
     @SuppressLint("SdCardPath")
     TXT_FILE_WITH_CARS("/sdcard/Download/cars.txt"),
     @SuppressLint("SdCardPath")
-    TXT_OUTPUT_FILE("/sdcard/Download/carsResult.txt")
+    TXT_OUTPUT_FILE("/sdcard/Download/cars.txt")
 }

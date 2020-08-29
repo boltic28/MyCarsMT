@@ -98,7 +98,7 @@ class Part(): Serializable {
     var carId: Long = 0
     var mileage: Int = 0
     var name: String = "part"
-    var codes: String = "no23"
+    var codes: String = "no code"
     var limitKM: Int = 10000
     var limitDays: Int = 365
     var dateLastChange: LocalDate = LocalDate.now()

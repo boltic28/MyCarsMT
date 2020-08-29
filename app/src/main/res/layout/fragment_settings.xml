@@ -134,7 +134,7 @@
         android:text="@string/save"
         app:layout_constraintTop_toBottomOf="@+id/settingsButtonSave"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toLeftOf="@+id/readCarsFromFile" />
 
     <Button
         android:id="@+id/readCarsFromFile"
@@ -142,8 +142,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
         android:text="@string/load"
-        app:layout_constraintTop_toBottomOf="@+id/saveToFileButton"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsButtonSave"
+        app:layout_constraintLeft_toRightOf="@+id/saveToFileButton"
         app:layout_constraintRight_toRightOf="parent" />
 
     <ProgressBar
@@ -155,6 +155,7 @@
         app:layout_constraintTop_toBottomOf="@+id/settingsDaysBetweenOdoCorrectingText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
     <TextView
         android:id="@+id/settingsLoaderText"
         android:layout_width="wrap_content"
