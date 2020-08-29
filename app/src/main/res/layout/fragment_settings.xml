@@ -126,31 +126,49 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <Button
-        android:id="@+id/saveToFileButton"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/settingsLoadingCarsFromFileText"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:text="@string/save"
-        app:layout_constraintTop_toBottomOf="@+id/settingsButtonSave"
+        style="@style/Settings"
+        android:text="@string/loading_car_be_careful"
+        android:layout_marginTop="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/readCarsFromFile" />
+        app:layout_constraintTop_toBottomOf="@+id/settingsButtonSave" />
 
     <Button
-        android:id="@+id/readCarsFromFile"
-        android:layout_width="wrap_content"
+        android:id="@+id/settingsButtonReadCarsFromFile"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="24dp"
         android:text="@string/load"
         app:layout_constraintTop_toBottomOf="@+id/settingsButtonSave"
-        app:layout_constraintLeft_toRightOf="@+id/saveToFileButton"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/settingsSavingCarsToFileText"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        style="@style/Settings"
+        android:text="@string/saving_car_be_careful"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settingsButtonSaveToFile" />
+
+    <Button
+        android:id="@+id/settingsButtonSaveToFile"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/save"
+        app:layout_constraintTop_toBottomOf="@+id/settingsButtonReadCarsFromFile"
         app:layout_constraintRight_toRightOf="parent" />
 
     <ProgressBar
         android:id="@+id/settingsLoaderBar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="24dp"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@+id/settingsDaysBetweenOdoCorrectingText"
         app:layout_constraintLeft_toLeftOf="parent"

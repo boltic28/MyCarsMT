@@ -43,7 +43,7 @@ class TXTConverter @Inject constructor() {
     }
 
 
-    private val dateMapper = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)!!
+    private val dateMapper = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)!!
 
     fun getFileWithListToDo(list: List<DiagnosticElement>): File {
         testCommonDirectory()
@@ -133,45 +133,43 @@ class TXTConverter @Inject constructor() {
     fun writeCarsToFile(): Single<String> {
         File(Directories.TXT_OUTPUT_FILE.value).createNewFile()
         var result = ""
-        var counter = 0
-        carService.getAll()
-            .subscribeOn(Schedulers.io())
-            .subscribe { cars ->
-                cars.forEach { car ->
-                    noteService.getAllForCar(car)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe { notes -> car.notes = notes }
-                    repairService.getAllForCar(car)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe { repairs -> car.repairs = repairs }
-                    partService.getAllForCar(car)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe { parts ->
-                            car.parts = parts
-                            parts.forEach { part ->
-                                noteService.getAllForPart(part)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe { notes -> part.notes = notes }
-                                repairService.getAllForPart(part)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe { repairs -> part.repairs = repairs }
+            carService.getAll()
+                .subscribeOn(Schedulers.io())
+                .subscribe { cars ->
+                    cars.forEach { car ->
+                        noteService.getAllForCar(car)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe { notes -> car.notes = notes }
+                        repairService.getAllForCar(car)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe { repairs -> car.repairs = repairs }
+                        partService.getAllForCar(car)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe { parts ->
+                                car.parts = parts
+                                parts.forEach { part ->
+                                    noteService.getAllForPart(part)
+                                        .subscribeOn(Schedulers.io())
+                                        .subscribe { notes -> part.notes = notes }
+                                    repairService.getAllForPart(part)
+                                        .subscribeOn(Schedulers.io())
+                                        .subscribe { repairs -> part.repairs = repairs }
+                                }
                             }
-                        }
-                }
-                cars.forEach { car ->
-                    result = result.plus(toStringForDB(car))
-                    counter++
-                }
+                    }
+                    cars.forEach { car ->
+                        result = result.plus(toStringForDB(car))
+                    }
 
-                File(Directories.TXT_OUTPUT_FILE.value).writeText(
-                    result.substring(
-                        0,
-                        result.length - 1
+                    File(Directories.TXT_OUTPUT_FILE.value).writeText(
+                        result.substring(
+                            0,
+                            result.length - 1
+                        )
                     )
-                )
-            }
+                }
 
-        return Single.just("$counter cars written to file ${Directories.TXT_OUTPUT_FILE.value}")
+        return Single.just("Cars saved in Download/cars.txt")
     }
 
     private fun toStringForDB(car: Car): String {
@@ -197,7 +195,7 @@ class TXTConverter @Inject constructor() {
     }
 
     private fun toStringForDB(note: Note): String {
-        return "n ${note.description},${note.importantLevel},${note.date}\n"
+        return "n ${note.description},${note.importantLevel.value},${note.date}\n"
     }
 
     private fun toStringForDB(part: Part): String {
@@ -213,17 +211,20 @@ class TXTConverter @Inject constructor() {
     }
 
 
-    fun readDataFromFile(): Single<String> {
+    fun readDataFromFile(): Single<Unit> {
 
         val f = File(Directories.TXT_FILE_WITH_CARS.value)
         val inputStream: InputStream = f.inputStream()
-        val cars : MutableList<Car>
+        val cars : MutableList<Car> = mutableListOf()
+        var parts : MutableList<Part> = mutableListOf()
+        var notes : MutableList<Note> = mutableListOf()
+        var repairs : MutableList<Repair> = mutableListOf()
         var counterCars = 0
         var counterParts = 0
         var counterNotes = 0
         var counterRepairs = 0
-        lateinit var tmpCar: Car
-        lateinit var tmpPart: Part
+        var tmpCar: Car? = null
+        var tmpPart: Part? = null
 
         inputStream.bufferedReader().useLines { lines ->
             lines.forEach { lineFromFile ->
@@ -234,40 +235,76 @@ class TXTConverter @Inject constructor() {
                 Log.d(TAG, "Reading line: $line")
                 when (objectType) {
                     'c' -> {
-                        createCarFromLine(line)
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { car ->
-                                tmpCar = car
-                                tmpPart = Part()
-                                counterCars++
-                                Log.d(TAG, "Reading car: ${tmpCar.getFullName()}")
+                        if (cars.isNotEmpty()){
+                            tmpCar!!.parts = parts
+
+                            if (parts.isEmpty()){
+                                tmpCar!!.notes = notes
+                                tmpCar!!.repairs = repairs
+
+                            }else{
+                                tmpPart!!.notes = notes
+                                tmpPart!!.repairs = repairs
                             }
+                            notes = mutableListOf()
+                            repairs = mutableListOf()
+                            parts = mutableListOf()
+                        }
+
+                        tmpCar = createCarFromLine(line)
+                        cars.add(tmpCar!!)
+                        counterCars++
+                        Log.d(TAG, "Reading car: ${tmpCar?.getFullName()}")
                     }
                     'p' -> {
-                        createPartFromLine(line, tmpCar.id)
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { part ->
-                                tmpPart = part
-                                counterParts++
-                                Log.d(TAG, "Reading part: ${tmpPart.name}")
-                            }
+                        if (parts.isEmpty()){
+                            tmpCar!!.notes = notes
+                            tmpCar!!.repairs = repairs
+
+                        }else{
+                            tmpPart!!.notes = notes
+                            tmpPart!!.repairs = repairs
+                        }
+                        notes = mutableListOf()
+                        repairs = mutableListOf()
+
+
+                        tmpPart = createPartFromLine(line)
+                        parts.add(tmpPart!!)
+                        counterParts++
+                        Log.d(TAG, "Reading part: ${tmpPart?.name}")
                     }
                     'r' -> {
-                        createRepairFromLine(line, tmpCar.id, tmpPart.id)
+                        repairs.add(createRepairFromLine(line))
                         counterRepairs++
                         Log.d(TAG, "Reading repair...")
                     }
                     'n' -> {
-                        createNoteFromLine(line, tmpCar.id, tmpPart.id)
+                        notes.add(createNoteFromLine(line))
                         counterNotes++
                         Log.d(TAG, "Reading note...")
                     }
                 }
             }
+            // writing for last data to the car
+            if (cars.isNotEmpty()){
+                tmpCar!!.parts = parts
+
+                if (parts.isEmpty()){
+                    tmpCar!!.notes = notes
+                    tmpCar!!.repairs = repairs
+
+                }else{
+                    tmpPart!!.notes = notes
+                    tmpPart!!.repairs = repairs
+                }
+                notes = mutableListOf()
+                repairs = mutableListOf()
+                parts = mutableListOf()
+            }
         }
-        return Single.just("was read $counterCars car(s), $counterNotes note(s), $counterParts part(s), $counterRepairs repair(s)")
+
+        return carService.createCarsFromFile(cars)
     }
 
     private fun getDataForFile(repair: Note): String {
@@ -302,7 +339,7 @@ class TXTConverter @Inject constructor() {
     }
 
     @SuppressLint("CheckResult")
-    private fun createCarFromLine(string: String): Single<Car> {
+    private fun createCarFromLine(string: String): Car {
 
         // brand[0], model[1], year[2], win[3], numb[4], odo[5], photo[6] - > type of line from cars.txt
 
@@ -325,16 +362,11 @@ class TXTConverter @Inject constructor() {
         }
         car.photo = sa[6]
 
-        carService.create(car)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { id -> car.id = id }
-
-        return Single.just(car)
+        return car
     }
 
     @SuppressLint("CheckResult")
-    private fun createPartFromLine(line: String, carId: Long): Single<Part> {
+    private fun createPartFromLine(line: String): Part {
 
         // name[0], codes[1], limitKM[2], limitDay[3], dateInstall[4], milleageInstal[5], description[6], photo[7]
 
@@ -342,7 +374,6 @@ class TXTConverter @Inject constructor() {
 
         val part = Part()
 
-        part.carId = carId
         part.name = sa[0]
         part.codes = sa[1].replace(':', ',')
         try {
@@ -374,24 +405,17 @@ class TXTConverter @Inject constructor() {
         part.description = sa[6]
         part.photo = sa[7]
 
-        partService.create(part)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { id -> part.id = id }
-
-        return Single.just(part)
+        return part
     }
 
     @SuppressLint("CheckResult")
-    private fun createRepairFromLine(line: String, carId: Long, partId: Long) {
+    private fun createRepairFromLine(line: String): Repair {
 
         // type[0], description[1], mileage[2], dateInstall[3], cost[4]
         val sa = line.split(",")
 
         val repair = Repair()
 
-        repair.carId = carId
-        repair.partId = partId
         repair.type = sa[0]
         repair.description = sa[1]
         try {
@@ -413,22 +437,17 @@ class TXTConverter @Inject constructor() {
             )
         }
 
-        repairService.create(repair)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+        return repair
     }
 
     @SuppressLint("CheckResult")
-    private fun createNoteFromLine(line: String, carId: Long, partId: Long) {
+    private fun createNoteFromLine(line: String): Note {
 
         // description[0], importantLevel[1], dateInstall[2]
         val sa = line.split(",")
 
         val note = Note()
 
-        note.carId = carId
-        note.partId = partId
         note.description = sa[0]
         try {
             note.importantLevel = NoteLevel.fromInt(sa[1].toInt())!!
@@ -443,10 +462,7 @@ class TXTConverter @Inject constructor() {
             Log.d(TAG, "Reading note: ${note.date} - problem with date - ${sa[2]}")
         }
 
-        noteService.create(note)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+        return note
     }
 
 }

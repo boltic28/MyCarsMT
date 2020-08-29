@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import com.example.mycarsmt.R
 import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.dagger.App
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -94,25 +95,49 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ list ->
                     list.forEach { model.carService.refresh(it) }
-                    view.findNavController().navigate(R.id.action_settingFragment_to_mainListFragment)
+                    view.findNavController()
+                        .navigate(R.id.action_settingFragment_to_mainListFragment)
                 }, { err ->
                     Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err")
                 })
         }
 
-        saveToFileButton.setOnClickListener {
+        settingsButtonSaveToFile.setOnClickListener {
+            showProgressBar()
             val fileHelper = TXTConverter()
             fileHelper.writeCarsToFile()
+                .subscribe({
+                    showMessage(it)
+                    view.findNavController()
+                        .navigate(R.id.action_settingFragment_to_mainListFragment)
+                }, { err ->
+                    Log.d(TAG, "ERROR: writing data from file -> $err")
+                })
         }
 
-        readCarsFromFile.setOnClickListener {
+        settingsButtonReadCarsFromFile.setOnClickListener {
+            showProgressBar()
             val fileHelper = TXTConverter()
             fileHelper.readDataFromFile()
+                .subscribe({
+                    view.findNavController()
+                        .navigate(R.id.action_settingFragment_to_mainListFragment)
+                }, { err ->
+                    Log.d(TAG, "ERROR: reading data from file -> $err")
+                })
+        }
+    }
+
+    private fun showMessage(msg: String) {
+        view?.let {
+            Snackbar.make(it, msg, Snackbar.LENGTH_SHORT).show()
         }
     }
 
     private fun showProgressBar() {
-        settingsButtonSave.visibility = View.GONE
+        settingsButtonReadCarsFromFile.visibility = View.INVISIBLE
+        settingsButtonSaveToFile.visibility = View.INVISIBLE
+        settingsButtonSave.visibility = View.INVISIBLE
         settingsLoaderBar.visibility = View.VISIBLE
         settingsLoaderText.visibility = View.VISIBLE
     }

@@ -5,15 +5,19 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.database.car.CarDao
+import com.example.mycarsmt.data.database.note.NoteDao
 import com.example.mycarsmt.data.database.part.PartDao
+import com.example.mycarsmt.data.database.repair.RepairDao
 import com.example.mycarsmt.data.enums.PartControlType
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.DiagnosticElement
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
+import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
+import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairEntityFrom
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -31,6 +35,10 @@ class CarServiceImpl @Inject constructor() : CarService {
     lateinit var carDao: CarDao
     @Inject
     lateinit var partDao: PartDao
+    @Inject
+    lateinit var noteDao: NoteDao
+    @Inject
+    lateinit var repairDao: RepairDao
     @Inject
     lateinit var preferences: SharedPreferences
     @Inject
@@ -69,6 +77,54 @@ class CarServiceImpl @Inject constructor() : CarService {
                     .map { carEntity -> carFrom(carEntity) }
                     .collect(Collectors.toList())
             }
+    }
+
+    override fun createCarsFromFile(cars: List<Car>): Single<Unit> {
+        return Single.fromCallable {
+            cars.forEach { car ->
+                carDao.insert(carEntityFrom(car))
+                    .subscribeOn(Schedulers.io())
+                    .subscribe { id ->
+                        car.id = id
+                        car.notes.forEach { note ->
+                            note.carId = id
+                            note.partId = 0
+                            noteDao.insert(noteEntityFrom(note))
+                                .subscribeOn(Schedulers.io())
+                                .subscribe()
+                        }
+                        car.repairs.forEach { repair ->
+                            repair.carId = id
+                            repair.partId = 0
+                            repairDao.insert(repairEntityFrom(repair))
+                                .subscribeOn(Schedulers.io())
+                                .subscribe()
+                        }
+                        car.parts.forEach { part ->
+                            part.carId = car.id
+                            partDao.insert(partEntityFrom(part))
+                                .subscribeOn(Schedulers.io())
+                                .subscribe { pId ->
+                                    part.id = pId
+                                    part.notes.forEach { note ->
+                                        note.partId = pId
+                                        note.carId = id
+                                        noteDao.insert(noteEntityFrom(note))
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe()
+                                    }
+                                    part.repairs.forEach { repair ->
+                                        repair.partId = pId
+                                        repair.carId = id
+                                        repairDao.insert(repairEntityFrom(repair))
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe()
+                                    }
+                                }
+                        }
+                    }
+            }
+        }
     }
 
     @SuppressLint("CheckResult")

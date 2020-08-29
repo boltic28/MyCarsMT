@@ -88,4 +88,6 @@
     <string name="loading">Loading</string>
     <string name="refresh">Refresh cars</string>
     <string name="load">load from file</string>
+    <string name="loading_car_be_careful">Load cars from Download/cars.txt</string>
+    <string name="saving_car_be_careful">Cars will be save to Download/cars.txt</string>
 </resources>

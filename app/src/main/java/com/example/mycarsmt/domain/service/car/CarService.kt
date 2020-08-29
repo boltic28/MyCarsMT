@@ -13,10 +13,7 @@ interface CarService {
     fun delete(car: Car): Single<Int>
     fun getAll(): Single<List<Car>>
 
-//    fun getPartsFor(car: Car): Single<List<Part>>
-//    fun getNotesFor(car: Car): Single<List<Note>>
-//    fun getRepairsFor(car: Car): Single<List<Repair>>
-
+    fun createCarsFromFile(cars: List<Car>): Single<Unit>
     fun getToBuyList(): Single<List<DiagnosticElement>>
     fun getToDoList(): Single<List<DiagnosticElement>>
 
