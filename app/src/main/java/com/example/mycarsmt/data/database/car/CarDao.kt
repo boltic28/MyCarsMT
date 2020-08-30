@@ -21,4 +21,7 @@ interface CarDao {
 
     @Query("SELECT * FROM car ORDER BY brand AND model AND number ASC")
     fun getAll(): Single<List<CarEntity>>
+
+    @Query("SELECT * FROM car ORDER BY brand AND model AND number ASC")
+    fun getAllList(): List<CarEntity>
 }

@@ -90,16 +90,7 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
             editor?.apply()
 
             showProgressBar()
-            model.carService.getAll()
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ list ->
-                    list.forEach { model.carService.refresh(it) }
-                    view.findNavController()
-                        .navigate(R.id.action_settingFragment_to_mainListFragment)
-                }, { err ->
-                    Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err")
-                })
+            refreshCars()
         }
 
         settingsButtonSaveToFile.setOnClickListener {
@@ -120,12 +111,25 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
             val fileHelper = TXTConverter()
             fileHelper.readDataFromFile()
                 .subscribe({
-                    view.findNavController()
-                        .navigate(R.id.action_settingFragment_to_mainListFragment)
+                    refreshCars()
                 }, { err ->
                     Log.d(TAG, "ERROR: reading data from file -> $err")
                 })
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun refreshCars() {
+
+        model.carService.refreshAll()
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                view?.findNavController()?.
+                    navigate(R.id.action_settingFragment_to_mainListFragment)
+            }, { err ->
+                Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err")
+            })
     }
 
     private fun showMessage(msg: String) {
@@ -135,6 +139,8 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
     }
 
     private fun showProgressBar() {
+        settingsLoadingCarsFromFileText.visibility = View.INVISIBLE
+        settingsSavingCarsToFileText.visibility = View.INVISIBLE
         settingsButtonReadCarsFromFile.visibility = View.INVISIBLE
         settingsButtonSaveToFile.visibility = View.INVISIBLE
         settingsButtonSave.visibility = View.INVISIBLE

@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.findNavController
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
+import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
@@ -55,6 +56,7 @@ class CarDeleteDialog @Inject constructor()  : DialogFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                 { isDeleted ->
+                    TXTConverter().createCarCopyToFile(car)
                     Log.d(TAG, "DELETE: $isDeleted car(s) was deleted")
                     view.findNavController().navigate(R.id.action_carDeleteDialog_to_mainListFragment)
                 },

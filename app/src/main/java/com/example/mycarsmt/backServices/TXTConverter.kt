@@ -6,13 +6,13 @@ import android.util.Log
 import com.example.mycarsmt.Directories
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.enums.NoteLevel
+import com.example.mycarsmt.data.enums.PartControlType
 import com.example.mycarsmt.domain.*
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.domain.service.note.NoteServiceImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.InputStream
@@ -41,7 +41,6 @@ class TXTConverter @Inject constructor() {
     init {
         App.component.injectTXTConverter(this)
     }
-
 
     private val dateMapper = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)!!
 
@@ -89,13 +88,6 @@ class TXTConverter @Inject constructor() {
                 }
             }
         }
-//            getListOfNotes().forEach {
-//                result = result.plus({
-//                    if (it.ownerId == 0)
-//                        it.getDataForFile()
-//                }
-//                )
-//            }
 
         file.writeText(result.substring(0, result.length - 1))
         return file
@@ -113,6 +105,20 @@ class TXTConverter @Inject constructor() {
         File(filePath).writeText(result.substring(0, result.length - 1))
         return "car's history was write to file $filePath"
     }
+
+    fun writeFileWithCarsData(cars: List<Car>): File {
+        testCommonDirectory()
+        val file = File(Directories.DATA_OUTPUT_FILE.value)
+        file.createNewFile()
+        var result = ""
+        cars.forEach { car ->
+            result = result.plus(getDataForMileageList(car))
+        }
+
+        file.writeText(result.substring(0, result.length - 1))
+        return file
+    }
+
 
     private fun getLineForHistoryFrom(repair: Repair): String {
         return "${repair.date} ${repair.mileage} km: \n" +
@@ -133,42 +139,20 @@ class TXTConverter @Inject constructor() {
     fun writeCarsToFile(): Single<String> {
         File(Directories.TXT_OUTPUT_FILE.value).createNewFile()
         var result = ""
-            carService.getAll()
-                .subscribeOn(Schedulers.io())
-                .subscribe { cars ->
-                    cars.forEach { car ->
-                        noteService.getAllForCar(car)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe { notes -> car.notes = notes }
-                        repairService.getAllForCar(car)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe { repairs -> car.repairs = repairs }
-                        partService.getAllForCar(car)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe { parts ->
-                                car.parts = parts
-                                parts.forEach { part ->
-                                    noteService.getAllForPart(part)
-                                        .subscribeOn(Schedulers.io())
-                                        .subscribe { notes -> part.notes = notes }
-                                    repairService.getAllForPart(part)
-                                        .subscribeOn(Schedulers.io())
-                                        .subscribe { repairs -> part.repairs = repairs }
-                                }
-                            }
-                    }
-                    cars.forEach { car ->
-                        result = result.plus(toStringForDB(car))
-                    }
-
-                    File(Directories.TXT_OUTPUT_FILE.value).writeText(
-                        result.substring(
-                            0,
-                            result.length - 1
-                        )
-                    )
+        carService.preparingCarsToWritingIntoFile()
+            .subscribeOn(Schedulers.io())
+            .subscribe { cars ->
+                cars.forEach { car ->
+                    result = result.plus(toStringForDB(car))
                 }
 
+                File(Directories.TXT_OUTPUT_FILE.value).writeText(
+                    result.substring(
+                        0,
+                        result.length - 1
+                    )
+                )
+            }
         return Single.just("Cars saved in Download/cars.txt")
     }
 
@@ -201,7 +185,7 @@ class TXTConverter @Inject constructor() {
     private fun toStringForDB(part: Part): String {
         return "p ${part.name},${part.codes.replace(',', ':')}" +
                 ",${part.limitKM},${part.limitDays},${part.dateLastChange},${part.mileageLastChange}" +
-                ",${part.description},${part.photo}\n"
+                ",${part.description},${part.photo},${part.type.value}\n"
     }
 
     private fun toStringForDB(repair: Repair): String {
@@ -215,10 +199,10 @@ class TXTConverter @Inject constructor() {
 
         val f = File(Directories.TXT_FILE_WITH_CARS.value)
         val inputStream: InputStream = f.inputStream()
-        val cars : MutableList<Car> = mutableListOf()
-        var parts : MutableList<Part> = mutableListOf()
-        var notes : MutableList<Note> = mutableListOf()
-        var repairs : MutableList<Repair> = mutableListOf()
+        val cars: MutableList<Car> = mutableListOf()
+        var parts: MutableList<Part> = mutableListOf()
+        var notes: MutableList<Note> = mutableListOf()
+        var repairs: MutableList<Repair> = mutableListOf()
         var counterCars = 0
         var counterParts = 0
         var counterNotes = 0
@@ -235,14 +219,14 @@ class TXTConverter @Inject constructor() {
                 Log.d(TAG, "Reading line: $line")
                 when (objectType) {
                     'c' -> {
-                        if (cars.isNotEmpty()){
+                        if (cars.isNotEmpty()) {
                             tmpCar!!.parts = parts
 
-                            if (parts.isEmpty()){
+                            if (parts.isEmpty()) {
                                 tmpCar!!.notes = notes
                                 tmpCar!!.repairs = repairs
 
-                            }else{
+                            } else {
                                 tmpPart!!.notes = notes
                                 tmpPart!!.repairs = repairs
                             }
@@ -257,11 +241,11 @@ class TXTConverter @Inject constructor() {
                         Log.d(TAG, "Reading car: ${tmpCar?.getFullName()}")
                     }
                     'p' -> {
-                        if (parts.isEmpty()){
+                        if (parts.isEmpty()) {
                             tmpCar!!.notes = notes
                             tmpCar!!.repairs = repairs
 
-                        }else{
+                        } else {
                             tmpPart!!.notes = notes
                             tmpPart!!.repairs = repairs
                         }
@@ -286,15 +270,15 @@ class TXTConverter @Inject constructor() {
                     }
                 }
             }
-            // writing for last data to the car
-            if (cars.isNotEmpty()){
+            // writing the last data to the car
+            if (cars.isNotEmpty()) {
                 tmpCar!!.parts = parts
 
-                if (parts.isEmpty()){
+                if (parts.isEmpty()) {
                     tmpCar!!.notes = notes
                     tmpCar!!.repairs = repairs
 
-                }else{
+                } else {
                     tmpPart!!.notes = notes
                     tmpPart!!.repairs = repairs
                 }
@@ -309,19 +293,6 @@ class TXTConverter @Inject constructor() {
 
     private fun getDataForFile(repair: Note): String {
         return "\t -> ${repair.description}\n"
-    }
-
-    fun getFileWithCarsData(cars: List<Car>): File {
-        testCommonDirectory()
-        val file = File(Directories.DATA_OUTPUT_FILE.value)
-        file.createNewFile()
-        var result = ""
-        cars.forEach { car ->
-            result = result.plus(getDataForMileageList(car))
-        }
-
-        file.writeText(result.substring(0, result.length - 1))
-        return file
     }
 
     private fun getDataForMileageList(car: Car): String {
@@ -368,7 +339,7 @@ class TXTConverter @Inject constructor() {
     @SuppressLint("CheckResult")
     private fun createPartFromLine(line: String): Part {
 
-        // name[0], codes[1], limitKM[2], limitDay[3], dateInstall[4], milleageInstal[5], description[6], photo[7]
+        // name[0], codes[1], limitKM[2], limitDay[3], dateInstall[4], milleageInstal[5], description[6], photo[7], type[8]
 
         val sa = line.split(",")
 
@@ -404,6 +375,7 @@ class TXTConverter @Inject constructor() {
         }
         part.description = sa[6]
         part.photo = sa[7]
+        part.type = PartControlType.fromString(sa[8])!!
 
         return part
     }

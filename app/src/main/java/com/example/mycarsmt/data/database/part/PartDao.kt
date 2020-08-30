@@ -24,4 +24,7 @@ interface PartDao {
 
     @Query("SELECT part.*, car.mileage FROM part, car WHERE car.id == part.car_id AND part.id = :id")
     fun getById(id: Long): Single<PartWithMileage>
+
+    @Query("SELECT part.*, car.mileage FROM part, car WHERE car.id == part.car_id AND car_id = :carId")
+    fun getAllForCarList(carId: Long): List<PartWithMileage>
 }

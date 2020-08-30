@@ -15,9 +15,11 @@ import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteEntityFrom
+import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.noteFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partEntityFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
 import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairEntityFrom
+import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -79,9 +81,47 @@ class CarServiceImpl @Inject constructor() : CarService {
             }
     }
 
+    override fun preparingCarsToWritingIntoFile(): Single<List<Car>> {
+        return Single.fromCallable {
+            val cars = carDao.getAllList().stream()
+                .map { carEntity -> carFrom(carEntity) }
+                .collect(Collectors.toList())
+
+            cars.forEach { car ->
+                car.notes = noteDao.getAllForCarList(car.id).stream()
+                    .filter { it.partId == 0L }
+                    .map { noteFrom(it) }
+                    .collect(Collectors.toList())
+                car.repairs = repairDao.getAllForCarList(car.id).stream()
+                    .filter { it.partId == 0L }
+                    .map { repairFrom(it) }
+                    .collect(Collectors.toList())
+                car.parts = partDao.getAllForCarList(car.id).stream()
+                    .map { partFrom(it) }
+                    .collect(Collectors.toList())
+                car.parts.forEach { part ->
+                    part.notes = noteDao.getAllForPartList(part.id).stream()
+                        .map { noteFrom(it) }
+                        .collect(Collectors.toList())
+                    part.repairs = repairDao.getAllForPartList(part.id).stream()
+                        .map { repairFrom(it) }
+                        .collect(Collectors.toList())
+                }
+            }
+
+            return@fromCallable cars
+        }
+    }
+
     override fun createCarsFromFile(cars: List<Car>): Single<Unit> {
         return Single.fromCallable {
             cars.forEach { car ->
+                car.parts.forEach { part ->
+                    part.mileage = car.mileage
+                    part.checkCondition(preferences)
+                }
+                car.checkConditions(preferences)
+
                 carDao.insert(carEntityFrom(car))
                     .subscribeOn(Schedulers.io())
                     .subscribe { id ->
@@ -191,18 +231,14 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     @SuppressLint("CheckResult")
-    override fun refreshAll() {
-        carDao.getAll()
-            .subscribeOn(Schedulers.io())
-            .map { value ->
-                value.stream()
-                    .map { carFrom(it) }
-                    .collect(Collectors.toList())
-            }
-            .subscribe(
-                { list -> list.forEach { refresh(it) } },
-                { err -> Log.d(TAG, "ERROR: doDiagnosticForAllCars -> writing in DB: $err") }
-            )
+    override fun refreshAll(): Single<Unit> {
+        return Single.fromCallable {
+
+            carDao.getAllList().stream()
+                .map { carEntity -> carFrom(carEntity) }
+                .collect(Collectors.toList())
+                .forEach { refresh(it) }
+        }
     }
 
     @SuppressLint("CheckResult")
