@@ -153,7 +153,6 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             .subscribe(
                 { number ->
                     if (number > 0)
-                        showMessage("part is updated")
                         toPartFragment()
                 },
                 { err ->
@@ -197,7 +196,6 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
             if (partCreatorInsuranceBox.isChecked) {
                 part.type = PartControlType.INSURANCE
-                part.limitDays = 365
                 part.limitKM = 0
             }
 

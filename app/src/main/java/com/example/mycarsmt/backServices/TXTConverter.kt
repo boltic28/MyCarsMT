@@ -179,7 +179,8 @@ class TXTConverter @Inject constructor() {
     }
 
     private fun toStringForDB(note: Note): String {
-        return "n ${note.description},${note.importantLevel.value},${note.date}\n"
+        return "n ${note.description.replace(',', ';')}" +
+                ",${note.importantLevel.value},${note.date}\n"
     }
 
     private fun toStringForDB(part: Part): String {
@@ -426,7 +427,7 @@ class TXTConverter @Inject constructor() {
 
         val note = Note()
 
-        note.description = sa[0]
+        note.description = sa[0].replace(';', ',')
         try {
             note.importantLevel = NoteLevel.fromInt(sa[1].toInt())!!
         } catch (e: Exception) {

@@ -20,7 +20,7 @@
     <string name="create">create</string>
     <string name="update">update</string>
     <string name="delete_car">remove</string>
-    <string name="cancel">abort</string>
+    <string name="cancel">back</string>
     <string name="input_description_if_you_need_it">description</string>
     <string name="done">done</string>
     <string name="input_name">input name</string>

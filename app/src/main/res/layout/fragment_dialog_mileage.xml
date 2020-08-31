@@ -72,7 +72,7 @@
         android:id="@+id/mileageButtonCancel"
         style="@style/Mileage.Button.Main"
         android:backgroundTint="@color/redDelete"
-        android:text="@string/cancel"
+        android:text="@string/back"
         app:layout_constraintLeft_toRightOf="@id/mileageButtonOk"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mileageButton500" />
