@@ -185,11 +185,11 @@ class TXTConverter @Inject constructor() {
     private fun toStringForDB(part: Part): String {
         return "p ${part.name},${part.codes.replace(',', ':')}" +
                 ",${part.limitKM},${part.limitDays},${part.dateLastChange},${part.mileageLastChange}" +
-                ",${part.description},${part.photo},${part.type.value}\n"
+                ",${part.description.replace(',', ';')},${part.photo},${part.type.value}\n"
     }
 
     private fun toStringForDB(repair: Repair): String {
-        return "r ${repair.type},${repair.description},${repair.mileage},${repair.date}," +
+        return "r ${repair.type},${repair.description.replace(',', ';')},${repair.mileage},${repair.date}," +
                 "${repair.cost}\n"
 
     }
@@ -212,8 +212,6 @@ class TXTConverter @Inject constructor() {
 
         inputStream.bufferedReader().useLines { lines ->
             lines.forEach { lineFromFile ->
-                Log.d(TAG, "Reading file: $lineFromFile")
-
                 val objectType = lineFromFile[0]
                 val line = lineFromFile.removeRange(0, 2)
                 Log.d(TAG, "Reading line: $line")
@@ -310,11 +308,11 @@ class TXTConverter @Inject constructor() {
     }
 
     @SuppressLint("CheckResult")
-    private fun createCarFromLine(string: String): Car {
+    private fun createCarFromLine(line: String): Car {
 
         // brand[0], model[1], year[2], win[3], numb[4], odo[5], photo[6] - > type of line from cars.txt
 
-        val sa = string.split(",")
+        val sa = line.split(",")
 
         val car = Car()
         car.brand = sa[0]
@@ -324,12 +322,13 @@ class TXTConverter @Inject constructor() {
         try {
             car.mileage = sa[5].toInt()
         } catch (e: Exception) {
-            Log.d(TAG, "Reading car: ${car.number} - problem with mileage")
+            Log.d(TAG, "Reading car: ${car.number} - problem with mileage \n" +
+                    " $line")
         }
         try {
             car.year = sa[2].toInt()
         } catch (e: Exception) {
-            Log.d(TAG, "Reading car: ${car.number} - problem with year")
+            Log.d(TAG, "Reading car: ${car.number} - problem with year \n $line")
         }
         car.photo = sa[6]
 
@@ -350,19 +349,22 @@ class TXTConverter @Inject constructor() {
         try {
             part.limitKM = sa[2].toInt()
         } catch (e: Exception) {
-            Log.d(TAG, "Reading part: ${part.name} - problem with limitkm - ${sa[2]}")
+            Log.d(TAG, "Reading part: ${part.name} - problem with limitkm - ${sa[2]} \n" +
+                    " $line")
         }
         try {
             part.limitDays = sa[3].toInt()
         } catch (e: Exception) {
-            Log.d(TAG, "Reading part: ${part.name} - problem with limitDay - ${sa[3]}")
+            Log.d(TAG, "Reading part: ${part.name} - problem with limitDay - ${sa[3]} \n" +
+                    " $line")
         }
         try {
             part.dateLastChange = LocalDate.parse(sa[4], dateMapper)
         } catch (e: Exception) {
             Log.d(
                 TAG,
-                "Reading part: ${part.name} - problem with date last change - ${sa[4]}"
+                "Reading part: ${part.name} - problem with date last change - ${sa[4]} \n" +
+                        " $line"
             )
         }
         try {
@@ -370,10 +372,11 @@ class TXTConverter @Inject constructor() {
         } catch (e: Exception) {
             Log.d(
                 TAG,
-                "Reading part: ${part.name} - problem with mileage last change - ${sa[5]}"
+                "Reading part: ${part.name} - problem with mileage last change - ${sa[5]} \n" +
+                        " $line"
             )
         }
-        part.description = sa[6]
+        part.description = sa[6].replace(';', ',')
         part.photo = sa[7]
         part.type = PartControlType.fromString(sa[8])!!
 
@@ -389,23 +392,26 @@ class TXTConverter @Inject constructor() {
         val repair = Repair()
 
         repair.type = sa[0]
-        repair.description = sa[1]
+        repair.description = sa[1].replace(';', ',')
         try {
             repair.cost = sa[4].toInt()
         } catch (e: Exception) {
-            Log.d(TAG, "Reading repair: ${repair.type} - problem with cost - ${sa[5]}")
+            Log.d(TAG, "Reading repair: ${repair.type} - problem with cost - ${sa[5]} \n" +
+                    " $line")
         }
         try {
             repair.mileage = sa[2].toInt()
         } catch (e: Exception) {
-            Log.d(TAG, "Reading repair: ${repair.type} - problem with mileage - ${sa[2]}")
+            Log.d(TAG, "Reading repair: ${repair.type} - problem with mileage - ${sa[2]} \n" +
+                    " $line")
         }
         try {
             repair.date = LocalDate.parse(sa[3], dateMapper)
         } catch (e: Exception) {
             Log.d(
                 TAG,
-                "Reading repair: ${repair.type} - problem with date change - ${sa[3]}"
+                "Reading repair: ${repair.type} - problem with date change - ${sa[3]} \n" +
+                        " $line"
             )
         }
 
@@ -425,13 +431,15 @@ class TXTConverter @Inject constructor() {
             note.importantLevel = NoteLevel.fromInt(sa[1].toInt())!!
         } catch (e: Exception) {
             note.importantLevel = NoteLevel.MIDDLE
-            Log.d(TAG, "Reading note: ${note.importantLevel} - problem with date - ${sa[1]}")
+            Log.d(TAG, "Reading note: ${note.importantLevel} - problem with date - ${sa[1]} \n" +
+                    " $line")
         }
 
         try {
             note.date = LocalDate.parse(sa[2], dateMapper)
         } catch (e: Exception) {
-            Log.d(TAG, "Reading note: ${note.date} - problem with date - ${sa[2]}")
+            Log.d(TAG, "Reading note: ${note.date} - problem with date - ${sa[2]} \n" +
+                    " $line")
         }
 
         return note

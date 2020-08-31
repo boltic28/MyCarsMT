@@ -10,7 +10,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.findNavController
+import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
+import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.dagger.App
@@ -20,6 +22,7 @@ import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 import javax.inject.Inject
 
 class PartDeleteDialog @Inject constructor(): DialogFragment() {
@@ -65,6 +68,8 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                 { resUpd ->
+                    if (part.photo != SpecialWords.NO_PHOTO)
+                        File(File(Directories.PART_IMAGE_DIRECTORY.value), ("${part.photo}.jpg")).delete()
                     Log.d(TAG, "DELETE: $resUpd part(s) was delete successful")
                     val bundle = Bundle()
                     bundle.putSerializable(CAR, car)
