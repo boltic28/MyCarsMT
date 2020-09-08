@@ -47,7 +47,6 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
         part = arguments?.getSerializable(PART) as Part
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +55,7 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
-            "Do you want to delete ${part.name}"
+            resources.getString(R.string.dialog_part_delete_really, part.name)
 
         view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
             it.findNavController().navigateUp()
@@ -69,7 +68,8 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
                 .subscribe(
                 { resUpd ->
                     if (part.photo != SpecialWords.NO_PHOTO)
-                        File(File(Directories.PART_IMAGE_DIRECTORY.value), ("${part.photo}.jpg")).delete()
+                        File(File(Directories.PART_IMAGE_DIRECTORY.value),
+                            (resources.getString(R.string.photo_path, part.photo))).delete()
                     Log.d(TAG, "DELETE: $resUpd part(s) was delete successful")
                     val bundle = Bundle()
                     bundle.putSerializable(CAR, car)

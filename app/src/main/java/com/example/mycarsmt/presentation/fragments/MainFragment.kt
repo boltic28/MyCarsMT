@@ -172,7 +172,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
     }
 
     private fun setAdapter(list: MutableList<Car>) {
-        setTitle("My cars output for ${list.size} cars")
+        setTitle(resources.getString(R.string.main_title_out_for_car, list.size))
         isListEmpty(list)
         contentType = ContentType.DEFAULT
 
@@ -192,7 +192,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
         hideProgressBar()
         when (contentType) {
             ContentType.DEFAULT -> {
-                setTitle("My cars output for ${cars.size} cars")
+                setTitle(resources.getString(R.string.main_title_out_for_car, cars.size))
                 isListEmpty(cars)
                 firstRecycler.adapter = CarItemAdapter(cars, object :
                     CarItemAdapter.OnItemClickListener {
@@ -206,7 +206,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 })
             }
             ContentType.NOTES -> {
-                setTitle("My notes")
+                setTitle(resources.getString(R.string.main_title_notes))
                 isListEmpty(notes)
                 firstRecycler.adapter = NoteItemAdapter(notes, object :
                     NoteItemAdapter.OnItemClickListener {
@@ -216,7 +216,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 })
             }
             ContentType.TO_BUY_LIST -> {
-                setTitle("Have to buy")
+                setTitle(resources.getString(R.string.main_title_to_buy))
                 isListEmpty(listToBuy)
                 firstRecycler.adapter = DiagnosticElementAdapter(listToBuy, object :
                     DiagnosticElementAdapter.OnItemClickListener {
@@ -226,7 +226,7 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main) {
                 })
             }
             ContentType.TO_DO_LIST -> {
-                setTitle("Have to do")
+                setTitle(resources.getString(R.string.main_title_to_do))
                 isListEmpty(listToDo)
                 firstRecycler.adapter = DiagnosticElementAdapter(listToDo, object :
                     DiagnosticElementAdapter.OnItemClickListener {

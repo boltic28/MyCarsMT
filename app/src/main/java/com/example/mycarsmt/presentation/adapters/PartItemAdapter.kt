@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.adapters
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +35,6 @@ class PartItemAdapter(
         private val image = partRow.findViewById<ImageView>(R.id.partItemImage)
         private val serviceIcon = partRow.findViewById<ImageView>(R.id.partItemIconAttention)
 
-        @SuppressLint("SetTextI18n")
         fun bind(part: Part) {
 
             name.text = part.name
@@ -46,7 +44,8 @@ class PartItemAdapter(
                 Picasso.get().load(R.drawable.nophoto).into(image)
             } else {
                 Picasso.get()
-                    .load(File(Directories.PART_IMAGE_DIRECTORY.value, "${part.photo}.jpg"))
+                    .load(File(Directories.PART_IMAGE_DIRECTORY.value,
+                        partRow.resources.getString(R.string.photo_path, part.photo)))
                     .into(image)
             }
 

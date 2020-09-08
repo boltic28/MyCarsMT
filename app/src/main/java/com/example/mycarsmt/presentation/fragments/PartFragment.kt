@@ -56,7 +56,6 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         part = arguments?.getSerializable(PART) as Part
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -164,12 +163,11 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         setAdapter()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun loadPartData() {
         partCreatorTextName.text = part.name
         partPanelTextToChangeDKM.text = part.getInfoToChange()
-        partPanelTextInstallAtKM.text = "${part.mileageLastChange} km"
-        partPanelTextInstallAtDate.text = "${part.dateLastChange}"
+        partPanelTextInstallAtKM.text = resources.getString(R.string.car_item_normal_mileage, part.mileageLastChange)
+        partPanelTextInstallAtDate.text = part.dateLastChange.toString()
         partPanelTextListOfCodes.text = part.codes
         partPanelTextDescriptionBody.text = part.description
 
@@ -217,7 +215,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         if (part.photo == NO_PHOTO || part.photo.isEmpty()) {
             Picasso.get().load(R.drawable.nophoto).into(partPanelMainImage)
         } else {
-            Picasso.get().load(File(Directories.PART_IMAGE_DIRECTORY.value, "${part.photo}.jpg"))
+            Picasso.get().load(File(Directories.PART_IMAGE_DIRECTORY.value, resources.getString(R.string.photo_path, part.photo)))
                 .into(partPanelMainImage)
         }
     }

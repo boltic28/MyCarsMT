@@ -44,7 +44,6 @@ class MileageFragmentDialog @Inject constructor() : DialogFragment() {
         car = arguments?.getSerializable(CAR) as Car
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

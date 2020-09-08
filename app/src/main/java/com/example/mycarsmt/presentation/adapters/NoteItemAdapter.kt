@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.adapters
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.R
-import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.data.enums.NoteLevel
+import com.example.mycarsmt.domain.Note
 
 class NoteItemAdapter(
     notesIn: List<Note>, private val listener: OnItemClickListener
@@ -30,7 +29,6 @@ class NoteItemAdapter(
         private val description = noteRow.findViewById<TextView>(R.id.diagnosticItemCar)
         private val image = noteRow.findViewById<ImageView>(R.id.noteItemImage)
 
-        @SuppressLint("SetTextI18n")
         fun bind(note: Note) {
 
             description.text = note.description

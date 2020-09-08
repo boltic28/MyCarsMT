@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,11 +18,8 @@ import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.domain.service.car.CarService
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.domain.service.part.PartService
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
-import com.example.mycarsmt.domain.service.repair.RepairService
 import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import com.example.mycarsmt.presentation.fragments.CarFragment
 import com.example.mycarsmt.presentation.fragments.PartFragment
@@ -34,7 +30,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
 
     companion object {
         const val FRAG_TAG = "deleter"
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
     }
 
     @Inject
@@ -47,7 +43,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
     lateinit var repair: Repair
     lateinit var car: Car
     lateinit var part: Part
-    lateinit var target: String
+    private lateinit var target: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +54,6 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
         target = arguments?.getString(SpecialWords.TARGET, SpecialWords.MAIN).toString()
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,7 +62,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
-            "Do you want to delete ${repair.description}"
+            resources.getString(R.string.dialog_part_delete_really, repair.description)
         view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
             dismiss()
         }
