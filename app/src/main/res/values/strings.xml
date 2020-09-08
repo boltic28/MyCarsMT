@@ -29,7 +29,7 @@
     <string name="settings">set</string>
     <string name="name_part">name part</string>
     <string name="but_service">SERVICE</string>
-    <string name="part_to_change">To change: %s</string>
+    <string name="part_to_change">To change:</string>
     <string name="part_installed_at">Installed at:</string>
     <string name="part_codes_and_crossing_codes">Codes and Crossing codes:</string>
     <string name="codes_for_part">codes for part</string>
