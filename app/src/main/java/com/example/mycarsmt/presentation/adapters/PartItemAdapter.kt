@@ -38,14 +38,21 @@ class PartItemAdapter(
         fun bind(part: Part) {
 
             name.text = part.name
-            serviceData.text = partRow.context.resources.getString(R.string.part_to_change, part.getInfoToChange())
+            serviceData.text = partRow.context.resources.getString(
+                R.string.part_to_change_with_result,
+                part.getInfoToChange()
+            )
 
             if (part.photo == NO_PHOTO || part.photo.isEmpty()) {
                 Picasso.get().load(R.drawable.nophoto).into(image)
             } else {
                 Picasso.get()
-                    .load(File(Directories.PART_IMAGE_DIRECTORY.value,
-                        partRow.resources.getString(R.string.photo_path, part.photo)))
+                    .load(
+                        File(
+                            Directories.PART_IMAGE_DIRECTORY.value,
+                            partRow.resources.getString(R.string.photo_path, part.photo)
+                        )
+                    )
                     .into(image)
             }
 

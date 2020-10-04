@@ -30,11 +30,12 @@
     <string name="name_part">name part</string>
     <string name="but_service">SERVICE</string>
     <string name="part_to_change">To change:</string>
+    <string name="part_to_change_with_result">To change: %s</string>
     <string name="part_installed_at">Installed at:</string>
     <string name="part_codes_and_crossing_codes">Codes and Crossing codes:</string>
     <string name="codes_for_part">codes for part</string>
     <string name="part_description">Description:</string>
-    <string name="part_hint_decription_of_part">decription of part</string>
+    <string name="part_hint_description_of_part">description of part</string>
     <string name="but_notes">notes</string>
     <string name="delete">delete</string>
     <string name="removing_obj">Removing object</string>
