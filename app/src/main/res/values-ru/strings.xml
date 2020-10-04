@@ -9,7 +9,7 @@
     <string name="main_car_image">main car Image</string>
     <string name="parts">детали</string>
     <string name="notes">заметки</string>
-    <string name="repairs">ремонты</string>
+    <string name="repairs">история</string>
     <string name="create_new">создать</string>
     <string name="input_brand">марка</string>
     <string name="input_model">модель</string>
@@ -29,7 +29,7 @@
     <string name="settings">настроить</string>
     <string name="name_part">название</string>
     <string name="but_service">ОБСЛУЖИТЬ</string>
-    <string name="part_to_change">До обслуживания:</string>
+    <string name="part_to_change">До обслуживания: %s</string>
     <string name="part_installed_at">Обслужена на:</string>
     <string name="part_codes_and_crossing_codes">Коды для поиска детали:</string>
     <string name="codes_for_part">коды детали</string>
@@ -90,7 +90,19 @@
     <string name="load">загрузить</string>
     <string name="loading_car_be_careful">Загрузка авто из Download/cars.txt</string>
     <string name="saving_car_be_careful">Записать авто в Download/cars.txt</string>
-
+  
+    <!-- parts naming -->
+    <string name="common_part_oil_level">Уровень масла</string>
+    <string name="common_part_oil_filter">Масл фильтр</string>
+    <string name="common_part_air_filter">Возд фильтр</string>
+    <string name="common_part_cabin_filter">Салон фильтр</string>
+    <string name="common_part_spark_plugs">Свечи зажигания</string>
+    <string name="common_part_front_brake">Колодки перед</string>
+    <string name="common_part_rear_brake">Колодки зад</string>
+    <string name="common_part_wipers">Дворники</string>
+    <string name="common_part_insurance">Страховка</string>
+    <string name="common_part_techview">Тех.Осмотр</string>
+  
     <string name="mileage_template">%d км</string>
     <string name="car_item_update_mileage">!%d км</string>
     <string name="car_item_normal_mileage">%d км</string>

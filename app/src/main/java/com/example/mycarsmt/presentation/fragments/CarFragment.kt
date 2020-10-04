@@ -136,7 +136,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
         carPanelButtonCreateCommonParts.setOnClickListener {
             carPanelButtonCreateCommonParts.visibility = View.INVISIBLE
             showProgressBar()
-            model.carService.createCommonPartsFor(car)
+            model.carService.createCommonPartsFor(car, requireContext())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

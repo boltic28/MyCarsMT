@@ -1,8 +1,10 @@
 package com.example.mycarsmt.domain.service.car
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.example.mycarsmt.R
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.data.database.car.CarDao
 import com.example.mycarsmt.data.database.note.NoteDao
@@ -285,14 +287,14 @@ class CarServiceImpl @Inject constructor() : CarService {
     }
 
     @SuppressLint("CheckResult")
-    override fun createCommonPartsFor(car: Car): Single<Int> {
+    override fun createCommonPartsFor(car: Car, context: Context): Single<Int> {
         val list = mutableListOf<Part>()
 
         list.add(
             Part(
                 car.id,
                 car.mileage,
-                "Oil level",
+                context.resources.getString(R.string.common_part_oil_level),
                 5000,
                 15,
                 PartControlType.INSPECTION
@@ -302,7 +304,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Oil filter",
+                context.resources.getString(R.string.common_part_oil_filter),
                 15000,
                 365,
                 PartControlType.CHANGE
@@ -312,7 +314,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Air filter",
+                context.resources.getString(R.string.common_part_air_filter),
                 30000,
                 365,
                 PartControlType.CHANGE
@@ -322,7 +324,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Cabin filter",
+                context.resources.getString(R.string.common_part_cabin_filter),
                 30000,
                 365,
                 PartControlType.CHANGE
@@ -332,7 +334,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Spark plugs",
+                context.resources.getString(R.string.common_part_spark_plugs),
                 30000,
                 0,
                 PartControlType.CHANGE
@@ -342,7 +344,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Front brake",
+                context.resources.getString(R.string.common_part_front_brake),
                 40000,
                 0,
                 PartControlType.INSPECTION
@@ -352,7 +354,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Rear brake",
+                context.resources.getString(R.string.common_part_rear_brake),
                 40000,
                 0,
                 PartControlType.INSPECTION
@@ -362,7 +364,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Wipers",
+                context.resources.getString(R.string.common_part_wipers),
                 0,
                 183,
                 PartControlType.INSPECTION
@@ -372,7 +374,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Insurance",
+                context.resources.getString(R.string.common_part_insurance),
                 0,
                 365,
                 PartControlType.INSURANCE
@@ -382,7 +384,7 @@ class CarServiceImpl @Inject constructor() : CarService {
             Part(
                 car.id,
                 car.mileage,
-                "Tech view",
+                context.resources.getString(R.string.common_part_techview),
                 0,
                 365,
                 PartControlType.INSURANCE
