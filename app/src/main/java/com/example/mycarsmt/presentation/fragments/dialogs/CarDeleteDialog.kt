@@ -14,7 +14,7 @@ import com.example.mycarsmt.Directories
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.SpecialWords.Companion.CAR
-import com.example.mycarsmt.backServices.TXTConverter
+import com.example.mycarsmt.backServices.TXTHelper
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
@@ -61,7 +61,7 @@ class CarDeleteDialog @Inject constructor()  : DialogFragment() {
                 { isDeleted ->
                     if (car.photo != SpecialWords.NO_PHOTO)
                         File(File(Directories.CAR_IMAGE_DIRECTORY.value), ("${car.photo}.jpg")).delete()
-                    TXTConverter().createCarCopyToFile(car)
+                    TXTHelper().createCarCopyToFile(car)
                     Log.d(TAG, "DELETE: $isDeleted car(s) was deleted")
                     view.findNavController().navigate(R.id.action_carDeleteDialog_to_mainListFragment)
                 },

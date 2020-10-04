@@ -1,5 +1,6 @@
 package com.example.mycarsmt.domain.service.car
 
+import android.content.Context
 import com.example.mycarsmt.domain.*
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -24,5 +25,5 @@ interface CarService {
 
     fun makeDiagnosticForNotification()
 
-    fun createCommonPartsFor(car: Car): Single<Int>
+    fun createCommonPartsFor(car: Car, context: Context): Single<Int>
 }

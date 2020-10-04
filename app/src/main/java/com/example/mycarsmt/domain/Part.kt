@@ -130,9 +130,9 @@ class Part(): Serializable {
     }
 
     fun getInfoToChange(): String {
-        if (limitDays == 0) return "To service: ${getMileageToRepair()} km"
-        if (limitKM == 0)   return "To service: ${getDaysToRepair()} days"
-        return "To service: ${getMileageToRepair()} km/${getDaysToRepair()} days"
+        if (limitDays == 0) return "${getMileageToRepair()} km"
+        if (limitKM == 0)   return "${getDaysToRepair()} days"
+        return "${getMileageToRepair()} km/${getDaysToRepair()} days"
     }
 
     fun getLineForBuyList(): String {

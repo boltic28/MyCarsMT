@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
-class TXTConverter @Inject constructor() {
+class TXTHelper @Inject constructor() {
 
     companion object {
         const val TAG = "test_mt"

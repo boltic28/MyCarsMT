@@ -36,11 +36,10 @@ class PartItemAdapter(
         private val image = partRow.findViewById<ImageView>(R.id.partItemImage)
         private val serviceIcon = partRow.findViewById<ImageView>(R.id.partItemIconAttention)
 
-        @SuppressLint("SetTextI18n")
         fun bind(part: Part) {
 
             name.text = part.name
-            serviceData.text = part.getInfoToChange()
+            serviceData.text = partRow.context.resources.getString(R.string.part_to_change, part.getInfoToChange())
 
             if (part.photo == NO_PHOTO || part.photo.isEmpty()) {
                 Picasso.get().load(R.drawable.nophoto).into(image)

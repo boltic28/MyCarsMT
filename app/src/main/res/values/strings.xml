@@ -29,7 +29,7 @@
     <string name="settings">set</string>
     <string name="name_part">name part</string>
     <string name="but_service">SERVICE</string>
-    <string name="part_to_change">To change:</string>
+    <string name="part_to_change">To change: %s</string>
     <string name="part_installed_at">Installed at:</string>
     <string name="part_codes_and_crossing_codes">Codes and Crossing codes:</string>
     <string name="codes_for_part">codes for part</string>
@@ -90,4 +90,16 @@
     <string name="load">load</string>
     <string name="loading_car_be_careful">Load cars from Download/cars.txt</string>
     <string name="saving_car_be_careful">Cars will be save to Download/cars.txt</string>
+    <!-- parts naming -->
+    <string name="common_part_oil_level">Oil level</string>
+    <string name="common_part_oil_filter">Oil filter</string>
+    <string name="common_part_air_filter">Air filter</string>
+    <string name="common_part_cabin_filter">Cabin filter</string>
+    <string name="common_part_spark_plugs">spark plugs</string>
+    <string name="common_part_front_brake">front brake</string>
+    <string name="common_part_rear_brake">rear brake</string>
+    <string name="common_part_wipers">wipers</string>
+    <string name="common_part_insurance">insurance</string>
+    <string name="common_part_techview">techview</string>
+
 </resources>
