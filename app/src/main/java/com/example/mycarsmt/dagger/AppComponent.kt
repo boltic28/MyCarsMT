@@ -1,6 +1,6 @@
 package com.example.mycarsmt.dagger
 
-import com.example.mycarsmt.backServices.TXTHelper
+import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.domain.service.car.CarServiceImpl
 import com.example.mycarsmt.domain.service.note.NoteServiceImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Component(modules = [DataBaseModule::class, ServicesModule::class])
 interface AppComponent {
 
-    fun injectTXTConverter(model: TXTHelper)
+    fun injectTXTConverter(model: TXTConverter)
 
     fun injectModel(model: MainModel)
     fun injectModel(model: CarModel)

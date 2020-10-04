@@ -163,7 +163,7 @@
         android:layout_marginTop="6dp"
         android:layout_marginEnd="6dp"
         android:ems="10"
-        android:text="@string/part_hint_decription_of_part"
+        android:text="@string/part_hint_description_of_part"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

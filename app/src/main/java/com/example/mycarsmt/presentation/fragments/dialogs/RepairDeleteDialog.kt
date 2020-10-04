@@ -34,7 +34,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
 
     companion object {
         const val FRAG_TAG = "deleter"
-        const val TAG = "testmt"
+        const val TAG = "test_mt"
     }
 
     @Inject
@@ -47,7 +47,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
     lateinit var repair: Repair
     lateinit var car: Car
     lateinit var part: Part
-    lateinit var target: String
+    private lateinit var target: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +67,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
-            "Do you want to delete ${repair.description}"
+            resources.getString(R.string.dialog_part_delete_really, repair.description)
         view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
             dismiss()
         }

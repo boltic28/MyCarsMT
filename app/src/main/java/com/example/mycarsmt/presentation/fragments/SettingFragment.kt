@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.mycarsmt.R
-import com.example.mycarsmt.backServices.TXTHelper
+import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.dagger.App
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -95,7 +95,7 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
 
         settingsButtonSaveToFile.setOnClickListener {
             showProgressBar()
-            val fileHelper = TXTHelper()
+            val fileHelper = TXTConverter()
             fileHelper.writeCarsToFile()
                 .subscribe({
                     showMessage(it)
@@ -108,7 +108,7 @@ class SettingFragment @Inject constructor() : Fragment(R.layout.fragment_setting
 
         settingsButtonReadCarsFromFile.setOnClickListener {
             showProgressBar()
-            val fileHelper = TXTHelper()
+            val fileHelper = TXTConverter()
             fileHelper.readDataFromFile()
                 .subscribe({
                     refreshCars()

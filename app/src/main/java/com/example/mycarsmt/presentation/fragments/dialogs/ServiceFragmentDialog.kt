@@ -56,7 +56,7 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_service, container, false)
 
         view.findViewById<TextView>(R.id.serviceFragmentQuestion).text =
-            "Do you want to make service for: ${part.name}"
+            resources.getString(R.string.dialog_part_service_really, part.name)
 
         view.findViewById<Button>(R.id.serviceFragmentButtonCancel).setOnClickListener {
             view?.findNavController()?.navigateUp()

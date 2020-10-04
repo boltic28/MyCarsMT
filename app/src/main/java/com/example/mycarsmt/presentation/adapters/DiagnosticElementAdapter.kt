@@ -41,7 +41,7 @@ class DiagnosticElementAdapter(
             car.text = element.car.getFullName()
 
             val line = StringBuilder()
-            element.list.forEach { if (it.isNotEmpty()) line.append(" -> $it \n") }
+            element.list.forEach { if (it.isNotEmpty()) line.append(diagnosticRow.resources.getString(R.string.diagnostic_item_description, it) + "\n") }
 
             description.text = line.toString().dropLast(1)
 

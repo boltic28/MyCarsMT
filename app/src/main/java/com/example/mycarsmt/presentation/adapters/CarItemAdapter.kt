@@ -34,7 +34,6 @@ class CarItemAdapter(
         private val name = carRow.findViewById<TextView>(R.id.carItemCarName)
         private val number = carRow.findViewById<TextView>(R.id.carItemNumber)
         private val mileage = carRow.findViewById<TextView>(R.id.carItemMileage)
-        private val notes = carRow.findViewById<TextView>(R.id.carItemIconInfoMsgCount)
         private val photo = carRow.findViewById<ImageView>(R.id.carItemImage)
         private val refreshIcon = carRow.findViewById<ImageView>(R.id.carItemIconRefresh)
         private val attentionIcon = carRow.findViewById<ImageView>(R.id.carItemIconAttention)
@@ -42,36 +41,58 @@ class CarItemAdapter(
         private val buyIcon = carRow.findViewById<ImageView>(R.id.carItemIconBuy)
         private val infoIcon = carRow.findViewById<ImageView>(R.id.carItemIconInfo)
 
-        @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun bind(car: Car) {
-            var line = "${car.brand} ${car.model}"
+            var line = car.brand + " " + car.model
             if (line.length > 15) {
-                line = line.substring(0,13) + ".."
+                line = line.substring(0, 13) + ".."
             }
             name.text = line
             number.text = car.number
             if (car.condition.contains(Condition.CHECK_MILEAGE)) {
-                mileage.text = "! ${car.mileage} km"
+                mileage.text = carRow.resources.getString(R.string.car_item_update_mileage, car.mileage)
                 mileage.setTextColor(Color.argb(255, 230, 5, 5))
-            }else{
-                mileage.text = "${car.mileage} km"
+            } else {
+                mileage.text = carRow.resources.getString(R.string.car_item_normal_mileage, car.mileage)
             }
 
-            if (car.condition.contains(Condition.ATTENTION))
-                attentionIcon.setColorFilter(Color.argb(255, 230, 5, 5))
-            if (car.condition.contains(Condition.MAKE_SERVICE))
-                serviceIcon.setColorFilter(Color.argb(255, 230, 120, 5))
-            if (car.condition.contains(Condition.BUY_PARTS))
-                buyIcon.setColorFilter(Color.argb(255, 180, 180, 5))
-            if (car.condition.contains(Condition.MAKE_INSPECTION))
-                infoIcon.setColorFilter(Color.argb(255, 10, 120, 5))
-            if (car.condition.contains(Condition.CHECK_MILEAGE))
-                refreshIcon.setColorFilter(Color.argb(255, 90, 30, 5))
+            attentionIcon.setColorFilter(
+                if (car.condition.contains(Condition.ATTENTION))
+                    Color.argb(255, 230, 5, 5)
+                else
+                    Color.argb(255, 208, 208, 208)
+            )
+            serviceIcon.setColorFilter(
+                if (car.condition.contains(Condition.MAKE_SERVICE))
+                    Color.argb(255, 230, 120, 5)
+                else
+                    Color.argb(255, 208, 208, 208)
+            )
+
+            buyIcon.setColorFilter(
+                if (car.condition.contains(Condition.BUY_PARTS))
+                    Color.argb(255, 180, 180, 5)
+                else
+                    Color.argb(255, 208, 208, 208)
+            )
+            infoIcon.setColorFilter(
+                if (car.condition.contains(Condition.MAKE_INSPECTION))
+                    Color.argb(255, 10, 120, 5)
+                else
+                    Color.argb(255, 208, 208, 208)
+            )
+            refreshIcon.setColorFilter(
+                if (car.condition.contains(Condition.CHECK_MILEAGE))
+                    Color.argb(255, 90, 30, 5)
+                else
+                    Color.argb(255, 208, 208, 208)
+            )
 
             if (car.photo == NO_PHOTO || car.photo.isEmpty()) {
                 Picasso.get().load(R.drawable.nophoto).into(photo)
             } else {
-                Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "${car.photo}.jpg"))
+                Picasso.get()
+                    .load(File(Directories.CAR_IMAGE_DIRECTORY.value,
+                        carRow.resources.getString(R.string.photo_path, car.photo)))
                     .into(photo)
             }
 

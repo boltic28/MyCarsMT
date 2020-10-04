@@ -31,7 +31,7 @@ class RepairItemAdapter(repairsIn: List<Repair>, private val listener: OnItemCli
             @SuppressLint("SetTextI18n")
             fun bind(repair: Repair) {
                 date.text = repair.date.toString()
-                mileage.text = "${repair.mileage} km"
+                mileage.text = repairRow.resources.getString(R.string.car_item_normal_mileage, repair.mileage)
                 type.text = repair.type
                 description.text = repair.description
 

@@ -67,7 +67,7 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
                 }
                 loadPreviousFragment()
             }else{
-                showMessage("description can't be empty")
+                showMessage(resources.getString(R.string.note_creator_message_bad_description))
             }
         }
 
@@ -172,7 +172,6 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
                 .subscribe(
                     {
                         part = it
-                        showMessage("note is attached to part ")
                     },{
                         Log.d(TAG, "NOTE CREATOR: $it")
                     }
@@ -230,9 +229,9 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
 
     private fun setTitle(){
         activity?.title =
-            if (note.id == 0L) "Create new car"
+            if (note.id == 0L) resources.getString(R.string.note_creator_create_new)
             else {
-                "${car?.number} Updating note"
+                resources.getString(R.string.note_creator_updating_for_car, car?.number)
             }
     }
 

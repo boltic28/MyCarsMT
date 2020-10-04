@@ -136,7 +136,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             .subscribe(
                 { id ->
                     part.id = id
-                    showMessage("part is created")
+                    showMessage(resources.getString(R.string.part_creator_part_created))
                     toPartFragment()
                 },
                 { err ->
@@ -204,7 +204,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
             return true
         } else {
-            showMessage("name can't be empty!!!")
+            showMessage(resources.getString(R.string.part_creator_bad_name))
             return false
         }
     }
@@ -229,7 +229,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
             LocalDate.parse(string, DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH))
             true
         } catch (e: Exception) {
-            showMessage("date format must be dd.MM.yyyy - 01.06.2019")
+            showMessage(resources.getString(R.string.part_creator_template_date))
             false
         }
     }
@@ -238,7 +238,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
         if (photo == NO_PHOTO) {
             Picasso.get().load(R.drawable.nophoto).into(partCreatorImageOfPart)
         } else {
-            Picasso.get().load(File(Directories.PART_IMAGE_DIRECTORY.value, "$photo.jpg"))
+            Picasso.get().load(File(Directories.PART_IMAGE_DIRECTORY.value, resources.getString(R.string.photo_path, photo)))
                 .into(partCreatorImageOfPart)
         }
     }
@@ -261,19 +261,19 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
         if (!imagesDirectory.exists()) imagesDirectory.mkdirs()
 
-        if (photo != NO_PHOTO) File(imagesDirectory, ("$photo.jpg")).delete()
+        if (photo != NO_PHOTO) File(imagesDirectory, (resources.getString(R.string.photo_path, photo))).delete()
 
         photo = "${part.name}${(Calendar.getInstance().timeInMillis)}"
-        val f = File(imagesDirectory, ("$photo.jpg"))
+        val f = File(imagesDirectory, (resources.getString(R.string.photo_path, photo)))
 
         try {
             val fo = FileOutputStream(f)
             fo.write(bytes.toByteArray())
             fo.close()
-            showMessage("image is saved")
+            showMessage(resources.getString(R.string.car_creator_image_saved))
             Log.d("TAG", "File Saved::--->" + f.absolutePath)
         } catch (e1: IOException) {
-            showMessage("image doesn't saved")
+            showMessage(resources.getString(R.string.car_creator_image_not_saved))
             e1.printStackTrace()
         }
     }
@@ -286,7 +286,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
     private fun setTitle() {
         activity?.title =
-            if (part.id == 0L) "Create new part"
-            else "Updating ${part.name}"
+            if (part.id == 0L) resources.getString(R.string.part_creator_create_new)
+            else resources.getString(R.string.part_creator_update, part.name)
     }
 }

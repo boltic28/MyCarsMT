@@ -104,7 +104,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
                 Integer.valueOf(carCreatorMileage.text.toString())
             return true
         }else{
-            showMessage("model & brand can't be empty!!!")
+            showMessage(resources.getString(R.string.car_creator_message_wrong_brand_model))
             return false
         }
     }
@@ -119,7 +119,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
                 { id ->
                     car.id = id
                     toCarFragment()
-                    showMessage("car is created")
+                    showMessage(resources.getString(R.string.car_creator_car_created))
                 },
                 { err ->
                     Log.d(TAG, "CAR CREATOR: $err")
@@ -136,7 +136,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
                 { number ->
                     if (number > 0)
                         toCarFragment()
-                    showMessage("car is updated")
+                    showMessage(resources.getString(R.string.car_creator_car_updated))
                 },
                 { err ->
                     Log.d(TAG, "CAR UPDATER: $err")
@@ -181,7 +181,9 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
         if (photo == NO_PHOTO || photo.isEmpty()) {
             Picasso.get().load(R.drawable.nophoto).into(carCreatorImageOfCar)
         } else {
-            Picasso.get().load(File(Directories.CAR_IMAGE_DIRECTORY.value, "$photo.jpg"))
+            Picasso.get()
+                .load(File(Directories.CAR_IMAGE_DIRECTORY.value,
+                    resources.getString(R.string.photo_path, photo)))
                 .into(carCreatorImageOfCar)
         }
     }
@@ -206,18 +208,18 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
 
         val imagesDirectory = File(Directories.CAR_IMAGE_DIRECTORY.value)
         if (!imagesDirectory.exists()) imagesDirectory.mkdirs()
-        if (photo != NO_PHOTO) File(imagesDirectory, ("$photo.jpg")).delete()
+        if (photo != NO_PHOTO) File(imagesDirectory, (resources.getString(R.string.photo_path, photo))).delete()
         photo = "${car.model}_${Calendar.getInstance().timeInMillis}"
 
         try {
-            val f = File(imagesDirectory, ("$photo.jpg"))
+            val f = File(imagesDirectory, (resources.getString(R.string.photo_path, photo)))
             val fo = FileOutputStream(f)
             fo.write(bytes.toByteArray())
             fo.close()
             Log.d(TAG, "CAR CREATOR: Image saved::--->" + f.absolutePath)
-            showMessage("image is saved")
+            showMessage(resources.getString(R.string.car_creator_image_saved))
         } catch (e1: IOException) {
-            showMessage("image doesn't saved")
+            showMessage(resources.getString(R.string.car_creator_image_not_saved))
             e1.printStackTrace()
         }
     }
@@ -230,7 +232,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
 
     private fun setTitle() {
         activity?.title =
-            if (car.id == 0L) "Create new car"
-            else "Updating ${car.brand} ${car.model}"
+            if (car.id == 0L) resources.getString(R.string.car_creator_create_new)
+            else resources.getString(R.string.car_creator_update_car, car.brand, car.model)
     }
 }
