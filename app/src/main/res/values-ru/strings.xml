@@ -9,7 +9,7 @@
     <string name="main_car_image">main car Image</string>
     <string name="parts">детали</string>
     <string name="notes">заметки</string>
-    <string name="repairs">история</string>
+    <string name="repairs">ремонт</string>
     <string name="create_new">создать</string>
     <string name="input_brand">марка</string>
     <string name="input_model">модель</string>
