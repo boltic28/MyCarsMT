@@ -56,7 +56,6 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         part = arguments?.getSerializable(PART) as Part
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -164,7 +163,6 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
         setAdapter()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun loadPartData() {
         partCreatorTextName.text = part.name
         partPanelTextToChangeDKM.text = part.getInfoToChange()

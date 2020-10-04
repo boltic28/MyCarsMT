@@ -60,7 +60,6 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
     }
 
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

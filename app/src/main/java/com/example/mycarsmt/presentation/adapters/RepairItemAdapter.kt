@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ class RepairItemAdapter(repairsIn: List<Repair>, private val listener: OnItemCli
             private val description = repairRow.findViewById<TextView>(R.id.repairItemDescription)
             private val type = repairRow.findViewById<TextView>(R.id.repairItemType)
 
-            @SuppressLint("SetTextI18n")
             fun bind(repair: Repair) {
                 date.text = repair.date.toString()
                 mileage.text = repairRow.resources.getString(R.string.car_item_normal_mileage, repair.mileage)

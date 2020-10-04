@@ -53,7 +53,6 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
         isExist = car.id > 0
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

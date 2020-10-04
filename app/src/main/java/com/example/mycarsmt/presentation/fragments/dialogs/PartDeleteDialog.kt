@@ -47,7 +47,6 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
         part = arguments?.getSerializable(PART) as Part
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

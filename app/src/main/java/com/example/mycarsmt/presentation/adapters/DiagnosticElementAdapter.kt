@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,6 @@ class DiagnosticElementAdapter(
         private val description = diagnosticRow.findViewById<TextView>(R.id.diagnosticItemData)
         private val car = diagnosticRow.findViewById<TextView>(R.id.diagnosticItemCar)
 
-        @SuppressLint("SetTextI18n")
         fun bind(element: DiagnosticElement) {
 
             car.text = element.car.getFullName()

@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.adapters
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +29,6 @@ class NoteItemAdapter(
         private val description = noteRow.findViewById<TextView>(R.id.diagnosticItemCar)
         private val image = noteRow.findViewById<ImageView>(R.id.noteItemImage)
 
-        @SuppressLint("SetTextI18n")
         fun bind(note: Note) {
 
             description.text = note.description

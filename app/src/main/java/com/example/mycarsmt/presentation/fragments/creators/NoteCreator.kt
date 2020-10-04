@@ -47,7 +47,6 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
         loadOwners()
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

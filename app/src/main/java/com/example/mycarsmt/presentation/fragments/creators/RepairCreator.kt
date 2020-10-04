@@ -47,7 +47,6 @@ class RepairCreator @Inject constructor() : Fragment(R.layout.fragment_creator_r
         isExist = repair.id > 0
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

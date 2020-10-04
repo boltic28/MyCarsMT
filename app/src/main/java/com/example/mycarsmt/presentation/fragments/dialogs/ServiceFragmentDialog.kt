@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -47,7 +46,6 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
         part = arguments?.getSerializable(PART) as Part
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,17 +77,6 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
                             R.id.action_serviceFragmentDialog_to_carFragment,
                             bundle)
                         Log.d(TAG, "PART-SERVICE: done successful: $result")
-//                        carService.update(car)
-//                            .subscribeOn(Schedulers.io())
-//                            .subscribe({
-//                                val bundle = Bundle()
-//                                bundle.putSerializable(CAR, car)
-//                                view?.findNavController()?.navigate(
-//                                    R.id.action_serviceFragmentDialog_to_carFragment,
-//                                    bundle)
-//                            }, { err ->
-//                                Log.d(TAG, "PART-SERVICE: service is fail carUpg: $err")
-//                            })
                     },
                     { err ->
                         Log.d(TAG, "PART-SERVICE: service is fail: $err")
