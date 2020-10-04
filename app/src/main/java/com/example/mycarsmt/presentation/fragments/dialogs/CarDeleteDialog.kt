@@ -40,7 +40,6 @@ class CarDeleteDialog @Inject constructor()  : DialogFragment() {
         car = arguments?.getSerializable(CAR) as Car
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +48,7 @@ class CarDeleteDialog @Inject constructor()  : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_delete, container, false)
 
         view.findViewById<TextView>(R.id.deleteFragmentQuestion).text =
-            "Do you want to delete ${car.brand} ${car.model}"
+            resources.getString(R.string.dialog_car_delete_really, car.brand, car.model)
         view.findViewById<Button>(R.id.deleteFragmentButtonCancel).setOnClickListener {
             view.findNavController().navigateUp()
         }
@@ -60,8 +59,9 @@ class CarDeleteDialog @Inject constructor()  : DialogFragment() {
                 .subscribe(
                 { isDeleted ->
                     if (car.photo != SpecialWords.NO_PHOTO)
-                        File(File(Directories.CAR_IMAGE_DIRECTORY.value), ("${car.photo}.jpg")).delete()
-                    TXTHelper().createCarCopyToFile(car)
+                        File(File(Directories.CAR_IMAGE_DIRECTORY.value),
+                            (resources.getString(R.string.photo_path, car.photo))).delete()
+                    TXTConverter().createCarCopyToFile(car)
                     Log.d(TAG, "DELETE: $isDeleted car(s) was deleted")
                     view.findNavController().navigate(R.id.action_carDeleteDialog_to_mainListFragment)
                 },

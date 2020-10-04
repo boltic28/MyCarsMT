@@ -243,7 +243,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
 
         carPanelNumber.text = car.number
         carPanelVin.text = car.vin
-        carPanelMileage.text = "${car.mileage} km"
+        carPanelMileage.text = resources.getString(R.string.mileage_template, car.mileage)
 
         loadPhoto()
         refreshCondition()

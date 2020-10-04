@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -47,7 +46,6 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
         part = arguments?.getSerializable(PART) as Part
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +54,7 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_dialog_service, container, false)
 
         view.findViewById<TextView>(R.id.serviceFragmentQuestion).text =
-            "Do you want to make service for: ${part.name}"
+            resources.getString(R.string.dialog_part_service_really, part.name)
 
         view.findViewById<Button>(R.id.serviceFragmentButtonCancel).setOnClickListener {
             view?.findNavController()?.navigateUp()
@@ -79,17 +77,6 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
                             R.id.action_serviceFragmentDialog_to_carFragment,
                             bundle)
                         Log.d(TAG, "PART-SERVICE: done successful: $result")
-//                        carService.update(car)
-//                            .subscribeOn(Schedulers.io())
-//                            .subscribe({
-//                                val bundle = Bundle()
-//                                bundle.putSerializable(CAR, car)
-//                                view?.findNavController()?.navigate(
-//                                    R.id.action_serviceFragmentDialog_to_carFragment,
-//                                    bundle)
-//                            }, { err ->
-//                                Log.d(TAG, "PART-SERVICE: service is fail carUpg: $err")
-//                            })
                     },
                     { err ->
                         Log.d(TAG, "PART-SERVICE: service is fail: $err")

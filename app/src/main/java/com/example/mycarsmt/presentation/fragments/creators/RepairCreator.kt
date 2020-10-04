@@ -47,7 +47,6 @@ class RepairCreator @Inject constructor() : Fragment(R.layout.fragment_creator_r
         isExist = repair.id > 0
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -99,7 +98,7 @@ class RepairCreator @Inject constructor() : Fragment(R.layout.fragment_creator_r
 
             return true
         } else {
-            showMessage("name & date can't be empty")
+            showMessage(resources.getString(R.string.repair_creator_bad_data))
             return false
         }
     }
@@ -157,7 +156,6 @@ class RepairCreator @Inject constructor() : Fragment(R.layout.fragment_creator_r
                 .subscribe(
                     {
                         part = it
-                        showMessage("repair is attached to part ")
                     }, {
                         Log.d(TAG, "REPAIR CREATOR: $it")
                     }
@@ -187,15 +185,15 @@ class RepairCreator @Inject constructor() : Fragment(R.layout.fragment_creator_r
             LocalDate.parse(string, DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH))
             true
         } catch (e: Exception) {
-            showMessage("date format must be dd.MM.yyyy - 01.06.2019")
+            showMessage(resources.getString(R.string.part_creator_template_date))
             false
         }
     }
 
     private fun setTitle() {
         activity?.title =
-            if (repair.id == 0L) "Create new repair"
-            else "Updating repair"
+            if (repair.id == 0L) resources.getString(R.string.create)
+            else resources.getString(R.string.repair_creator_update)
     }
 
     private fun showMessage(msg: String) {

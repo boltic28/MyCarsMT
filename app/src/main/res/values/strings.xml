@@ -90,6 +90,7 @@
     <string name="load">load</string>
     <string name="loading_car_be_careful">Load cars from Download/cars.txt</string>
     <string name="saving_car_be_careful">Cars will be save to Download/cars.txt</string>
+
     <!-- parts naming -->
     <string name="common_part_oil_level">Oil level</string>
     <string name="common_part_oil_filter">Oil filter</string>
@@ -101,5 +102,39 @@
     <string name="common_part_wipers">wipers</string>
     <string name="common_part_insurance">insurance</string>
     <string name="common_part_techview">techview</string>
+
+    <string name="mileage_template">%d km</string>
+    <string name="car_item_update_mileage">!%d km</string>
+    <string name="car_item_normal_mileage">%d km</string>
+    <string name="photo_path">%s.jpg</string>
+    <string name="diagnostic_item_description"> -> %s </string>
+
+    <string name="car_creator_message_wrong_brand_model">model or brand can not be empty!!!</string>
+    <string name="car_creator_car_created">car is created</string>
+    <string name="car_creator_car_updated">car is updated</string>
+    <string name="car_creator_image_saved">image is saved</string>
+    <string name="car_creator_image_not_saved">image is not saved</string>
+    <string name="car_creator_create_new">Create new car</string>
+    <string name="car_creator_update_car">Updating %s %s</string>
+    <string name="note_creator_message_bad_description">description can not be empty</string>
+    <string name="note_creator_create_new">Create new note</string>
+    <string name="note_creator_updating_for_car">%s Updating note</string>
+    <string name="part_creator_part_created">Part is created</string>
+    <string name="part_creator_bad_name">name can not be empty!!!</string>
+    <string name="part_creator_template_date">date format must be dd.MM.yyyy - 01.06.2019</string>
+    <string name="part_creator_create_new">Create new part</string>
+    <string name="part_creator_update">Updating %s</string>
+    <string name="repair_creator_bad_data">name or date can not be empty</string>
+    <string name="repair_creator_create_new">Create new repair</string>
+    <string name="repair_creator_update">Updating repair</string>
+
+    <string name="dialog_car_delete_really">Do you want to delete %s %s</string>
+    <string name="dialog_part_delete_really">Do you want to delete %s</string>
+    <string name="dialog_part_service_really">Do you want to make service for: %s</string>
+
+    <string name="main_title_out_for_car">My cars, output for %d cars</string>
+    <string name="main_title_notes">My notes</string>
+    <string name="main_title_to_buy">Have to buy..</string>
+    <string name="main_title_to_do">Have to do..</string>
 
 </resources>

@@ -90,6 +90,7 @@
     <string name="load">загрузить</string>
     <string name="loading_car_be_careful">Загрузка авто из Download/cars.txt</string>
     <string name="saving_car_be_careful">Записать авто в Download/cars.txt</string>
+  
     <!-- parts naming -->
     <string name="common_part_oil_level">Уровень масла</string>
     <string name="common_part_oil_filter">Масл фильтр</string>
@@ -101,5 +102,38 @@
     <string name="common_part_wipers">Дворники</string>
     <string name="common_part_insurance">Страховка</string>
     <string name="common_part_techview">Тех.Осмотр</string>
+  
+    <string name="mileage_template">%d км</string>
+    <string name="car_item_update_mileage">!%d км</string>
+    <string name="car_item_normal_mileage">%d км</string>
+    <string name="photo_path">%s.jpg</string>
+    <string name="diagnostic_item_description"> -> %s </string>
 
+    <string name="car_creator_message_wrong_brand_model">Марка и модель должны быть заполнены</string>
+    <string name="car_creator_car_created">Авто создано</string>
+    <string name="car_creator_car_updated">Авто обновлено</string>
+    <string name="car_creator_image_saved">Фото сохранено</string>
+    <string name="car_creator_image_not_saved">Фото не сохранено</string>
+    <string name="car_creator_create_new">Создание</string>
+    <string name="car_creator_update_car">Настройка %s %s</string>
+    <string name="note_creator_message_bad_description">Заполните описание</string>
+    <string name="note_creator_create_new">Создание новой заметки</string>
+    <string name="note_creator_updating_for_car">%s, обновление заметки</string>
+    <string name="part_creator_part_created">Деталь создана</string>
+    <string name="part_creator_bad_name">Заполните название детали</string>
+    <string name="part_creator_template_date">Неправильный формат даты, dd.MM.yyyy - 01.06.2019</string>
+    <string name="part_creator_create_new">Создание новой детали</string>
+    <string name="part_creator_update">Настройка %s</string>
+    <string name="repair_creator_bad_data">Наименование и дата не заполнены</string>
+    <string name="repair_creator_create_new">Создание нового ремонта</string>
+    <string name="repair_creator_update">Настройка ремонта</string>
+
+    <string name="dialog_car_delete_really">Безвозвратное удаление %s %s</string>
+    <string name="dialog_part_delete_really">Безвозвратное удаление %s</string>
+    <string name="dialog_part_service_really">Действительно провести сервис: %s</string>
+
+    <string name="main_title_out_for_car">Мои авто, показано %d авто</string>
+    <string name="main_title_notes">Заметки</string>
+    <string name="main_title_to_buy">Необходимо купить..</string>
+    <string name="main_title_to_do">Нужно сделать..</string>
 </resources>
