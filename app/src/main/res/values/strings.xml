@@ -34,7 +34,7 @@
     <string name="part_codes_and_crossing_codes">Codes and Crossing codes:</string>
     <string name="codes_for_part">codes for part</string>
     <string name="part_description">Description:</string>
-    <string name="part_hint_decription_of_part">decription of part</string>
+    <string name="part_hint_description_of_part">description of part</string>
     <string name="but_notes">notes</string>
     <string name="delete">delete</string>
     <string name="removing_obj">Removing object</string>
@@ -91,18 +91,6 @@
     <string name="loading_car_be_careful">Load cars from Download/cars.txt</string>
     <string name="saving_car_be_careful">Cars will be save to Download/cars.txt</string>
 
-    <!-- parts naming -->
-    <string name="common_part_oil_level">Oil level</string>
-    <string name="common_part_oil_filter">Oil filter</string>
-    <string name="common_part_air_filter">Air filter</string>
-    <string name="common_part_cabin_filter">Cabin filter</string>
-    <string name="common_part_spark_plugs">spark plugs</string>
-    <string name="common_part_front_brake">front brake</string>
-    <string name="common_part_rear_brake">rear brake</string>
-    <string name="common_part_wipers">wipers</string>
-    <string name="common_part_insurance">insurance</string>
-    <string name="common_part_techview">techview</string>
-
     <string name="mileage_template">%d km</string>
     <string name="car_item_update_mileage">!%d km</string>
     <string name="car_item_normal_mileage">%d km</string>
@@ -137,4 +125,14 @@
     <string name="main_title_to_buy">Have to buy..</string>
     <string name="main_title_to_do">Have to do..</string>
 
+    <string name="common_part_oil_level">Oil level</string>
+    <string name="common_part_oil_filter">Oil filter</string>
+    <string name="common_part_air_filter">Air filter</string>
+    <string name="common_part_cabin_filter">Cabin filter</string>
+    <string name="common_part_spark_plugs">spark plugs</string>
+    <string name="common_part_front_brake">front brake</string>
+    <string name="common_part_rear_brake">rear brake</string>
+    <string name="common_part_wipers">wipers</string>
+    <string name="common_part_insurance">insurance</string>
+    <string name="common_part_techview">techview</string>
 </resources>
