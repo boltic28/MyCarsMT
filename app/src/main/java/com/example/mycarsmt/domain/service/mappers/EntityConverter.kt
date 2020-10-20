@@ -4,12 +4,12 @@ import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part
 import com.example.mycarsmt.domain.Repair
-import com.example.mycarsmt.data.database.car.CarEntity
-import com.example.mycarsmt.data.database.note.NoteEntity
-import com.example.mycarsmt.data.database.note.NoteWithMileage
-import com.example.mycarsmt.data.database.part.PartEntity
-import com.example.mycarsmt.data.database.part.PartWithMileage
-import com.example.mycarsmt.data.database.repair.RepairEntity
+import com.example.mycarsmt.datalayer.data.car.CarEntity
+import com.example.mycarsmt.datalayer.data.note.NoteEntity
+import com.example.mycarsmt.datalayer.data.note.NoteWithMileage
+import com.example.mycarsmt.datalayer.data.part.PartEntity
+import com.example.mycarsmt.datalayer.data.part.PartWithMileage
+import com.example.mycarsmt.datalayer.data.repair.RepairEntity
 
 class EntityConverter {
     companion object {

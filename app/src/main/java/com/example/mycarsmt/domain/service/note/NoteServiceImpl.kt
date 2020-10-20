@@ -3,10 +3,10 @@ package com.example.mycarsmt.domain.service.note
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.data.database.car.CarDao
-import com.example.mycarsmt.data.database.note.NoteDao
-import com.example.mycarsmt.data.database.part.PartDao
-import com.example.mycarsmt.data.database.repair.RepairDao
+import com.example.mycarsmt.datalayer.data.car.CarDao
+import com.example.mycarsmt.datalayer.data.note.NoteDao
+import com.example.mycarsmt.datalayer.data.part.PartDao
+import com.example.mycarsmt.datalayer.data.repair.RepairDao
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part

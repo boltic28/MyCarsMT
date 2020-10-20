@@ -10,7 +10,7 @@ import androidx.navigation.findNavController
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.NOTE
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.data.enums.NoteLevel
+import com.example.mycarsmt.datalayer.enums.NoteLevel
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part

@@ -1,6 +1,6 @@
 package com.example.mycarsmt.domain
 
-import com.example.mycarsmt.data.enums.NoteLevel
+import com.example.mycarsmt.datalayer.enums.NoteLevel
 import java.io.Serializable
 import java.time.LocalDate
 

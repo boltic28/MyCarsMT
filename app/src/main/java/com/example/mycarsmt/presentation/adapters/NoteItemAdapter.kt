@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.R
-import com.example.mycarsmt.data.enums.NoteLevel
+import com.example.mycarsmt.datalayer.enums.NoteLevel
 import com.example.mycarsmt.domain.Note
 
 class NoteItemAdapter(

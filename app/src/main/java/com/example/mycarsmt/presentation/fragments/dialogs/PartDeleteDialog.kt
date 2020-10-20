@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +17,7 @@ import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
+import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -33,7 +32,7 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
     }
 
     @Inject
-    lateinit var carService: CarServiceImpl
+    lateinit var carService: CarRepositoryImpl
     @Inject
     lateinit var partService: PartServiceImpl
 

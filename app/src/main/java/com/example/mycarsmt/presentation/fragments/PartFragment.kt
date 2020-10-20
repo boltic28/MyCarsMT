@@ -16,7 +16,7 @@ import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.SpecialWords.Companion.REPAIR
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.data.enums.ContentType
+import com.example.mycarsmt.datalayer.enums.ContentType
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Note
 import com.example.mycarsmt.domain.Part

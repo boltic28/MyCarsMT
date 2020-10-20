@@ -15,7 +15,7 @@ import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.domain.Car
 import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
+import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,7 +30,7 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
     }
 
     @Inject
-    lateinit var carService: CarServiceImpl
+    lateinit var carService: CarRepositoryImpl
     @Inject
     lateinit var partService: PartServiceImpl
     @Inject

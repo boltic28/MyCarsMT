@@ -1,24 +1,27 @@
 package com.example.mycarsmt.dagger
 
 import android.app.Application
+import com.example.mycarsmt.datalayer.di.DataBaseModule
+import com.example.mycarsmt.datalayer.di.RepositoryModule
 
 class App: Application() {
 
     companion object{
-        val TAG = "myCars"
         lateinit var component: AppComponent
     }
 
     override fun onCreate() {
         super.onCreate()
 
-        val dataBaseModule = DataBaseModule(this)
-        val servicesModule = ServicesModule(dataBaseModule.provideDataBase())
+        val dataBaseModule =
+            DataBaseModule(this)
+        val repositoryModule =
+            RepositoryModule(dataBaseModule.provideDataBase())
 
         component = DaggerAppComponent
             .builder()
             .createDataModule(dataBaseModule)
-            .createServiceModule(servicesModule)
+            .createServiceModule(repositoryModule)
             .buildComponent()
     }
 }

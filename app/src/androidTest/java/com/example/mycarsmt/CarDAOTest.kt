@@ -3,15 +3,12 @@ package com.example.mycarsmt
 import androidx.room.Room
 import androidx.test.InstrumentationRegistry.getContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.mycarsmt.data.enums.Condition
-import com.example.mycarsmt.data.database.AppDatabase
-import com.example.mycarsmt.data.database.car.CarEntity
-import com.example.mycarsmt.data.database.car.CarDao
+import com.example.mycarsmt.datalayer.data.AppDatabase
+import com.example.mycarsmt.datalayer.data.car.CarDao
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.LocalDate
 
 
 @RunWith(AndroidJUnit4::class)

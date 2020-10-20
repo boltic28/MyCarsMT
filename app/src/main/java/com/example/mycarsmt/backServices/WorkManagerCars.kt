@@ -1,10 +1,8 @@
 package com.example.mycarsmt.backServices
 
 import android.content.Context
-import android.os.Handler
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
 
 class WorkManagerCars(context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {

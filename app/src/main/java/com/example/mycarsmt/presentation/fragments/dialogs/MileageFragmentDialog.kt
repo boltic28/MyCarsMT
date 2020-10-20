@@ -1,6 +1,5 @@
 package com.example.mycarsmt.presentation.fragments.dialogs
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,15 +12,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.findNavController
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
-import com.example.mycarsmt.SpecialWords.Companion.MAIN
-import com.example.mycarsmt.SpecialWords.Companion.TARGET
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.data.enums.Condition
 import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.service.car.CarService
-import com.example.mycarsmt.domain.service.car.CarServiceImpl
-import com.example.mycarsmt.presentation.fragments.CarFragment
-import com.example.mycarsmt.presentation.fragments.MainFragment
+import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.time.LocalDate
@@ -35,7 +28,7 @@ class MileageFragmentDialog @Inject constructor() : DialogFragment() {
     }
 
     @Inject
-    lateinit var carService: CarServiceImpl
+    lateinit var carService: CarRepositoryImpl
     lateinit var car: Car
 
     override fun onCreate(savedInstanceState: Bundle?) {

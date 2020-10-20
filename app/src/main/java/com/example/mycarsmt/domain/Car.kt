@@ -1,9 +1,8 @@
 package com.example.mycarsmt.domain
 
 import android.content.SharedPreferences
-import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
-import com.example.mycarsmt.data.enums.Condition
+import com.example.mycarsmt.datalayer.enums.Condition
 import com.example.mycarsmt.presentation.fragments.SettingFragment
 import java.io.Serializable
 import java.time.LocalDate
