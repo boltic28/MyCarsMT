@@ -2,7 +2,6 @@ package com.example.mycarsmt.dagger
 
 import android.app.Application
 import com.example.mycarsmt.datalayer.di.DataBaseModule
-import com.example.mycarsmt.datalayer.di.RepositoryModule
 
 class App: Application() {
 
@@ -15,8 +14,7 @@ class App: Application() {
 
         val dataBaseModule =
             DataBaseModule(this)
-        val repositoryModule =
-            RepositoryModule(dataBaseModule.provideDataBase())
+        val repositoryModule = RepositoryModule(dataBaseModule.provideDataBase())
 
         component = DaggerAppComponent
             .builder()

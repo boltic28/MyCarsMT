@@ -1,4 +1,4 @@
-package com.example.mycarsmt.datalayer.di
+package com.example.mycarsmt.dagger
 
 import com.example.mycarsmt.datalayer.data.AppDatabase
 import com.example.mycarsmt.domain.service.car.CarRepository

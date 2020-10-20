@@ -2,7 +2,6 @@ package com.example.mycarsmt.dagger
 
 import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.datalayer.di.DataBaseModule
-import com.example.mycarsmt.datalayer.di.RepositoryModule
 import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
 import com.example.mycarsmt.domain.service.note.NoteServiceImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
