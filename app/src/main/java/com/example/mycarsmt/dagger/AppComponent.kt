@@ -2,8 +2,9 @@ package com.example.mycarsmt.dagger
 
 import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.datalayer.di.DataBaseModule
+import com.example.mycarsmt.datalayer.di.PreferencesModule
 import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
-import com.example.mycarsmt.domain.service.note.NoteServiceImpl
+import com.example.mycarsmt.domain.service.note.NoteRepositoryImpl
 import com.example.mycarsmt.domain.service.part.PartServiceImpl
 import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
 import com.example.mycarsmt.presentation.fragments.*
@@ -44,13 +45,14 @@ interface AppComponent {
 
     fun injectService(service: CarRepositoryImpl)
     fun injectService(service: PartServiceImpl)
-    fun injectService(service: NoteServiceImpl)
+    fun injectService(service: NoteRepositoryImpl)
     fun injectService(service: RepairServiceImpl)
 
     @Component.Builder
     interface DataBuilder{
         fun createDataModule(module: DataBaseModule): DataBuilder
         fun createRepositoryModule(module: RepositoryModule): DataBuilder
+        fun createPreferencesModule(module: PreferencesModule): DataBuilder
         fun buildComponent(): AppComponent
     }
 }

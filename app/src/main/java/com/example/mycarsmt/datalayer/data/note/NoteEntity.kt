@@ -7,43 +7,31 @@ import com.example.mycarsmt.datalayer.data.car.CarEntity
 import com.example.mycarsmt.datalayer.vconvertors.NoteLevelConverter
 import java.time.LocalDate
 
-@Entity(tableName = "note", foreignKeys = [
-    ForeignKey(entity = CarEntity::class, parentColumns = ["id"], childColumns = ["car_id"],
-        onDelete = ForeignKey.CASCADE)
-])
-class NoteEntity() {
-
-    constructor(
-        id: Long,
-        carId: Long,
-        partId: Long,
-        description: String,
-        date: LocalDate,
-        importantLevel: NoteLevel
-    ) : this() {
-        this.id = id
-        this.carId = carId
-        this.partId = partId
-        this.description = description
-        this.date = date
-        this.importantLevel = importantLevel
-    }
+@Entity(
+    tableName = "note", foreignKeys = [
+        ForeignKey(
+            entity = CarEntity::class, parentColumns = ["id"], childColumns = ["car_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+class NoteEntity(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    val id: Long,
 
     @ColumnInfo(name = "car_id")
-    var carId: Long = 0
+    val carId: Long,
 
     @ColumnInfo(name = "part_id")
-    var partId: Long = 0
+    val partId: Long,
 
-    var description: String = "some note"
+    var description: String,
 
     @TypeConverters(LocalDateConverter::class)
-    var date: LocalDate = LocalDate.now()
+    var date: LocalDate,
 
     @ColumnInfo(name = "important_level")
     @TypeConverters(NoteLevelConverter::class)
-    var importantLevel: NoteLevel = NoteLevel.INFO
-}
+    var importantLevel: NoteLevel
+)

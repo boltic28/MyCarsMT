@@ -27,11 +27,11 @@ interface NoteDao {
     @Query("SELECT * FROM note WHERE id = :id")
     fun getById(id: Long): Single<NoteEntity>
 
-    @Query("SELECT * FROM note WHERE car_id = :carId")
-    fun getAllForCarList(carId: Long): List<NoteEntity>
-
-    @Query("SELECT * FROM note WHERE part_id = :partId")
-    fun getAllForPartList(partId: Long): List<NoteEntity>
+//    @Query("SELECT * FROM note WHERE car_id = :carId")
+//    fun getAllForCarList(carId: Long): List<NoteEntity>
+//
+//    @Query("SELECT * FROM note WHERE part_id = :partId")
+//    fun getAllForPartList(partId: Long): List<NoteEntity>
 //------------------------
 //    @Query("SELECT note.*, car.mileage FROM note, car WHERE car.id == note.car_id")
 //    fun getAll(): Flowable<List<NoteWithMileage>>

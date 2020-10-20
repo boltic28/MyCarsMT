@@ -11,26 +11,21 @@ import java.time.LocalDate
 
 @Entity(tableName = "car")
 data class CarEntity(
-    val id:Long,
-    //to do with other fields
-) {
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
-
-    var brand: String = ""
-    var model: String = ""
-    var number: String = ""
-    var vin: String = ""
-    var photo: String = ""
-
-    var year: Int = 1980
-    var mileage: Int = 0
+    val id: Long,
+    val brand: String,
+    val model: String,
+    val number: String,
+    val vin: String,
+    val photo: String,
+    val year: Int,
+    val mileage: Int,
 
     @ColumnInfo(name = "mileage_changed_at")
     @TypeConverters(LocalDateConverter::class)
-    var whenMileageRefreshed: LocalDate = LocalDate.now()
+    val whenMileageRefreshed: LocalDate = LocalDate.now(),
 
     @TypeConverters(ConditionConverter::class)
-    var condition: List<Condition> = listOf(Condition.OK)
-}
+    val condition: List<Condition> = listOf(Condition.OK)
+)

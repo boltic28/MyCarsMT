@@ -8,7 +8,7 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
-interface NoteService{
+interface NoteRepository{
 
     fun create(note: Note): Single<Long>
     fun update(note: Note): Single<Int>
@@ -17,7 +17,6 @@ interface NoteService{
     fun getAll(): Single<List<Note>>
     fun getAllForCar(car: Car): Single<List<Note>>
     fun getAllForPart(part: Part): Single<List<Note>>
-
     fun getCarFor(note: Note): Maybe<Car>
     fun getPartFor(note: Note): Maybe<Part>
 }

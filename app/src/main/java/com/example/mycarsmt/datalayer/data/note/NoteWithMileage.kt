@@ -1,47 +1,31 @@
 package com.example.mycarsmt.datalayer.data.note
 
 import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.mycarsmt.datalayer.enums.NoteLevel
 import com.example.mycarsmt.datalayer.vconvertors.LocalDateConverter
 import com.example.mycarsmt.datalayer.vconvertors.NoteLevelConverter
 import java.time.LocalDate
 
-class NoteWithMileage() {
+class NoteWithMileage(
 
-    constructor(
-        id: Long,
-        carId: Long,
-        mileage: Int,
-        partId: Long,
-        description: String,
-        date: LocalDate,
-        importantLevel: NoteLevel
-    ) : this() {
-        this.id = id
-        this.carId = carId
-        this.mileage = mileage
-        this.partId = partId
-        this.description = description
-        this.date = date
-        this.importantLevel = importantLevel
-    }
-
-    var id: Long = 0
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
 
     @ColumnInfo(name = "car_id")
-    var carId: Long = 0
+    var carId: Long,
 
-    var mileage: Int = 0
+    var mileage: Int,
     @ColumnInfo(name = "part_id")
-    var partId: Long = 0
+    var partId: Long,
 
-    var description: String = ""
+    var description: String,
 
     @TypeConverters(LocalDateConverter::class)
-    var date: LocalDate = LocalDate.now()
+    var date: LocalDate = LocalDate.now(),
 
     @ColumnInfo(name = "important_level")
     @TypeConverters(NoteLevelConverter::class)
     var importantLevel: NoteLevel = NoteLevel.INFO
-}
+)

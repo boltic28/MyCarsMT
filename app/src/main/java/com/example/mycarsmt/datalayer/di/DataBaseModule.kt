@@ -16,12 +16,4 @@ class DataBaseModule(val context: Context) {
     @Provides
     fun provideDataBase(): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "cars_db").build()
-
-    @Singleton
-    @Provides
-    fun providePreference(): SharedPreferences =
-        context.getSharedPreferences(
-            SettingFragment.APP_PREFERENCES,
-            Context.MODE_PRIVATE
-        )
 }

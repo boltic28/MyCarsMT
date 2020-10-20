@@ -21,77 +21,41 @@ import java.util.stream.Collectors
 import javax.inject.Inject
 
 @SuppressLint("NewApi")
-class NoteServiceImpl @Inject constructor() : NoteService {
-
-    companion object {
-        const val TAG = "test_mt"
-    }
-
-    @Inject
-    lateinit var carDao: CarDao
-    @Inject
-    lateinit var partDao: PartDao
-    @Inject
-    lateinit var noteDao: NoteDao
-    @Inject
-    lateinit var repairDao: RepairDao
-    @Inject
-    lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var executor: ExecutorService
-
-    init {
-        App.component.injectService(this)
-    }
+class NoteRepositoryImpl(private val noteDao: NoteDao) : NoteRepository {
 
     override fun create(note: Note): Single<Long> {
-        return noteDao.insert(noteEntityFrom(note))
-
-    }
-
-    override fun getById(id: Long): Single<Note> {
-        return noteDao.getById(id).map { noteFrom(it) }
+        TODO("Not yet implemented")
     }
 
     override fun update(note: Note): Single<Int> {
-        return noteDao.update(noteEntityFrom(note))
-
+        TODO("Not yet implemented")
     }
 
     override fun delete(note: Note): Single<Int> {
-        return noteDao.delete(noteEntityFrom(note))
+        TODO("Not yet implemented")
+    }
+
+    override fun getById(id: Long): Single<Note> {
+        TODO("Not yet implemented")
     }
 
     override fun getAll(): Single<List<Note>> {
-        return noteDao.getAll().map { entitiesList ->
-            entitiesList.stream()
-                .map { entity -> noteFrom(entity) }
-                .collect(Collectors.toList()) }
+        TODO("Not yet implemented")
     }
 
     override fun getAllForCar(car: Car): Single<List<Note>> {
-        return noteDao.getAllForCar(car.id).map { value ->
-            value.stream()
-                .map { entity -> noteFrom(entity) }
-                .collect(Collectors.toList())}
+        TODO("Not yet implemented")
     }
 
     override fun getAllForPart(part: Part): Single<List<Note>> {
-        return noteDao.getAllForPart(part.id).map { value ->
-            value.stream()
-                .map { entity -> noteFrom(entity) }
-                .collect(Collectors.toList())
-        }
+        TODO("Not yet implemented")
     }
 
     override fun getCarFor(note: Note): Maybe<Car> {
-        return carDao.getById(note.carId)
-            .map { entity -> carFrom(entity) }.toMaybe()
+        TODO("Not yet implemented")
     }
 
     override fun getPartFor(note: Note): Maybe<Part> {
-        return partDao.getById(note.partId)
-            .map { value -> partFrom(value) }
-            .toMaybe()
+        TODO("Not yet implemented")
     }
 }
