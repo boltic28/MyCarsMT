@@ -7,11 +7,11 @@ import com.example.mycarsmt.Directories
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.enums.NoteLevel
 import com.example.mycarsmt.datalayer.enums.PartControlType
-import com.example.mycarsmt.domain.*
-import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
-import com.example.mycarsmt.domain.service.note.NoteRepositoryImpl
-import com.example.mycarsmt.domain.service.part.PartServiceImpl
-import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
+import com.example.mycarsmt.businesslayer.*
+import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
+import com.example.mycarsmt.businesslayer.service.note.NoteRepositoryImpl
+import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.io.File

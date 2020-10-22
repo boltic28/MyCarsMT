@@ -1,12 +1,12 @@
-package com.example.mycarsmt.domain.service.car
+package com.example.mycarsmt.datalayer.data.car
 
-import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.businesslayer.Car
 import io.reactivex.Single
 
 
 interface CarRepository {
 
-    fun create(car: Car): Single<Long>
+    fun insert(car: Car): Single<Long>
 
     fun getById(id: Long): Single<Car>
 

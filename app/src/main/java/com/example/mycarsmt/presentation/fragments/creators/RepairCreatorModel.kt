@@ -2,9 +2,9 @@ package com.example.mycarsmt.presentation.fragments.creators
 
 import androidx.lifecycle.ViewModel
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
-import com.example.mycarsmt.domain.service.part.PartServiceImpl
-import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
+import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
+import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
 import javax.inject.Inject
 
 class RepairCreatorModel @Inject constructor(): ViewModel()  {

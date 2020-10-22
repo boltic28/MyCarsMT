@@ -1,4 +1,4 @@
-package com.example.mycarsmt.domain
+package com.example.mycarsmt.businesslayer
 
 import android.content.SharedPreferences
 import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO

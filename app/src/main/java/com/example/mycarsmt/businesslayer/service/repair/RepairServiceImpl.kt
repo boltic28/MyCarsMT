@@ -1,18 +1,18 @@
-package com.example.mycarsmt.domain.service.repair
+package com.example.mycarsmt.businesslayer.service.repair
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.domain.Repair
+import com.example.mycarsmt.businesslayer.Repair
 import com.example.mycarsmt.datalayer.data.car.CarDao
 import com.example.mycarsmt.datalayer.data.part.PartDao
 import com.example.mycarsmt.datalayer.data.repair.RepairDao
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.carFrom
-import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.partFrom
-import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairEntityFrom
-import com.example.mycarsmt.domain.service.mappers.EntityConverter.Companion.repairFrom
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.Part
+import com.example.mycarsmt.businesslayer.service.mappers.EntityConverter.Companion.carFrom
+import com.example.mycarsmt.businesslayer.service.mappers.EntityConverter.Companion.partFrom
+import com.example.mycarsmt.businesslayer.service.mappers.EntityConverter.Companion.repairEntityFrom
+import com.example.mycarsmt.businesslayer.service.mappers.EntityConverter.Companion.repairFrom
 import io.reactivex.Maybe
 import io.reactivex.Single
 import java.util.concurrent.ExecutorService

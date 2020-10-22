@@ -2,6 +2,7 @@ package com.example.mycarsmt.datalayer.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.mycarsmt.datalayer.data.car.CarDao
 import com.example.mycarsmt.datalayer.data.car.CarEntity
 import com.example.mycarsmt.datalayer.data.note.NoteDao
@@ -16,6 +17,7 @@ import com.example.mycarsmt.datalayer.data.repair.RepairEntity
     version = 2,
     exportSchema = false
 )
+@TypeConverters(Converter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun carDao(): CarDao

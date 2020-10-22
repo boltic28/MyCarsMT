@@ -1,53 +1,30 @@
 package com.example.mycarsmt.datalayer.data.repair
 
 import androidx.room.*
-import com.example.mycarsmt.datalayer.vconvertors.LocalDateConverter
 import com.example.mycarsmt.datalayer.data.car.CarEntity
 import java.time.LocalDate
 
-@Entity(tableName = "repair", foreignKeys = [
-ForeignKey(entity = CarEntity::class, parentColumns = ["id"], childColumns = ["car_id"],
-    onDelete = ForeignKey.CASCADE)
-])
-class RepairEntity() {
-
-    constructor(
-        id: Long,
-        carId: Long,
-        partId: Long,
-        type: String,
-        cost: Int,
-        mileage: Int,
-        description: String,
-        date: LocalDate
-    ) : this() {
-        this.id = id
-        this.carId = carId
-        this.partId = partId
-        this.type = type
-        this.cost = cost
-        this.mileage = mileage
-        this.description = description
-        this.date = date
-    }
+@Entity(
+    tableName = "repair", foreignKeys = [
+        ForeignKey(
+            entity = CarEntity::class, parentColumns = ["id"], childColumns = ["car_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class RepairEntity(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    var id: Long,
 
     @ColumnInfo(name = "car_id")
-    var carId: Long = 0
+    var carId: Long,
 
     @ColumnInfo(name = "part_id")
-    var partId: Long = 0
-
-    var type: String = "type"
-
-    var cost: Int = 0
-
-    var mileage: Int = 0
-
-    var description: String = "some repair"
-
-    @TypeConverters(LocalDateConverter::class)
+    var partId: Long,
+    var type: String,
+    var cost: Int,
+    var mileage: Int,
+    var description: String,
     var date: LocalDate = LocalDate.now()
-}
+)

@@ -8,6 +8,6 @@ enum class PartControlType(val value: String) {
 
     companion object {
         private val map = values().associateBy(PartControlType::value)
-        fun fromString(type: String) = map[type]
+        fun fromString(type: String) = map[type]?: CHANGE
     }
 }

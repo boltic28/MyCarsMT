@@ -17,8 +17,8 @@ import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.enums.PartControlType
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.Part
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.Part
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers

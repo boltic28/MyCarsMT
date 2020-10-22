@@ -1,9 +1,9 @@
-package com.example.mycarsmt.domain.service.mappers
+package com.example.mycarsmt.businesslayer.service.mappers
 
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.Note
-import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.Repair
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.Note
+import com.example.mycarsmt.businesslayer.Part
+import com.example.mycarsmt.businesslayer.Repair
 import com.example.mycarsmt.datalayer.data.car.CarEntity
 import com.example.mycarsmt.datalayer.data.note.NoteEntity
 import com.example.mycarsmt.datalayer.data.note.NoteWithMileage

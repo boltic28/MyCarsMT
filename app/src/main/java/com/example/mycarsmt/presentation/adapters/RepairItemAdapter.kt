@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.R
-import com.example.mycarsmt.domain.Repair
+import com.example.mycarsmt.businesslayer.Repair
 
 class RepairItemAdapter(repairsIn: List<Repair>, private val listener: OnItemClickListener
     ) : RecyclerView.Adapter<RepairItemAdapter.RepairHolder>() {

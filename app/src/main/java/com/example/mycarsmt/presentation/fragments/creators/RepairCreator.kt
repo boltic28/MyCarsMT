@@ -10,9 +10,9 @@ import androidx.navigation.findNavController
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.REPAIR
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.Repair
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.Part
+import com.example.mycarsmt.businesslayer.Repair
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

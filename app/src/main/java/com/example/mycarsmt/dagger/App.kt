@@ -13,15 +13,14 @@ class App: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val dataBaseModule =
-            DataBaseModule(this)
+        val dataBaseModule = DataBaseModule(this)
         val repositoryModule = RepositoryModule(dataBaseModule.provideDataBase())
         val preferencesModule = PreferencesModule(this)
 
         component = DaggerAppComponent
             .builder()
             .createDataModule(dataBaseModule)
-            .createServiceModule(repositoryModule)
+            .createRepositoryModule(repositoryModule)
             .createPreferencesModule(preferencesModule)
             .buildComponent()
     }

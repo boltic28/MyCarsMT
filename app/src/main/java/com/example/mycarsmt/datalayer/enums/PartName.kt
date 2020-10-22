@@ -1,6 +1,7 @@
 package com.example.mycarsmt.datalayer.enums
 
 enum class PartName(val value: String) {
+    DEFAULT("default part"),
     OIL_LEVEL("oil level"),
     OIL_FILTER("oil filter"),
     AIR_FILTER("air filter"),
@@ -18,7 +19,7 @@ enum class PartName(val value: String) {
 
     companion object {
         private val map = values().associateBy(PartName::value)
-        fun fromString(type: String) = map[type]
+        fun fromString(type: String) = map[type]?: DEFAULT
     }
 
 }

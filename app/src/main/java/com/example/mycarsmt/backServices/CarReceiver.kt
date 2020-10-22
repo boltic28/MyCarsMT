@@ -5,13 +5,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
-import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
+import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
 //import com.example.mycarsmt.domain.service.car.CarServiceImpl.Companion.RESULT_DIAGNOSTIC_FOR_NOTIFICATION
 
 class CarReceiver : BroadcastReceiver() {
 
     private lateinit var handler: Handler
-    private lateinit var carServiceImpl:CarRepositoryImpl
+    private lateinit var carServiceImpl: CarRepositoryImpl
     private lateinit var notification: NotificationCar
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")

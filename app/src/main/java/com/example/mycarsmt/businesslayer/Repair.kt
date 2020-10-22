@@ -1,4 +1,4 @@
-package com.example.mycarsmt.domain
+package com.example.mycarsmt.businesslayer
 
 import java.io.Serializable
 import java.time.LocalDate

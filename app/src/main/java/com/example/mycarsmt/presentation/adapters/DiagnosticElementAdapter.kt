@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycarsmt.R
-import com.example.mycarsmt.domain.DiagnosticElement
+import com.example.mycarsmt.businesslayer.DiagnosticElement
 
 class DiagnosticElementAdapter(
     diagnosticList: List<DiagnosticElement>, private val listener: OnItemClickListener

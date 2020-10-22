@@ -2,9 +2,7 @@ package com.example.mycarsmt.datalayer.data.note
 
 import androidx.room.*
 import com.example.mycarsmt.datalayer.enums.NoteLevel
-import com.example.mycarsmt.datalayer.vconvertors.LocalDateConverter
 import com.example.mycarsmt.datalayer.data.car.CarEntity
-import com.example.mycarsmt.datalayer.vconvertors.NoteLevelConverter
 import java.time.LocalDate
 
 @Entity(
@@ -15,7 +13,7 @@ import java.time.LocalDate
         )
     ]
 )
-class NoteEntity(
+data class NoteEntity(
 
     @PrimaryKey(autoGenerate = true)
     val id: Long,
@@ -27,11 +25,6 @@ class NoteEntity(
     val partId: Long,
 
     var description: String,
-
-    @TypeConverters(LocalDateConverter::class)
     var date: LocalDate,
-
-    @ColumnInfo(name = "important_level")
-    @TypeConverters(NoteLevelConverter::class)
     var importantLevel: NoteLevel
 )

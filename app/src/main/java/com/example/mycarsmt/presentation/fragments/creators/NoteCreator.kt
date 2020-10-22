@@ -11,9 +11,9 @@ import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.NOTE
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.enums.NoteLevel
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.Note
-import com.example.mycarsmt.domain.Part
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.Note
+import com.example.mycarsmt.businesslayer.Part
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

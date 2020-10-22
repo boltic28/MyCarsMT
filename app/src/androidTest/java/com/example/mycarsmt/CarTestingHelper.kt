@@ -1,7 +1,6 @@
 package com.example.mycarsmt
 
 import com.example.mycarsmt.datalayer.data.car.CarEntity
-import com.example.mycarsmt.datalayer.data.car.CarWithAllElements
 
 class CarTestingHelper {
     fun compareCars(car1: CarEntity, car2: CarWithAllElements): Boolean {

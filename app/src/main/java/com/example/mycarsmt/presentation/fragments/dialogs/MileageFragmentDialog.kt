@@ -13,8 +13,8 @@ import androidx.navigation.findNavController
 import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.time.LocalDate

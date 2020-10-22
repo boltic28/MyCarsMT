@@ -15,8 +15,8 @@ import com.example.mycarsmt.SpecialWords
 import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File

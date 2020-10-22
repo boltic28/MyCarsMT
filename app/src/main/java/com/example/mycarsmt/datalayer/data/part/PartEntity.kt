@@ -3,74 +3,32 @@ package com.example.mycarsmt.datalayer.data.part
 import androidx.room.*
 import com.example.mycarsmt.datalayer.enums.PartControlType
 import com.example.mycarsmt.datalayer.data.car.CarEntity
-import com.example.mycarsmt.datalayer.vconvertors.ConditionConverter
-import com.example.mycarsmt.datalayer.vconvertors.LocalDateConverter
-import com.example.mycarsmt.datalayer.vconvertors.TypeControlConverter
 import com.example.mycarsmt.datalayer.enums.Condition
 import java.time.LocalDate
 
-@Entity(tableName = "part", foreignKeys = [
-    ForeignKey(entity = CarEntity::class, parentColumns = ["id"], childColumns = ["car_id"],
-        onDelete = ForeignKey.CASCADE)
-])
-class PartEntity() {
-
-    constructor(
-        id: Long,
-        carId: Long,
-        name: String,
-        codes: String,
-        limitKM: Int,
-        limitDays: Int,
-        dateLastChange: LocalDate,
-        mileageLastChange: Int,
-        description: String,
-        photo: String,
-        type: PartControlType,
-        condition: List<Condition>
-    ) : this() {
-        this.id = id
-        this.carId = carId
-        this.name = name
-        this.codes = codes
-        this.limitKM = limitKM
-        this.limitDays = limitDays
-        this.dateLastChange = dateLastChange
-        this.mileageLastChange = mileageLastChange
-        this.description = description
-        this.photo = photo
-        this.type = type
-        this.condition = condition
-    }
+@Entity(
+    tableName = "part", foreignKeys = [
+        ForeignKey(
+            entity = CarEntity::class, parentColumns = ["id"], childColumns = ["car_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+class PartEntity(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    val id: Long,
 
     @ColumnInfo(name = "car_id")
-    var carId: Long = 0
-
-    var name: String = "part"
-    var codes: String = "no23"
-
-    @ColumnInfo(name = "limit_km")
-    var limitKM: Int = 10000
-
-    @ColumnInfo(name = "limit_day")
-    var limitDays: Int = 365
-
-    @ColumnInfo(name = "last_change_time")
-    @TypeConverters(LocalDateConverter::class)
-    var dateLastChange: LocalDate = LocalDate.now()
-
-    @ColumnInfo(name = "last_change_km")
-    var mileageLastChange: Int = 0
-
-    var description: String = "description"
-    var photo = ""
-
-    @TypeConverters(TypeControlConverter::class)
-    var type: PartControlType = PartControlType.CHANGE
-
-    @TypeConverters(ConditionConverter::class)
-    var condition: List<Condition> = listOf(Condition.OK)
-}
+    val carId: Long,
+    val name: String,
+    val codes: String,
+    val limitKM: Int,
+    val limitDays: Int,
+    val dateLastChange: LocalDate,
+    val mileageLastChange: Int,
+    val description: String,
+    val photo: String,
+    val type: PartControlType = PartControlType.CHANGE,
+    val condition: List<Condition> = listOf(Condition.OK)
+)

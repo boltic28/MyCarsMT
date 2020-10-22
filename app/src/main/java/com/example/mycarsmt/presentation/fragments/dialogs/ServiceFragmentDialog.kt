@@ -13,11 +13,11 @@ import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
-import com.example.mycarsmt.domain.service.part.PartServiceImpl
-import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.Part
+import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
+import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject

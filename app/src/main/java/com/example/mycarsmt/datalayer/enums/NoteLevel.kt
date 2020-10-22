@@ -8,6 +8,6 @@ enum class NoteLevel(val value: Int) {
 
     companion object {
         private val map = values().associateBy(NoteLevel::value)
-        fun fromInt(type: Int) = map[type]
+        fun fromInt(type: Int) = map[type]?: INFO
     }
 }

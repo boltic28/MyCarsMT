@@ -17,10 +17,10 @@ import com.example.mycarsmt.SpecialWords.Companion.PART
 import com.example.mycarsmt.SpecialWords.Companion.REPAIR
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.enums.ContentType
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.Note
-import com.example.mycarsmt.domain.Part
-import com.example.mycarsmt.domain.Repair
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.Note
+import com.example.mycarsmt.businesslayer.Part
+import com.example.mycarsmt.businesslayer.Repair
 import com.example.mycarsmt.presentation.adapters.NoteItemAdapter
 import com.example.mycarsmt.presentation.adapters.RepairItemAdapter
 import com.squareup.picasso.Picasso

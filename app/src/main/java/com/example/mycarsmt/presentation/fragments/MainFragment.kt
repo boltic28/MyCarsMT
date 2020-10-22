@@ -16,9 +16,9 @@ import com.example.mycarsmt.SpecialWords.Companion.NOTE
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.enums.Condition
 import com.example.mycarsmt.datalayer.enums.ContentType
-import com.example.mycarsmt.domain.Car
-import com.example.mycarsmt.domain.DiagnosticElement
-import com.example.mycarsmt.domain.Note
+import com.example.mycarsmt.businesslayer.Car
+import com.example.mycarsmt.businesslayer.DiagnosticElement
+import com.example.mycarsmt.businesslayer.Note
 import com.example.mycarsmt.presentation.adapters.CarItemAdapter
 import com.example.mycarsmt.presentation.adapters.DiagnosticElementAdapter
 import com.example.mycarsmt.presentation.adapters.NoteItemAdapter

@@ -15,7 +15,7 @@ import com.example.mycarsmt.R
 import com.example.mycarsmt.SpecialWords.Companion.CAR
 import com.example.mycarsmt.SpecialWords.Companion.NO_PHOTO
 import com.example.mycarsmt.dagger.App
-import com.example.mycarsmt.domain.Car
+import com.example.mycarsmt.businesslayer.Car
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -111,7 +111,7 @@ class CarCreator @Inject constructor() : Fragment(R.layout.fragment_creator_car)
     @SuppressLint("CheckResult")
     private fun createCar() {
         car.whenMileageRefreshed = LocalDate.now()
-        model.carService.create(car)
+        model.carService.insert(car)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

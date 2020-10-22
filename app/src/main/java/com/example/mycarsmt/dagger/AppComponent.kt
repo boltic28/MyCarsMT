@@ -3,10 +3,10 @@ package com.example.mycarsmt.dagger
 import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.datalayer.di.DataBaseModule
 import com.example.mycarsmt.datalayer.di.PreferencesModule
-import com.example.mycarsmt.domain.service.car.CarRepositoryImpl
-import com.example.mycarsmt.domain.service.note.NoteRepositoryImpl
-import com.example.mycarsmt.domain.service.part.PartServiceImpl
-import com.example.mycarsmt.domain.service.repair.RepairServiceImpl
+import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
+import com.example.mycarsmt.businesslayer.service.note.NoteRepositoryImpl
+import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
 import com.example.mycarsmt.presentation.fragments.*
 import com.example.mycarsmt.presentation.fragments.creators.*
 import com.example.mycarsmt.presentation.fragments.dialogs.*

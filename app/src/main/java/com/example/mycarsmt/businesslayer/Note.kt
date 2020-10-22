@@ -1,4 +1,4 @@
-package com.example.mycarsmt.domain
+package com.example.mycarsmt.businesslayer
 
 import com.example.mycarsmt.datalayer.enums.NoteLevel
 import java.io.Serializable
