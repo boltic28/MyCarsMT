@@ -71,7 +71,7 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
         }
 
         noteCreatorButtonDone.setOnClickListener {
-            model.repairService.create(note.done())
+            model.repairService.insert(note.done())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
@@ -120,7 +120,7 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
 
     @SuppressLint("CheckResult")
     private fun createNote(){
-        model.noteService.create(note)
+        model.noteService.insert(note)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

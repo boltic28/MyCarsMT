@@ -4,9 +4,9 @@ import com.example.mycarsmt.backServices.TXTConverter
 import com.example.mycarsmt.datalayer.di.DataBaseModule
 import com.example.mycarsmt.datalayer.di.PreferencesModule
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.note.NoteRepositoryImpl
+import com.example.mycarsmt.datalayer.data.note.NoteRepositoryImpl
 import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
-import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
+import com.example.mycarsmt.datalayer.data.repair.RepairRepositoryImpl
 import com.example.mycarsmt.presentation.fragments.*
 import com.example.mycarsmt.presentation.fragments.creators.*
 import com.example.mycarsmt.presentation.fragments.dialogs.*
@@ -46,7 +46,7 @@ interface AppComponent {
     fun injectService(service: CarRepositoryImpl)
     fun injectService(service: PartServiceImpl)
     fun injectService(service: NoteRepositoryImpl)
-    fun injectService(service: RepairServiceImpl)
+    fun injectService(service: RepairRepositoryImpl)
 
     @Component.Builder
     interface DataBuilder{

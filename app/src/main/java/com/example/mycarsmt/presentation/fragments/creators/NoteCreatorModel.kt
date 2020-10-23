@@ -3,9 +3,9 @@ package com.example.mycarsmt.presentation.fragments.creators
 import androidx.lifecycle.ViewModel
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.note.NoteRepositoryImpl
+import com.example.mycarsmt.datalayer.data.note.NoteRepositoryImpl
 import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
-import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
+import com.example.mycarsmt.datalayer.data.repair.RepairRepositoryImpl
 import javax.inject.Inject
 
 class NoteCreatorModel @Inject constructor(): ViewModel()  {
@@ -15,7 +15,7 @@ class NoteCreatorModel @Inject constructor(): ViewModel()  {
     @Inject
     lateinit var noteService: NoteRepositoryImpl
     @Inject
-    lateinit var repairService: RepairServiceImpl
+    lateinit var repairService: RepairRepositoryImpl
     @Inject
     lateinit var partService: PartServiceImpl
 

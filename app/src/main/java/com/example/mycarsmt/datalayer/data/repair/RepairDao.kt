@@ -26,10 +26,4 @@ interface RepairDao {
 
     @Query("SELECT * FROM repair WHERE part_id = :partId ORDER BY mileage")
     fun getAllForPart(partId: Long): Single<List<RepairEntity>>
-
-    @Query("SELECT * FROM repair WHERE car_id = :carId ORDER BY mileage")
-    fun getAllForCarList(carId: Long): List<RepairEntity>
-
-    @Query("SELECT * FROM repair WHERE part_id = :partId ORDER BY mileage")
-    fun getAllForPartList(partId: Long): List<RepairEntity>
 }

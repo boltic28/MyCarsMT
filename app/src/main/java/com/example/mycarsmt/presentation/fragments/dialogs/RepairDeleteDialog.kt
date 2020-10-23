@@ -20,7 +20,7 @@ import com.example.mycarsmt.businesslayer.Part
 import com.example.mycarsmt.businesslayer.Repair
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
 import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
-import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
+import com.example.mycarsmt.datalayer.data.repair.RepairRepositoryImpl
 import com.example.mycarsmt.presentation.fragments.CarFragment
 import com.example.mycarsmt.presentation.fragments.PartFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -38,7 +38,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
     @Inject
     lateinit var partService: PartServiceImpl
     @Inject
-    lateinit var repairService: RepairServiceImpl
+    lateinit var repairService: RepairRepositoryImpl
 
     lateinit var repair: Repair
     lateinit var car: Car

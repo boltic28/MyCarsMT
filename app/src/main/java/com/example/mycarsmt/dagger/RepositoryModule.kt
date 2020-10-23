@@ -3,10 +3,11 @@ package com.example.mycarsmt.dagger
 import com.example.mycarsmt.datalayer.data.AppDatabase
 import com.example.mycarsmt.datalayer.data.car.CarRepository
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.note.NoteRepository
-import com.example.mycarsmt.businesslayer.service.note.NoteRepositoryImpl
+import com.example.mycarsmt.datalayer.data.note.NoteRepository
+import com.example.mycarsmt.datalayer.data.note.NoteRepositoryImpl
 import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
-import com.example.mycarsmt.businesslayer.service.repair.RepairServiceImpl
+import com.example.mycarsmt.datalayer.data.repair.RepairRepository
+import com.example.mycarsmt.datalayer.data.repair.RepairRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -25,9 +26,11 @@ class RepositoryModule(private val appDatabase: AppDatabase) {
 
     @Singleton
     @Provides
-    fun provideNoteRepository(): NoteRepository = NoteRepositoryImpl(appDatabase.noteDao())
+    fun provideNoteRepository(): NoteRepository =
+        NoteRepositoryImpl(appDatabase.noteDao())
 
     @Singleton
     @Provides
-    fun provideRepairService(): RepairServiceImpl = RepairServiceImpl()
+    fun provideRepairRepository(): RepairRepository =
+        RepairRepositoryImpl(appDatabase.repairDao())
 }

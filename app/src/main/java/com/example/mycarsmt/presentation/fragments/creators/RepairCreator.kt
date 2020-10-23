@@ -105,7 +105,7 @@ class RepairCreator @Inject constructor() : Fragment(R.layout.fragment_creator_r
 
     @SuppressLint("CheckResult")
     private fun createRepair() {
-        model.repairService.create(repair)
+        model.repairService.insert(repair)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

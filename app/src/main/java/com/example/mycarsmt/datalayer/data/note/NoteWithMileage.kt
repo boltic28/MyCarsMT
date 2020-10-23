@@ -6,10 +6,10 @@ import java.time.LocalDate
 data class NoteWithMileage(
 
     val id: Long,
-    var carId: Long,
-    var mileage: Int,
-    var partId: Long,
-    var description: String,
-    var date: LocalDate = LocalDate.now(),
-    var importantLevel: NoteLevel = NoteLevel.INFO
+    val carId: Long,
+    val mileage: Int,
+    val partId: Long,
+    val description: String,
+    val date: LocalDate = LocalDate.now(),
+    val importantLevel: NoteLevel = NoteLevel.INFO
 )

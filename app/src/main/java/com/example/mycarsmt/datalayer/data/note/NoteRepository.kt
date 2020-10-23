@@ -1,4 +1,4 @@
-package com.example.mycarsmt.businesslayer.service.note
+package com.example.mycarsmt.datalayer.data.note
 
 import com.example.mycarsmt.businesslayer.Car
 import com.example.mycarsmt.businesslayer.Note
@@ -8,7 +8,7 @@ import io.reactivex.Single
 
 interface NoteRepository{
 
-    fun create(note: Note): Single<Long>
+    fun insert(note: Note): Single<Long>
 
     fun update(note: Note): Single<Int>
 
