@@ -12,12 +12,13 @@ fun getEntityFrom(note: Note): NoteEntity =
         importantLevel = note.importantLevel
     )
 
-fun getNoteFromEntity(note: NoteEntity): Note =
+fun getNoteFromEntity(note: NoteWithMileage): Note =
     Note(
         id = note.id,
         carId = note.carId,
         partId = note.partId,
         description = note.description,
+        mileage = note.mileage,
         date = note.date,
         importantLevel = note.importantLevel
     )

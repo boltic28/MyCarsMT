@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
 import com.example.mycarsmt.datalayer.data.note.NoteRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.datalayer.data.part.PartRepositoryImpl
 import javax.inject.Inject
 
 class MainModel @Inject constructor(): ViewModel() {
@@ -16,13 +16,12 @@ class MainModel @Inject constructor(): ViewModel() {
     @Inject
     lateinit var carService: CarRepositoryImpl
     @Inject
-    lateinit var partService: PartServiceImpl
+    lateinit var partRepository: PartRepositoryImpl
     @Inject
     lateinit var noteService: NoteRepositoryImpl
 
     init {
         App.component.injectModel(this)
-
     }
 
 

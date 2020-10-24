@@ -150,7 +150,7 @@ class RepairCreator @Inject constructor() : Fragment(R.layout.fragment_creator_r
             )
 
         if (repair.partId != 0L) {
-            model.partService.getById(repair.partId)
+            model.partRepository.getById(repair.partId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

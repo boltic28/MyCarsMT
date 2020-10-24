@@ -1,5 +1,7 @@
 package com.example.mycarsmt.businesslayer
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-class DiagnosticElement(val car: Car, val list: List<String>) : Serializable
+@Parcelize
+data class DiagnosticElement(val car: Car, val list: List<String>) : Parcelable

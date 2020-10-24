@@ -96,7 +96,7 @@ class CarFragment @Inject constructor() : Fragment(R.layout.fragment_car) {
 
     @SuppressLint("CheckResult")
     fun getPartsForCar(car: Car) {
-        model.partService.getAllForCar(car)
+        model.partRepository.getAllForCar(car)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

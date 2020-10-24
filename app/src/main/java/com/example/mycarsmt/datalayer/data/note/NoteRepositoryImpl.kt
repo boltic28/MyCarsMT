@@ -46,13 +46,3 @@ class NoteRepositoryImpl(private val noteDao: NoteDao) :
         }
 }
 
-//fun getNoteFrom(entity: NoteWithMileage): Note =
-//    Note(
-//        id = entity.id,
-//        carId = entity.carId,
-//        partId = entity.partId,
-//        description = entity.description,
-//        mileage = entity.mileage,
-//        date = entity.date,
-//        importantLevel = entity.importantLevel
-//    )

@@ -3,13 +3,13 @@ package com.example.mycarsmt.presentation.fragments.creators
 import androidx.lifecycle.ViewModel
 import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.datalayer.data.part.PartRepositoryImpl
 import javax.inject.Inject
 
 class PartCreatorModel @Inject constructor(): ViewModel() {
 
     @Inject
-    lateinit var partService: PartServiceImpl
+    lateinit var partRepository: PartRepositoryImpl
     @Inject
     lateinit var carService: CarRepositoryImpl
 

@@ -18,7 +18,7 @@ import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.businesslayer.Car
 import com.example.mycarsmt.businesslayer.Part
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.datalayer.data.part.PartRepositoryImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
@@ -34,7 +34,7 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
     @Inject
     lateinit var carService: CarRepositoryImpl
     @Inject
-    lateinit var partService: PartServiceImpl
+    lateinit var partRepository: PartRepositoryImpl
 
     lateinit var car: Car
     lateinit var part: Part
@@ -61,7 +61,7 @@ class PartDeleteDialog @Inject constructor(): DialogFragment() {
         }
 
         view.findViewById<Button>(R.id.deleteFragmentButtonDelete).setOnClickListener {
-            partService.delete(part)
+            partRepository.delete(part)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

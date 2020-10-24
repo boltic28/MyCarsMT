@@ -16,7 +16,7 @@ import com.example.mycarsmt.dagger.App
 import com.example.mycarsmt.businesslayer.Car
 import com.example.mycarsmt.businesslayer.Part
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.datalayer.data.part.PartRepositoryImpl
 import com.example.mycarsmt.datalayer.data.repair.RepairRepositoryImpl
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -32,7 +32,7 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
     @Inject
     lateinit var carService: CarRepositoryImpl
     @Inject
-    lateinit var partService: PartServiceImpl
+    lateinit var partRepository: PartRepositoryImpl
     @Inject
     lateinit var repairService: RepairRepositoryImpl
 
@@ -65,7 +65,7 @@ class ServiceFragmentDialog @Inject constructor() : DialogFragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
-            partService.update(part)
+            partRepository.update(part)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

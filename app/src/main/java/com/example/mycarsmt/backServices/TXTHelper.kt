@@ -10,7 +10,7 @@ import com.example.mycarsmt.datalayer.enums.PartControlType
 import com.example.mycarsmt.businesslayer.*
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
 import com.example.mycarsmt.datalayer.data.note.NoteRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.datalayer.data.part.PartRepositoryImpl
 import com.example.mycarsmt.datalayer.data.repair.RepairRepositoryImpl
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -32,7 +32,7 @@ class TXTConverter @Inject constructor() {
     @Inject
     lateinit var noteService: NoteRepositoryImpl
     @Inject
-    lateinit var partService: PartServiceImpl
+    lateinit var partRepository: PartRepositoryImpl
     @Inject
     lateinit var repairService: RepairRepositoryImpl
     @Inject

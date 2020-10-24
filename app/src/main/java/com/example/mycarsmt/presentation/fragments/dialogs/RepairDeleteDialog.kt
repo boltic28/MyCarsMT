@@ -19,7 +19,7 @@ import com.example.mycarsmt.businesslayer.Car
 import com.example.mycarsmt.businesslayer.Part
 import com.example.mycarsmt.businesslayer.Repair
 import com.example.mycarsmt.datalayer.data.car.CarRepositoryImpl
-import com.example.mycarsmt.businesslayer.service.part.PartServiceImpl
+import com.example.mycarsmt.datalayer.data.part.PartRepositoryImpl
 import com.example.mycarsmt.datalayer.data.repair.RepairRepositoryImpl
 import com.example.mycarsmt.presentation.fragments.CarFragment
 import com.example.mycarsmt.presentation.fragments.PartFragment
@@ -36,7 +36,7 @@ class RepairDeleteDialog @Inject constructor() : DialogFragment() {
     @Inject
     lateinit var carService: CarRepositoryImpl
     @Inject
-    lateinit var partService: PartServiceImpl
+    lateinit var partRepository: PartRepositoryImpl
     @Inject
     lateinit var repairService: RepairRepositoryImpl
 

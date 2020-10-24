@@ -129,7 +129,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
     @SuppressLint("CheckResult")
     private fun createPart() {
         car.whenMileageRefreshed = LocalDate.now()
-        model.partService.create(part)
+        model.partRepository.insert(part)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -146,7 +146,7 @@ class PartCreator @Inject constructor() : Fragment(R.layout.fragment_creator_par
 
     @SuppressLint("CheckResult")
     private fun updatePart() {
-        model.partService.update(part)
+        model.partRepository.update(part)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

@@ -74,7 +74,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { value ->
                 car = value
-                model.partService.getAllForCar(car)
+                model.partRepository.getAllForCar(car)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe( {
@@ -86,7 +86,7 @@ class PartFragment @Inject constructor() : Fragment(R.layout.fragment_part) {
                 setTitle("${part.name} (${car.model} ${car.number})")
             }
 
-        model.partService.getById(part.id)
+        model.partRepository.getById(part.id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {value ->

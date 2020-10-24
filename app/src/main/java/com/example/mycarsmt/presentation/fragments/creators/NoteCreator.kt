@@ -165,7 +165,7 @@ class NoteCreator @Inject constructor () : Fragment(R.layout.fragment_creator_no
             )
 
         if (note.partId != 0L){
-            model.partService.getById(note.partId)
+            model.partRepository.getById(note.partId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
